@@ -1,20 +1,58 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
 
+ <!--ng-container *ngIf="abc == 1">container testing</ng-container-->
+
+<app-test></app-test>
+<!--<app-jq></app-jq>-->
+<!--div>
+  <div class='wrapper'>
+    <div class='container' [dragula]='"bag-task1"' >
+      <div>task 1: create a new angular project using npm</div>
+      <div>task 2: move into your project folder</div>
+      <div>task 3: install ng2-dragula component in your angular project</div>
+    </div>
+    <div class='container' [dragula]='"bag-task1"' >
+      <div>task 4: import the module in the app module and add it to the NgModule imports</div>
+      <div>task 5: in the app component import the Dragula service, inject it into the constructor and set dragula options</div>
+      <div>task 6: in the app template, add the html code with the property dragula and use the customized css classes</div>
+    </div>
+    <div class='container' [dragula]='"bag-task1"' >
+      <div>x</div>
+      <div>y</div>     
+      <div>z</div>
+    </div>
+  </div>
+</div-->
+
+
+<!--div class="wrapper" style="width:700px;">
+  <div class='container' [dragula]='"another-bag"' [dragulaModel]='many' style="width:20%; float:left;">    
+    <div [attr.id]="item.id" [attr.title]="item" class="card-item" *ngFor='let item of many; let i=index' [innerHtml]='item' style="padding: 10px;text-align: center;position: relative;height: 100px;text-align: center; border-top:1px solid #e1edff; border-right:1px solid #e1edff; background:#f4fbff; margin-top:18px;">
+    </div>
+  </div> 
+
+  <div class='container' [dragula]='"another-bag"' [dragulaModel]='many2' style="width:20%; float:left;">    
+    <div [attr.id]="item.id" [attr.title]="item" class="card-item" *ngFor='let item of many2; let i=index' [innerHtml]='item' style="padding: 10px;text-align: center;position: relative;height: 100px;text-align: center; border-top:1px solid #e1edff; border-right:1px solid #e1edff; background:#f4fbff; margin-top:18px;">      
+    </div>
+  </div> 
+</div-->
+
+
+
+<!--div class='wrapper'>
+  <div class='container' [dragula]='"another-bag"' [dragulaModel]='many'>
+    <div [attr.id]="item.id" [attr.title]="item" class="card-item" *ngFor='let item of many; let i=index' [innerHtml]='item'></div>
+  </div>
+  <div class='container' [dragula]='"another-bag"' [dragulaModel]='many2'>
+    <div [attr.id]="item.id" [attr.title]="item" class="card-item" *ngFor='let item of many2; let i=index' [innerHtml]='item'></div>
+  </div>
+</div-->
+
+
+<!--div class='wrapper'>
+  <div class='container' [dragula]='"another-bag"' [dragulaModel]='many'>
+    <div *ngFor='let text of many' [innerHtml]='text'></div>
+  </div>
+  <div class='container' [dragula]='"another-bag"' [dragulaModel]='many2'>
+    <div *ngFor='let text of many2' [innerHtml]='text'></div>
+  </div>
+</div-->

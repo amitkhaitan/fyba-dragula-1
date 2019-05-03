@@ -19,9 +19,11 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
       "styles": [
-        "styles.css"
+        "styles.css",
+        "../node_modules/dragula/dist/dragula.css"
       ],
-      "scripts": [],
+      "scripts": ["../src/app/drop2/external.js",
+        "../node_modules/jquery/dist/jquery.js"],
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",

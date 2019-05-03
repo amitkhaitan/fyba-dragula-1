@@ -1,0 +1,69 @@
+<div style="width:700px; margin:20px auto;">
+    <div style="width:20%; float:left;">
+        <div style="background:#508abb; padding:0px; text-align:center; border-right:1px solid #6ea1cc;"> 
+        <span style="color:#fff; font-size:16px; font-weight:bold;">@Model.Timing.Heading</span> </div>
+        @{
+            foreach (var t in Model.Timing.TimeValue)
+            {
+                string _timeDivId = "timeDiv_" + t.TimeGroup;
+                <div id="@_timeDivId" style="background: #ededed;padding: 10px;text-align: center;position: relative;height: 40px;text-align: right;padding-right: 40px;">
+                    <div>@t.TimeValue<span style="background: #999;width: 30px;height: 1px;position: absolute;right: 0;top: 20px;"></span></div>
+                </div>
+            }
+        }
+    </div>
+    @{
+        foreach (var sloat in Model.allSloats)
+        {
+            string _group = "0";
+            int _flag = 0;
+            <div style="width:20%; float:left;" id="11">
+                <div style="background:#508abb; padding:0px; text-align:center; border-right:1px solid #6ea1cc;"> <span style="color:#fff; font-size:16px; font-weight:bold;">@sloat.Heading</span> </div>
+                @foreach (var box in sloat.AllBox)
+                {
+                    
+
+                    if (box.TimeGroup != _group)
+                    {
+                        if (_group == "0")
+                        {
+                            @Html.Raw("<div style='padding:10px;text-align:center;position:relative;height:40px;text-align:center;border-top:1px solid #e1edff;border-right:1px solid #e1edff;background:#f4fbff;margin-top:0px;'>");
+                        }
+                        else
+                        {
+                            @Html.Raw("</div>");
+                            @Html.Raw("<div style='padding:10px;text-align:center;position:relative;height:40px;text-align:center;border-top:1px solid #e1edff;border-right:1px solid #e1edff;background:#f4fbff;margin-top:0px;'>");
+                        }
+                        _group = box.TimeGroup;
+                        _flag = 1;
+                        if (box.BoxHeight != "0px")
+                        {
+                        @Html.Raw("<div style='position:absolute;background-color:" + @box.BoxColor + ";left:0;top:" + @box.BoxTop + ";border:1px solid #880000;height:" + @box.BoxHeight + ";width:100%;z-index:1;font-size:8px;'>" + @box.BoxValue + "</div>");
+                        }
+                        else
+                        {
+                            @Html.Raw("<div style='position:absolute;left:0;top:0;border:0px solid #880000;height:0px;width:100%;z-index:1;'></div>");
+                        }
+
+                    }
+                    else
+                    {
+                        if (box.BoxHeight != "0px")
+                        {
+                            @Html.Raw("<div style='position:absolute;background-color:" + @box.BoxColor + ";left:0;top:" + @box.BoxTop + ";border:1px solid #880000;height:" + @box.BoxHeight + ";width:100%;z-index:1;font-size:8px;'>" + @box.BoxValue + "</div>");
+                        }
+                        else
+                        {
+                            @Html.Raw("<div style='position:absolute;left:0;top:0;border:0px solid #880000;height:0px;width:100%;z-index:1;'></div>");
+                        }
+                    }
+
+                    if (sloat.AllBox.IndexOf(box) == sloat.AllBox.Count - 1)
+                    {
+                        @Html.Raw("</div>");
+                    }
+                }
+            </div>
+        }
+    }
+</div>
