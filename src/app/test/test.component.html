@@ -1,9 +1,9 @@
 <div *ngIf="jsonVar != null">
-		<ng-container *ngFor="let line of jsonVar.ResourceLine">
-				<div class="lineClass" id="{{line.LineDivId}}"></div>
-				<div id="s_{{line.LineDivId}}"></div>
-				<div id="e_{{line.LineDivId}}"></div>
-			</ng-container>
+	<ng-container *ngFor="let line of jsonVar.ResourceLine">
+		<div class="lineClass" id="{{line.LineDivId}}"></div>
+		<div id="s_{{line.LineDivId}}"></div>
+		<div id="e_{{line.LineDivId}}"></div>
+	</ng-container>
 	<table>
 		<tr>
 			<td>Travel time between 2 locations (minute)</td>
@@ -11,8 +11,8 @@
 				<input type="text" id="txtTime" style="width: 40px;padding: 2px" value="{{jsonVar.TimeInterval}}" />
 			</td>
 			<td>
-				<input type="button" value="Go" style="padding: 2px; background-color: darkgrey" (click)="RecalculateGameSlotColorAfterTimeChange()"
-				/> </td>
+				<input type="button" value="Go" style="padding: 2px; background-color: darkgrey"
+					(click)="RecalculateGameSlotColorAfterTimeChange()" /> </td>
 		</tr>
 	</table>
 
@@ -22,25 +22,29 @@
 				<span>Time Slot</span>
 			</div>
 			<div class="greenBoxScroll">
-				<div *ngFor="let timeslot of jsonVar.TimeSlot" class="secondGreenBox" [dragula]="'bag-task1'" dragCase2="1">
-					<div id="{{timeslot.TimeDivId}}" attrMainTimeSlot="1" dragCase6="1" dragCase5="1" dragCase4="1" dragCase1="1" attr.SlotColor="{{timeslot.SlotColor}}"
-					 attr.tsDuration="{{timeslot.TimeValueInMinute}}" attr.tsHeight="{{timeslot.TimeBoxHeight}}" class="{{timeslot.TimeDivId}}">
+				<div *ngFor="let timeslot of jsonVar.TimeSlot" class="secondGreenBox" [dragula]="'bag-task1'"
+					dragCase2="1">
+					<div id="{{timeslot.TimeDivId}}" attrMainTimeSlot="1" dragCase6="1" dragCase5="1" dragCase4="1"
+						dragCase1="1" attr.SlotColor="{{timeslot.SlotColor}}"
+						attr.tsDuration="{{timeslot.TimeValueInMinute}}" attr.tsHeight="{{timeslot.TimeBoxHeight}}"
+						class="{{timeslot.TimeDivId}}">
 						<div>{{timeslot.TimeText}}</div>
 					</div>
 				</div>
 			</div>
 
-			
+
 
 
 			<div class="greenBoxScroll" style="top:500px !important">
-				<div id="divDelete" style="border: 3px lightgreen dotted; color:lightcoral; font-size: 12px;  height: 50px; width: 100%"
-				 [dragula]="'bag-task1'" attrDelete="1">
-					<br/>Drop for delete timeslot
+				<div id="divDelete"
+					style="border: 3px lightgreen dotted; color:lightcoral; font-size: 12px;  height: 50px; width: 100%"
+					[dragula]="'bag-task1'" attrDelete="1">
+					<br />Drop for delete timeslot
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="centerDiv">
 			<div class="mainContainer">
 				<ng-container *ngFor="let line of jsonVar.ResourceLine">
@@ -56,7 +60,8 @@
 								<div class="topBlueBar">
 									<span>{{jsonVar.Timing.Heading}}</span>
 								</div>
-								<div class="greyBox" *ngFor="let obj of jsonVar.Timing.TimeValue" id="{{'timeDiv_' + obj.TimeGroup}}">
+								<div class="greyBox" *ngFor="let obj of jsonVar.Timing.TimeValue"
+									id="{{'timeDiv_' + obj.TimeGroup}}">
 									<div>{{obj.TimeValue}}
 										<span class="lineTime"></span>
 									</div>
@@ -70,23 +75,34 @@
 									<span>{{slot.Heading}}</span>
 								</div>
 								<div class="stripeBoxWhite" *ngFor="let slotBox of slot.AllSlotBox">
-									{{slotCountForUI++}}
+									{{slotCountForUI}}
 									<ng-container *ngIf="slotBox.IsBlankBox==false;else yesBlank">
 										<ng-container *ngIf="slotBox.IsGameBox==true;else noGame">
-											<div [dragula]="'bag-task1'" attr.Location={{slotBox.Location}} attr.StratTime={{slotBox.StratTime}} attr.EndTime={{slotBox.EndTime}}
-											 attr.boxHeight={{slotBox.Height}}>
+											<div [dragula]="'bag-task1'" attr.Location={{slotBox.Location}}
+												attr.StratTime={{slotBox.StratTime}} attr.EndTime={{slotBox.EndTime}}
+												attr.boxHeight={{slotBox.Height}}>
 												<ng-container *ngFor="let gameTiming of slotBox.AllGameBox">
 													<ng-container *ngFor="let gameBox of gameTiming.AllBox">
 														<ng-container *ngIf="gameBox.BoxHeight != '0px';else lastElse">
 															<!--Div with Game info-->
-															<div style="position:absolute; border:1px solid; z-index:2;width:100%;" dragCase5="1" [dragula]="'bag-task1'" [ngStyle]="{'top': gameBox.BoxTop, 'height': gameBox.BoxHeight, 'border-color': slotBox.SlotColor}"
-															 attr.SlotId="{{slotBox.SlotId}}" attr.Location={{slotBox.Location}} attr.StratTime={{slotBox.StratTime}} attr.EndTime={{slotBox.EndTime}}
-															 attr.Duration={{slotBox.Duration}}>
+															<div style="position:absolute; border:1px solid; z-index:2;width:100%;"
+																dragCase5="1" [dragula]="'bag-task1'"
+																[ngStyle]="{'top': gameBox.BoxTop, 'height': gameBox.BoxHeight, 'border-color': slotBox.SlotColor}"
+																attr.SlotId="{{slotBox.SlotId}}"
+																attr.Location={{slotBox.Location}}
+																attr.StratTime={{slotBox.StratTime}}
+																attr.EndTime={{slotBox.EndTime}}
+																attr.Duration={{slotBox.Duration}}>
 
 																<div style="background:#999; position:absolute; left:0; right:0; color:#FFF; width:100%; height:100%; padding:5px; font-size:12px;"
-																 title="{{gameBox.BoxValue}}" attrGameBox="1" dragCase5="1" dragCase7="1" class="{{gameBox.BoxValue}} dragBox"
-																 id="{{gameBox.GameDivId}}" attr.ResourceGroup="{{gameBox.ResourceGroup}}" attr.Division="{{gameBox.Division}}"
-																 [ngStyle]="{'background-color': gameBox.BoxColor}"> {{gameBox.BoxValue}} </div>
+																	title="{{gameBox.BoxValue}}" attrGameBox="1"
+																	dragCase5="1" dragCase7="1"
+																	class="{{gameBox.BoxValue}} dragBox"
+																	id="{{gameBox.GameDivId}}"
+																	attr.ResourceGroup="{{gameBox.ResourceGroup}}"
+																	attr.Division="{{gameBox.Division}}"
+																	[ngStyle]="{'background-color': gameBox.BoxColor}">
+																	{{gameBox.BoxValue}} </div>
 															</div>
 														</ng-container>
 														<ng-template #lastElse>
@@ -97,20 +113,28 @@
 											</div>
 										</ng-container>
 										<ng-template #noGame>
-											<div [dragula]="'bag-task1'" attr.SlotId="{{slotBox.SlotId}}" dragCase4="1" attrFreeSlot="1" attr.Location={{slotBox.Location}}
-											 attr.StratTime={{slotBox.StratTime}} attr.EndTime={{slotBox.EndTime}} attr.boxHeight={{slotBox.Height}} attr.Duration={{slotBox.Duration}}>
+											<div [dragula]="'bag-task1'" attr.SlotId="{{slotBox.SlotId}}" dragCase4="1"
+												attrFreeSlot="1" attr.Location={{slotBox.Location}}
+												attr.StratTime={{slotBox.StratTime}} attr.EndTime={{slotBox.EndTime}}
+												attr.boxHeight={{slotBox.Height}} attr.Duration={{slotBox.Duration}}>
 												<!--Blank Div for drop-->
-												<div style="position:absolute; left:0; top:0; border:1px solid;  width:100%; z-index:1;" attr.SlotId="{{slotBox.SlotId}}"
-												 dragCase4="1" attrTimeSlot="1" attrFreeSlot="1" attr.Location={{slotBox.Location}} attr.StratTime={{slotBox.StratTime}}
-												 attr.EndTime={{slotBox.EndTime}} attr.boxHeight={{slotBox.Height}} attr.Duration={{slotBox.Duration}} [ngStyle]="{'top': slotBox.Top, 'height': slotBox.Height, 'border-color': slotBox.SlotColor}"
-												 class="borderGreen">
+												<div style="position:absolute; left:0; top:0; border:1px solid;  width:100%; z-index:1;"
+													attr.SlotId="{{slotBox.SlotId}}" dragCase4="1" attrTimeSlot="1"
+													attrFreeSlot="1" attr.Location={{slotBox.Location}}
+													attr.StratTime={{slotBox.StratTime}}
+													attr.EndTime={{slotBox.EndTime}} attr.boxHeight={{slotBox.Height}}
+													attr.Duration={{slotBox.Duration}}
+													[ngStyle]="{'top': slotBox.Top, 'height': slotBox.Height, 'border-color': slotBox.SlotColor}"
+													class="borderGreen">
 												</div>
 											</div>
 										</ng-template>
 									</ng-container>
 									<ng-template #yesBlank>
-										<div dragCase3="1" class="relativeDiv" dragCase6="1" dragCase7="1" attrBlank="1" [dragula]="'bag-task1'" attr.Location={{slotBox.Location}}
-										 attr.StratTime={{slotBox.StratTime}} attr.EndTime={{slotBox.EndTime}} attr.boxHeight={{slotBox.Height}}>
+										<div dragCase3="1" class="relativeDiv" dragCase6="1" dragCase7="1" attrBlank="1"
+											[dragula]="'bag-task1'" attr.Location={{slotBox.Location}}
+											attr.StratTime={{slotBox.StratTime}} attr.EndTime={{slotBox.EndTime}}
+											attr.boxHeight={{slotBox.Height}}>
 										</div>
 									</ng-template>
 								</div>
@@ -128,8 +152,9 @@
 				<span>Games</span>
 			</div>
 			<div class="greenBoxScroll" [dragula]="'bag-task1'" dragCase1="1">
-				<div class="secondBlueBox" *ngFor="let freeGame of jsonVar.FreeGames" attr.ResourceGroup="{{freeGame.ResourceGroup}}" attrFreeGame="1"
-				 dragCase5="1" dragCase2="1" dragCase3="1" id="{{freeGame.GameDivId}}" attr.Division="{{freeGame.Division}}">
+				<div class="secondBlueBox" *ngFor="let freeGame of jsonVar.FreeGames"
+					attr.ResourceGroup="{{freeGame.ResourceGroup}}" attrFreeGame="1" dragCase5="1" dragCase2="1"
+					dragCase3="1" id="{{freeGame.GameDivId}}" attr.Division="{{freeGame.Division}}">
 					<div>{{freeGame.Name}}
 					</div>
 				</div>
@@ -138,6 +163,6 @@
 
 
 
-			<ng-container  *ngFor="let line of jsonVar.ResourceLine">
-		{{makeLine(line.StartPointDivId,line.EndPointDivId,line.LineDivId)}}
-	</ng-container>
+			<ng-container *ngFor="let line of jsonVar.ResourceLine">
+				{{makeLine(line.StartPointDivId,line.EndPointDivId,line.LineDivId)}}
+			</ng-container>
