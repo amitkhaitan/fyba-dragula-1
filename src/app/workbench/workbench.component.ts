@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DragulaService } from 'ng2-dragula';
 import { DataService } from './../data.service';
-import { WorkBench, AllGameBox, AllBox } from './workbench.model';
+import { WorkBench, AllGameBox, AllBox,FreeGames } from './workbench.model';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -40,25 +40,7 @@ export class WorkbenchComponent implements OnInit {
         return source.id === 'timeSlots';
       },
 
-      accepts: function (el, target, source, sibling) {
-        //console.log("ACCEPTS");
-        // console.log("Source");
-        // if (source.id) {
-        //   console.log("Source Id: " + source.id);
-        // }
-
-        //  if(source.children[0].id){
-        //   console.log("Source Children Id: "+source.children[0].id);
-        //  }
-
-
-        // console.log(source);
-        // console.log("Target Id: "+target.id);
-        // console.log("Target");        
-        // console.log(target);
-
-
-
+      accepts: function (el, target, source, sibling) {  
         if (source.id == 'freeGame' && target.id == 'blankSlot') {
           //Done
           return true
@@ -69,18 +51,17 @@ export class WorkbenchComponent implements OnInit {
           return true
         }
 
-
         else if (source.id == 'blankSlot' && target.id == 'nullSlot') {
+          //Done
+          return true
+        }
+
+        else if (source.id == 'gameSlot' && target.id == 'freeGame') {
           //Doing
           return true
         }
 
-        else if (source.id == 'gameSlot' && target.children[0].id == 'freeGame') {
-          return true
-        }
-
-        else if (source.id == 'gameSlot' && target.children[0].id == 'blankSlot') {
-          console.log("GameSlot to children[0]");
+        else if (source.id == 'gameSlot' && target.id == 'blankSlot') {
           return true
         }
 
@@ -112,6 +93,7 @@ export class WorkbenchComponent implements OnInit {
         console.log("DROP: ");
         console.log("Source");
         console.log(source);
+        console.log("Target ID: "+target.id);
         console.log("Target");
         console.log(target);
         console.log("Element:");
@@ -119,22 +101,32 @@ export class WorkbenchComponent implements OnInit {
 
 
         if (source.id == 'freeGame' && target.id == 'blankSlot') {
+          //Done
           this.freeGametoBlankSlot(name, el, target, source, sibling);
         }
 
         else if (source.id == 'timeSlots' && target.id == 'nullSlot') {
+          //Done
           this.timeSlottoNullSlot(name, el, target, source, sibling);
         }
 
 
         else if (source.id == 'blankSlot' && target.id == 'nullSlot') {
+          //Done
           this.blankSlottoNullSlot(name, el, target, source, sibling);
+        }
+
+        else if (source.id == 'gameSlot' && target.id == 'freeGame') {
+          //Doing
+          this.gameSlottoFreeGames(name, el, target, source, sibling);
+          return true
         }
 
         else if (source.id == 'gameSlot' && target.children[0].id == 'blankSlot') {
           this.gameSlottoBlankSlot(name, el, target, source, sibling);
           return true
         }
+
 
         else if (source.id == 'blankSlot' && target.id == 'timeSlotDelete') {
           this.deleteBlankSlot(name, el, target, source, sibling);
@@ -282,12 +274,46 @@ export class WorkbenchComponent implements OnInit {
 
   }
 
-  gameSlottoBlankSlot(name, el, target, source, sibling){
-    console.log("GameSlot Slot to Blank Slot");
+  gameSlottoFreeGames(name, el, target, source, sibling){
+    console.log("GameSlot Slot to Free Games");
     console.log("Target");
     console.log("Target Id: " + target.id);
     console.log(target);
+    this.jsonVar.allSlots.forEach(
+      slot => {
+        if (slot.Heading == source.attributes.getNamedItem('location').value) {
+          slot.AllSlotBox.forEach(
+            element => {
+              if (element.StartTime == source.attributes.getNamedItem('starttime').value) {
+               
+          
+                this.jsonVar.FreeGames.push({
+                  Division: element.AllGameBox[0].AllBox[0].Division,
+                  GameDivId: element.AllGameBox[0].AllBox[0].GameDivId,
+                  GameVolunteerList: element.AllGameBox[0].AllBox[0].GameVolunteerList,
+                  Name: element.AllGameBox[0].AllBox[0].BoxValue
+                });
+                
+                element.AllGameBox.splice(0,1)
+                //console.log(element);
+              }
+              //console.log(slot);
+            }
+          )
+        }       
+      }
+    )
 
+    console.log(this.jsonVar.FreeGames);
+
+
+  }
+
+  gameSlottoBlankSlot(name, el, target, source, sibling){
+    console.log("Game Slot to Blank Slot");
+    console.log("Target");
+    console.log("Target Id: " + target.id);
+    console.log(target);
   }
 
   deleteBlankSlot(name, el, target, source, sibling){
