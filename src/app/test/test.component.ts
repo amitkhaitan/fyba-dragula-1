@@ -7,7 +7,7 @@ import 'rxjs/add/operator/catch';
 import { DragServiceService } from '../drag-service.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import '../../assets/jsonData.json';
-import { DragulaService } from 'ng2-dragula/ng2-dragula';
+import { DragulaService } from 'ng2-dragula';
 import { findIndex } from 'rxjs/operator/findIndex';
 import { timeInterval } from 'rxjs/operator/timeInterval';
 //import { ECANCELED } from 'constants';
@@ -38,21 +38,21 @@ export class TestComponent implements OnInit {
   ngOnDestroy() { console.log("Destroy"); }
 
   constructor(private http: Http, private sanitizer: DomSanitizer, private dragulaService: DragulaService, public elementRef: ElementRef) {
-    dragulaService.drag.subscribe((value) => {
-      this.onDrag(value.slice(1));
-    });
-    dragulaService.drop.subscribe((value) => {
-      this.onDrop(value.slice(1));
-    });
-    dragulaService.over.subscribe((value) => {
-      this.onOver(value.slice(1));
-    });
-    dragulaService.out.subscribe((value) => {
-      this.onOut(value.slice(1));
-    });
-    dragulaService.setOptions('bag-task1', {
-      removeOnSpill: false
-    });
+    // dragulaService.drag.subscribe((value) => {
+    //   this.onDrag(value.slice(1));
+    // });
+    // dragulaService.drop.subscribe((value) => {
+    //   this.onDrop(value.slice(1));
+    // });
+    // dragulaService.over.subscribe((value) => {
+    //   this.onOver(value.slice(1));
+    // });
+    // dragulaService.out.subscribe((value) => {
+    //   this.onOut(value.slice(1));
+    // });
+    // dragulaService.setOptions('bag-task1', {
+    //   removeOnSpill: false
+    // });
 
   }
 

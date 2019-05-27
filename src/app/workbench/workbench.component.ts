@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { DragulaService } from 'ng2-dragula/ng2-dragula';
+import { DragulaService } from 'ng2-dragula';
 import { DataService } from './../data.service';
-import { WorkBench } from './workbench.model';
+import { WorkBench, AllGameBox, AllBox } from './workbench.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-workbench',
@@ -11,101 +12,290 @@ import { WorkBench } from './workbench.model';
 export class WorkbenchComponent implements OnInit {
 
   jsonVar: WorkBench = null;
+  subs = new Subscription();
+  slots = "slots";
 
   ngOnInit() {
     this.dataService.getWorkbenchData()
-    .subscribe(
-      (res)=>{
-        this.jsonVar = res;    
-        console.log(this.jsonVar);
-        
-      },
-      ()=>{
-        console.log(this.jsonVar);
-       
-      }
-    )
+      .subscribe(
+        (res) => {
+          this.jsonVar = res;
+          console.log(this.jsonVar);
+
+        },
+        () => {
+          console.log(this.jsonVar);
+        }
+      )
 
   }
 
   constructor(public dataService: DataService
     , private dragulaService: DragulaService) {
-    dragulaService.drag.subscribe((value) => {
-      this.onDrag(value.slice(1));
+    var that = this;
+    dragulaService.createGroup("slots", {
+      removeOnSpill: false,
+
+      copy: (el, source) => {
+        return source.id === 'timeSlots';
+      },
+
+      accepts: function (el, target, source, sibling) {
+        //console.log("ACCEPTS");
+        // console.log("Source");
+        // if (source.id) {
+        //   console.log("Source Id: " + source.id);
+        // }
+
+        //  if(source.children[0].id){
+        //   console.log("Source Children Id: "+source.children[0].id);
+        //  }
+
+
+        // console.log(source);
+        // console.log("Target Id: "+target.id);
+        // console.log("Target");        
+        // console.log(target);
+
+
+
+        if (source.id == 'freeGame' && target.id == 'blankSlot') {
+          //Done
+          return true
+        }
+
+        else if (source.id == 'timeSlots' && target.id == 'nullSlot') {
+          //Done
+          return true
+        }
+
+
+        else if (source.id == 'blankSlot' && target.id == 'nullSlot') {
+          //Doing
+          return true
+        }
+
+        else if (source.id == 'gameSlot' && target.children[0].id == 'freeGame') {
+          return true
+        }
+
+        else if (source.id == 'gameSlot' && target.children[0].id == 'blankSlot') {
+          console.log("GameSlot to children[0]");
+          return true
+        }
+
+        else if (source.id == 'blankSlot' && target.id == 'timeSlotDelete') {
+          console.log("Blank Slot to TimeSlot Delete");
+          return true
+        }
+
+
+
+      }
+
     });
-    dragulaService.drop.subscribe((value) => {
-      this.onDrop(value.slice(1));
-    });
-    dragulaService.over.subscribe((value) => {
-      this.onOver(value.slice(1));
-    });
-    dragulaService.out.subscribe((value) => {
-      this.onOut(value.slice(1));
-    });
-    dragulaService.setOptions('slots', {
-      removeOnSpill: false
-    });
+
+    this.subs.add(this.dragulaService.drag('slots')
+      .subscribe(({ name, el, source }) => {
+        console.log("DRAG:");
+        console.log("Source Id: " + source.id);
+        console.log("Source");
+        console.log(source);
+        console.log("Element:");
+        console.log(el.innerHTML);
+
+      })
+    );
+
+    this.subs.add(this.dragulaService.drop('slots')
+      .subscribe(({ name, el, target, source, sibling }) => {
+        console.log("DROP: ");
+        console.log("Source");
+        console.log(source);
+        console.log("Target");
+        console.log(target);
+        console.log("Element:");
+        console.log(el.innerHTML);
+
+
+        if (source.id == 'freeGame' && target.id == 'blankSlot') {
+          this.freeGametoBlankSlot(name, el, target, source, sibling);
+        }
+
+        else if (source.id == 'timeSlots' && target.id == 'nullSlot') {
+          this.timeSlottoNullSlot(name, el, target, source, sibling);
+        }
+
+
+        else if (source.id == 'blankSlot' && target.id == 'nullSlot') {
+          this.blankSlottoNullSlot(name, el, target, source, sibling);
+        }
+
+        else if (source.id == 'gameSlot' && target.children[0].id == 'blankSlot') {
+          this.gameSlottoBlankSlot(name, el, target, source, sibling);
+          return true
+        }
+
+        else if (source.id == 'blankSlot' && target.id == 'timeSlotDelete') {
+          this.deleteBlankSlot(name, el, target, source, sibling);
+          return true
+        }
+
+
+
+      })
+    );
 
   }
 
-  private hasClass(el: any, name: string) {
-    return new RegExp('(?:^|\\s+)' + name + '(?:\\s+|$)').test(el.className);
+  freeGametoBlankSlot(name, el, target, source, sibling) {
+    console.log("Free Game To Blank Slot");
+    console.log("Target");
+    console.log("Target Id: " + target.id);
+    console.log(target);
+    
+    this.jsonVar.allSlots.forEach(
+      slot => {
+        if (slot.Heading == target.attributes.getNamedItem('location').value) {
+          slot.AllSlotBox.forEach(
+            element => {
+              if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
+
+                element.IsGameBox = true;
+                element.SlotColor = "#16a085";
+                console.log(element);
+                var allBox = new AllBox();
+                allBox.BoxColor = "#2980b9";
+                allBox.BoxHeight = element.Height;
+                allBox.BoxTop = "0px";
+                allBox.BoxValue = el.innerHTML;
+                allBox.Division = "4";
+                allBox.Duration = 0;
+                allBox.EndTime = "06:55 PM";
+                allBox.StartTime = "06:00 PM";
+                allBox.TimeGroup = "10";
+
+                this.jsonVar.FreeGames.forEach(freegame => {
+                  if (freegame.Name == el.innerHTML) {
+                    allBox.GameVolunteerList = freegame.GameVolunteerList;
+                  }
+                });
+
+                console.log("Element");
+                console.log(element);
+
+                let allGameBox = new AllGameBox();
+                allGameBox.AllBox = [];
+                allGameBox.AllBox[0] = allBox;
+                //console.log(allGameBox);                                           
+                element.AllGameBox[0] = allGameBox;
+                console.log(slot);
+              }
+              //console.log(slot);
+            }
+          )
+        }
+      }
+    )
+
   }
 
-  private addClass(el: any, name: string) {
-    if (!this.hasClass(el, name)) {
-      el.className = el.className ? [el.className, name].join(' ') : name;
-    }
+
+  timeSlottoNullSlot(name, el, target, source, sibling) {
+    console.log("Time Slot to Null Slot");
+    console.log("Target");
+    console.log("Target Id: " + target.id);
+    console.log(target);
+
+    this.jsonVar.allSlots.forEach(
+      slot => {
+        if (slot.Heading == target.attributes.getNamedItem('location').value) {
+          slot.AllSlotBox.forEach(
+            element => {
+              if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
+                element.Duration = parseInt(source.attributes.getNamedItem('tsDuration').value);
+                element.Height = source.attributes.getNamedItem('tsHeight').value;
+                element.IsBlankBox = false;
+                element.SlotColor = "#16a085";
+                //console.log(element);
+              }
+              //console.log(slot);
+            }
+          )
+        }
+      }
+    )
   }
 
-  private removeClass(el: any, name: string) {
-    if (this.hasClass(el, name)) {
-      el.className = el.className.replace(new RegExp('(?:^|\\s+)' + name + '(?:\\s+|$)', 'g'), '');
-    }
+  blankSlottoNullSlot(name, el, target, source, sibling) {
+    console.log(this.jsonVar.allSlots);
+    console.log("Blank Slot to Null Slot");
+    console.log("Target");
+    console.log("Target Id: " + target.id);
+    console.log(target);
+
+    this.jsonVar.allSlots.forEach(
+      slot => {
+        if (slot.Heading == target.attributes.getNamedItem('location').value) {
+          slot.AllSlotBox.forEach(
+            element => {
+              if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
+                element.Duration = parseInt(source.attributes.getNamedItem('duration').value);
+                element.Height = source.attributes.getNamedItem('boxheight').value;
+                element.IsBlankBox = false;
+                element.IsGameBox = false;
+                element.SlotColor = "#16a085";
+                //console.log(element);
+              }
+              //console.log(slot);
+            }
+          )
+        }       
+      }
+    )
+
+    setTimeout(()=>{
+      console.log(this.jsonVar.allSlots);
+    },500)
+    
+    this.jsonVar.allSlots.forEach(
+      slot => {
+        if (slot.Heading == source.attributes.getNamedItem('location').value) {
+          slot.AllSlotBox.forEach(
+            element => {
+              if (element.StartTime == source.attributes.getNamedItem('starttime').value) {
+                element.Duration = 0;
+                element.Height = "20px";
+                element.IsBlankBox = true;
+                element.IsGameBox = false;
+                element.SlotColor = "";
+                //console.log(element);
+              }
+              //console.log(slot);
+            }
+          )
+        }
+      }
+    )
+
+   
+
   }
 
-  private onDrag(args) {
-    console.log("Drag");
-    console.log(args);
-    let [e, el] = args;
-    // console.log(el);
-    // console.log(e);
-    // console.log(e.id);
- 
+  gameSlottoBlankSlot(name, el, target, source, sibling){
+    console.log("GameSlot Slot to Blank Slot");
+    console.log("Target");
+    console.log("Target Id: " + target.id);
+    console.log(target);
+
   }
 
-  private onDrop(args) {    
-    console.log("Drop");
-    console.log(args);
-    let [e, el] = args;
-    console.log(e);
-    console.log(el);
-    if(e.id=='timeSlot'&& el.id=='nullSlot'){
-      console.log("TimeSlot to nullSlot");
-    }
-    else if(e.id=='freeGame' && el.id=='blankDiv'){
-      
-      console.log("freeGame to BlankDiv");
-    }
-  
-  } 
+  deleteBlankSlot(name, el, target, source, sibling){
+    console.log("Delete Blank Slot");
+    console.log("Target");
+    console.log("Target Id: " + target.id);
+    console.log(target);
 
-  private onOver(args) {
-    let [e, el, container] = args;
-    console.log("over");
-    console.log(e);
-    console.log(el);
-    console.log(container);
-    console.log("Child Element");
-    const hostElem = e.nativeElement;
-    console.log(hostElem.children);
-    this.addClass(e, 'dragOver');
-  }
-
-  private onOut(args) {
-    //console.log("out");
-    let [e, el, container] = args;
-    this.removeClass(e, 'dragOver');
   }
 
 }
