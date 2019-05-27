@@ -1,0 +1,200 @@
+
+* {
+	margin:0px;
+	padding:0px;
+	box-sizing:border-box;
+	font-family:Arial, Helvetica, sans-serif;
+}
+body {
+	overflow:hidden;
+}
+.mainContainer {
+	margin:20px auto;
+	max-width:1000px;
+	overflow:auto;
+	padding-bottom:30px;
+}
+
+.mainContainer table tr td{vertical-align:top;}
+.mainDiv:nth-child(5) {
+	background:#ededed;
+}
+.mainDiv:nth-child(5) .topBlueBar h6, .mainDiv:nth-child(5) .topBlueBar h3 {
+	color:#ccc;
+}
+
+.mainContainer tr td:first-child{width:125px;}
+
+
+.mainDiv {
+	width:125px;
+	float:left;
+	min-width:100%;
+}
+.gamesDiv {
+	width:150px;
+	float:right;
+	margin:20px 0;
+}
+.topBlueBar {
+	padding:10px;
+	border-right: 1px solid #6ea1cc;
+	border-top:1px solid #cccccc;
+	background:#508abb;
+	margin-bottom:10px;
+	text-align:center;
+}
+.gamesBlueBar {
+	background:#6196d3;
+	padding:10px;
+	text-align:center;
+	border-right:1px solid #cccccc;
+}
+.timeSlotsBar {
+	background:#6fae49;
+	padding:10px;
+	text-align:center;
+	border-right:1px solid #cccccc;
+}
+.topBlueBar span {
+	color:#fff;
+	font-size:14px;
+}
+.timeSlotsBar span {
+	color:#fff;
+	font-size:16px;
+	font-weight:bold;
+}
+.gamesBlueBar span {
+	color:#fff;
+	font-size:16px;
+	font-weight:bold;
+}
+.greyBox {
+	padding: 0 10px;
+	text-align: center;
+	position: relative;
+	height: 40px;
+	text-align: right;
+	/*padding-right: 40px;*/
+	border-right:1px solid #cccccc;
+	font-size:13px;
+	color:#666;
+}
+.greyBox > div {
+	position:relative;
+	top:-5px;
+}
+.firstBlueBox {
+	background: #d0dcee;
+	padding: 10px;
+	text-align: left;
+	position: relative;
+	/*height: 40px;*/
+	border-top:1px solid #fff;
+}
+.firstBlueBox div, .secondBlueBox div, .firstGreenBox div, .secondGreenBox div {
+	font-size:12px;
+}
+.secondBlueBox {
+	background: #e9eef7;
+	padding: 10px;
+	text-align: left;
+	position: relative;
+	/*height: 40px;*/
+	border-top:1px solid #fff;
+}
+.firstGreenBox {
+	background: #dbead2;
+	padding: 10px;
+	text-align: left;
+	position: relative;
+	/*height: 40px;*/
+	border-top:1px solid #fff;
+}
+.secondGreenBox {
+	background: #f0ffe7;
+	padding: 10px;
+	text-align: left;
+	position: relative;
+	/*height: 40px;*/
+	border-top:1px solid #fff;
+}
+.greyBox span {
+	background: #999;
+	width: 30px;
+	height: 1px;
+	position: absolute;
+	right: 0;
+	top: 18px;
+	display:none;
+}
+.height0 {
+	height: 0px;
+}
+.stripeBoxWhite {
+	/*padding: 10px;*/
+	text-align: center;
+	position: relative;
+	height: 20px;
+	text-align: center;
+	border-top:1px solid #f1f1f1;
+	border-right:1px solid #f1f1f1;
+}
+/*.marginTop18 {
+	margin-top:18px;
+}*/
+.borderBottom {
+	border-bottom:1px solid #cccccc;
+}
+.textCenter {
+	text-align:center;
+	margin:20px 0;
+}
+.textCenter input {
+	height:28px;
+	width:200px;
+	line-height:28px;
+	padding:3px 5px;
+}
+.timeDiv {
+	width:150px;
+	float:left;
+	margin:20px 0;
+}
+.centerDiv {
+	float:left;
+	width:calc(100% - 300px);
+}
+.greenBoxScroll {
+	max-height:535px;
+	overflow:auto;
+}
+.blueBoxScroll {
+	max-height:500px;
+	overflow:auto;
+}
+
+	.relativeDiv{text-align: center;position: relative;height: 20px;text-align: center; border-top:1px solid #e1edff; border-right:1px solid #e1edff; background:#fff;}
+.borderGreen{border: 1px solid #16a085;height: 100%; z-index: 1; position:absolute; width: 100%;}
+.borderRed{position:absolute;left:0;top:0;border:0px solid #880000;height:0px;width:100%;z-index:2;}
+	.lineTime{background: #999;width: 30px;height: 1px;position: absolute;right: 5px;top: 6px;}
+	
+	.dropBox{position:absolute; left:0; background:#fff; border:1px solid #16a085; width:100%; z-index:4; font-size:10px;}
+	.dragBox{position:absolute; left:0; top:0; border:1px solid #16a085; height:100%; width:100%;font-size:10px;}
+
+	.lineClass{
+    position:absolute;
+    width:2px;
+    margin-top:-1px;
+		background-color:black;
+		z-index: 5;
+	}
+	
+	.dragOver
+	{
+		border: 3px solid #880000;
+		background-color: #ffcf62 !important;
+		opacity:1;
+
+	}

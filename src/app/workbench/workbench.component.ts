@@ -1,27 +1,23 @@
-import { Directive, Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, ElementRef } from '@angular/core';
-import { Injectable } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import { DragServiceService } from '../drag-service.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import '../../assets/jsonData.json';
 import { DragulaService } from 'ng2-dragula/ng2-dragula';
-import { findIndex } from 'rxjs/operator/findIndex';
-import { timeInterval } from 'rxjs/operator/timeInterval';
-//import { ECANCELED } from 'constants';
+import { DataService } from './../data.service';
+
 
 declare var jQuery: any;
 
 @Component({
-  //providers:[DragServiceService],
-  selector: 'app-test',
-  templateUrl: './test.component.html',
-  styleUrls: ['./test.component.css']
+  selector: 'app-workbench',
+  templateUrl: './workbench.component.html',
+  styleUrls: ['./workbench.component.css']
 })
-export class TestComponent implements OnInit {
-  jsonVar: Object;
+export class WorkbenchComponent implements OnInit {
+
+  jsonVar: Object = null;
   dragStartSlotId = 0;
   dragParentDiv;
   objOldJSON;
@@ -37,7 +33,9 @@ export class TestComponent implements OnInit {
   }
   ngOnDestroy() { console.log("Destroy"); }
 
-  constructor(private http: Http, private sanitizer: DomSanitizer, private dragulaService: DragulaService, public elementRef: ElementRef) {
+  constructor(private http: Http,
+    public dataService: DataService
+    , private dragulaService: DragulaService) {
     dragulaService.drag.subscribe((value) => {
       this.onDrag(value.slice(1));
     });
@@ -587,6 +585,7 @@ export class TestComponent implements OnInit {
         }
       });
     });
+    
     console.log(this.jsonVar);
   }
 
@@ -615,21 +614,28 @@ export class TestComponent implements OnInit {
     this.removeClass(e, 'dragOver');
   }
 
-  //https://jsonplaceholder.typicode.com/posts/1
-  //https://api.github.com/users/hadley/orgs
-  //http://209.105.243.241/api/FYBAAngular/
-  //https://feeds.citibikenyc.com/stations/stations.json
-  //http://ergast.com/api/f1/2004/1/results.json
-
+  
   getGameAndSlotData(): any {
     //console.log("Inside order summary 2");
-    return this.http.get('http://209.105.243.241/api/FYBAAngular/')
-      .map((data: Response) => {
-        return data.json() as JSON;
-      }).toPromise().then(x => {
-        this.jsonVar = x;
-        this.CheckGameConflictOnPageLoad();
-      });
+    // return this.http.get('http://209.105.243.241/api/FYBAAngular/')
+    //   .map((data: Response) => {
+    //     return data.json() as JSON;
+    //   }).toPromise().then(x => {
+    //     this.jsonVar = x;
+    //     this.CheckGameConflictOnPageLoad();
+    //   });
+
+      this.dataService.getWorkbenchData()
+      .subscribe(
+        (res)=>{
+          this.jsonVar = res;         
+          
+        },
+        ()=>{
+          console.log(this.jsonVar);
+          this.CheckGameConflictOnPageLoad();
+        }
+      )
   }
 
   public ConvertPixelIntoMinute(_px) {
@@ -651,48 +657,5 @@ export class TestComponent implements OnInit {
     this.CheckGameConflictOnPageLoad();
   }
 
-  // makeLine(fromDivId, toDivId, lineDivId) {
-  //   //console.log(fromDivId);
-  //   adjustLine(
-  //     document.getElementById(fromDivId),
-  //     document.getElementById(toDivId),
-  //     document.getElementById(lineDivId)
-  //   );
 
-  //   function adjustLine(from, to, line) {
-
-  //     var fT = $(from).offset().top + $(from).height() / 2;
-  //     var tT = $(to).offset().top + $(to).height() / 2;
-  //     var fL = $(from).offset().left + $(from).width() / 2;
-  //     var tL = $(to).offset().left + $(to).width() / 2;
-
-  //     var CA = Math.abs(tT - fT);
-  //     var CO = Math.abs(tL - fL);
-  //     var H = Math.sqrt(CA * CA + CO * CO);
-  //     var ANG = 180 / Math.PI * Math.acos(CA / H);
-  //     if (tT > fT) {
-  //       var top = (tT - fT) / 2 + fT;
-  //     }
-  //     else {
-  //       var top = (fT - tT) / 2 + tT;
-  //     }
-  //     if (tL > fL) {
-  //       var left = (tL - fL) / 2 + fL;
-  //     } else {
-  //       var left = (fL - tL) / 2 + tL;
-  //     }
-  //     if ((fT < tT && fL < tL) || (tT < fT && tL < fL) || (fT > tT && fL > tL) || (tT > fT && tL > fL)) {
-  //       ANG *= -1;
-  //     }
-  //     top -= H / 2;
-  //     line.style["-webkit-transform"] = 'rotate(' + ANG + 'deg)';
-  //     line.style["-moz-transform"] = 'rotate(' + ANG + 'deg)';
-  //     line.style["-ms-transform"] = 'rotate(' + ANG + 'deg)';
-  //     line.style["-o-transform"] = 'rotate(' + ANG + 'deg)';
-  //     line.style["-transform"] = 'rotate(' + ANG + 'deg)';
-  //     line.style.top = top + 'px';
-  //     line.style.left = left + 'px';
-  //     line.style.height = H + 'px';
-  //   }
-  // }
 }
