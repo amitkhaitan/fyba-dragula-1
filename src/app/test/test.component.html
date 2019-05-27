@@ -70,7 +70,7 @@
 									<span>{{slot.Heading}}</span>
 								</div>
 								<div class="stripeBoxWhite" *ngFor="let slotBox of slot.AllSlotBox">
-									{{slotCountForUI++}}
+									<!-- {{slotCountForUI}} -->
 									<ng-container *ngIf="slotBox.IsBlankBox==false;else yesBlank">
 										<ng-container *ngIf="slotBox.IsGameBox==true;else noGame">
 											<div [dragula]="'bag-task1'" attr.Location={{slotBox.Location}} attr.StratTime={{slotBox.StratTime}} attr.EndTime={{slotBox.EndTime}}
