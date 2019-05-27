@@ -8,7 +8,7 @@ export class DataService {
   constructor(public http: Http) { }
 
   getWorkbenchData():Observable<any>{
-    return this.http.get('http://209.105.243.241/api/FYBAAngular/')
+    return this.http.get('http://38.109.219.208:2019/api/GameWorkbench')
     .map((res)=>res.json());
   }
 
