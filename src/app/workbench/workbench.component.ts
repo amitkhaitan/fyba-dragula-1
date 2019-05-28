@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { DragulaService } from 'ng2-dragula';
 import { DataService } from './../data.service';
-import { WorkBench, AllGameBox, AllBox, FreeGames } from './workbench.model';
+import { WorkBench, AllGameBox, AllBox, FreeGames, AllSlotBox, allSlots } from './workbench.model';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -29,38 +29,33 @@ export class WorkbenchComponent implements OnInit {
 
   constructor(public dataService: DataService
     , private dragulaService: DragulaService) {
-    var that = this;
     dragulaService.createGroup("slots", {
       removeOnSpill: false,
 
       copy: (el, source) => {
+        //The timeslot will be copied
         return source.id === 'timeSlots';
       },
 
       accepts: function (el, target, source, sibling) {
         if (source.id == 'freeGame' && target.id == 'blankSlot') {
-          //Done
           return true
         }
 
         else if (source.id == 'timeSlots' && target.id == 'nullSlot') {
-          //Done
           return true
         }
 
         else if (source.id == 'blankSlot' && target.id == 'nullSlot') {
-          //Done
           return true
         }
 
         else if (source.id == 'gameSlot' && target.id == 'freeGame') {
-          //Done - UI Issue;     
           return true
         }
 
         else if (source.id == 'gameSlot' && target.id == 'blankSlot') {
-          //Done
-         
+          //Game Slot will only be accepted if its duration is equal to TimeSlot Duration         
           let sourceDuration = parseInt(source.getAttribute("duration"));
           let targetDuration = parseInt(target.getAttribute("duration"));
           if(sourceDuration==targetDuration){           
@@ -69,27 +64,16 @@ export class WorkbenchComponent implements OnInit {
         }
 
         else if (source.id == 'blankSlot' && target.id == 'timeSlotDelete') {
-          //Done - Fix UI Issue
-          console.log("Blank Slot to TimeSlot Delete");
           return true
         }
 
-        else if (source.id == 'timeSlots' && target.id == 'blankSlot') {
-          //Doing              
-          console.log("Time Slots to Blank Slot");
-          console.log("Target");
-          console.log(target);
+        else if (source.id == 'timeSlots' && target.id == 'blankSlot') {             
           return false;
         }
 
         else if(target==null){
-          console.log("Time Slots to Null");
-          console.log("Target");
-          console.log(target);
           return false;
         }
-
-
 
       }
 
@@ -118,45 +102,30 @@ export class WorkbenchComponent implements OnInit {
         console.log("Element:");
         console.log(el.innerHTML);
 
-
-
         if (source.id == 'freeGame' && target.id == 'blankSlot') {
-          //Done
-          this.freeGametoBlankSlot(name, el, target, source, sibling);
+         this.freeGametoBlankSlot(name, el, target, source, sibling);
         }
 
-        else if (source.id == 'timeSlots' && target.id == 'nullSlot') {
-          //Done
+        else if (source.id == 'timeSlots' && target.id == 'nullSlot') {         
           this.timeSlottoNullSlot(name, el, target, source, sibling);
         }
 
 
-        else if (source.id == 'blankSlot' && target.id == 'nullSlot') {
-          //Done
+        else if (source.id == 'blankSlot' && target.id == 'nullSlot') {         
           this.blankSlottoNullSlot(name, el, target, source, sibling);
         }
 
-        else if (source.id == 'gameSlot' && target.id == 'freeGame') {
-          //Done - fix UI Issue
-          this.gameSlottoFreeGames(name, el, target, source, sibling);
-         
+        else if (source.id == 'gameSlot' && target.id == 'freeGame') {        
+          this.gameSlottoFreeGames(name, el, target, source, sibling);         
         }
 
-        else if (source.id == 'gameSlot' && target.id == 'blankSlot') {
-          //Done
-          this.gameSlottoBlankSlot(name, el, target, source, sibling);
-         
+        else if (source.id == 'gameSlot' && target.id == 'blankSlot') {      
+          this.gameSlottoBlankSlot(name, el, target, source, sibling);         
         }
 
-
-        else if (source.id == 'blankSlot' && target.id == 'timeSlotDelete') {
-          //Done - fix UI Issue
-          this.deleteBlankSlot(name, el, target, source, sibling);
-         
+        else if (source.id == 'blankSlot' && target.id == 'timeSlotDelete') {         
+          this.deleteBlankSlot(name, el, target, source, sibling);         
         }
-
-
-
       })
     );
 
@@ -177,7 +146,7 @@ export class WorkbenchComponent implements OnInit {
 
                 element.IsGameBox = true;
                 element.SlotColor = "#16a085";
-                console.log(element);
+               
                 var allBox = new AllBox();
                 allBox.BoxColor = "#2980b9";
                 allBox.BoxHeight = element.Height;
@@ -194,18 +163,15 @@ export class WorkbenchComponent implements OnInit {
                     allBox.GameVolunteerList = freegame.GameVolunteerList;
                   }
                 });
-
-                console.log("Element");
-                console.log(element);
-
+            
                 let allGameBox = new AllGameBox();
                 allGameBox.AllBox = [];
                 allGameBox.AllBox[0] = allBox;
-                //console.log(allGameBox);                                           
+                                                
                 element.AllGameBox[0] = allGameBox;
-                console.log(slot);
+              
               }
-              //console.log(slot);
+              
             }
           )
         }
@@ -230,10 +196,9 @@ export class WorkbenchComponent implements OnInit {
                 element.Duration = parseInt(source.attributes.getNamedItem('tsDuration').value);
                 element.Height = source.attributes.getNamedItem('tsHeight').value;
                 element.IsBlankBox = false;
-                element.SlotColor = "#16a085";
-                //console.log(element);
+                element.SlotColor = "#16a085";             
               }
-              //console.log(slot);
+           
             }
           )
         }
@@ -259,9 +224,9 @@ export class WorkbenchComponent implements OnInit {
                 element.IsBlankBox = false;
                 element.IsGameBox = false;
                 element.SlotColor = "#16a085";
-                //console.log(element);
+                
               }
-              //console.log(slot);
+              
             }
           )
         }
@@ -283,9 +248,9 @@ export class WorkbenchComponent implements OnInit {
                 element.IsBlankBox = true;
                 element.IsGameBox = false;
                 element.SlotColor = "";
-                //console.log(element);
+                
               }
-              //console.log(slot);
+            
             }
           )
         }
@@ -317,15 +282,16 @@ export class WorkbenchComponent implements OnInit {
 
                 element.AllGameBox.splice(0, 1);
              
-                //console.log(element);
+                
               }
-              //console.log(slot);
+             
             }
           )
         }
       }
     )
-
+    
+    //Removing the un-necesary div created by dragula at the top
     let domElement : HTMLElement = this.gameElement.nativeElement;
     domElement.parentNode.removeChild(domElement);
     console.log(this.jsonVar.FreeGames);
@@ -350,8 +316,7 @@ export class WorkbenchComponent implements OnInit {
                 console.log(element);
                 element.IsBlankBox = false;
                 element.IsGameBox = true;
-                element.Duration = parseInt(source.attributes.getNamedItem('duration').value);
-                //element.Height = source.attributes.getNamedItem('slotheight').value;   
+                element.Duration = parseInt(source.attributes.getNamedItem('duration').value);               
                 let allSlotsIndex = parseInt(source.getAttribute('allSlotsIndex'));
                 let slotBoxIndex = parseInt(source.getAttribute('slotBoxIndex'));
 
@@ -361,13 +326,15 @@ export class WorkbenchComponent implements OnInit {
 
                 element.AllGameBox.push(allGameBox);
 
+                this.checkGameSlotPlacement(element);
+
                 this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].AllGameBox = [];
                 this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].IsBlankBox = false;
                 this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].IsGameBox = false;
 
-                //console.log(element);
+              
               }
-              //console.log(slot);
+             
             }
           )
         }
@@ -396,12 +363,43 @@ export class WorkbenchComponent implements OnInit {
     this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].SlotColor = "";
     this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].Duration = 0;
 
-    console.log(this.timeElement);
-    //this.draggableElement.nativeElement.remove();
+    //Removing the un-necesary div created by dragula at the top
     let domElement : HTMLElement = this.timeElement.nativeElement;
     domElement.parentNode.removeChild(domElement);
     // this.draggableElement.nativeElement.style.display = "none";
 
+  }
+
+  checkGameSlotPlacement(allSlotBox: AllSlotBox){
+    var gameSlotDetails = allSlotBox.AllGameBox[0].AllBox[0];
+    var gameVolunteerList = gameSlotDetails.GameVolunteerList;
+
+    for(var i=0; i<gameVolunteerList.length; ++i){
+      this.jsonVar.allSlots.forEach(slot=>{
+        slot.AllSlotBox.forEach(slotBox=>{
+          slotBox.AllGameBox[0].AllBox[0].GameVolunteerList.forEach(volunteer=>{
+            if(gameVolunteerList[i].VolunteerSeasonalId == volunteer.VolunteerSeasonalId){
+              //So the same volunteer has another game scheduled on the same day
+              if(allSlotBox.Location==slotBox.Location){
+                //It means the volunteer is in the same location. So he can easily go to the next game
+                //Okay
+              }
+              else{
+                //Calculate time to move between both locations
+                this.calculateTravelTime(allSlotBox, gameSlotDetails);
+              
+              }
+            }
+          })
+        })
+      })
+    }
+
+  }
+
+  calculateTravelTime(allSlotBox : AllSlotBox, gameSlotDetails: AllBox){
+    let gameSlotStartTime = Date.parse(gameSlotDetails.StartTime);
+    console.log(gameSlotStartTime);
   }
 
 }
