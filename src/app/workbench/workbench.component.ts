@@ -3,6 +3,7 @@ import { DragulaService } from 'ng2-dragula';
 import { DataService } from './../data.service';
 import { WorkBench, AllGameBox, AllBox, FreeGames, AllSlotBox, allSlots } from './workbench.model';
 import { Subscription } from 'rxjs';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-workbench',
@@ -17,6 +18,16 @@ export class WorkbenchComponent implements OnInit {
   slots = "slots";
 
   ngOnInit() {
+
+    // var startingTime = "8:30 PM";
+    // var endTime = "9:30 AM";
+    // var date1 = moment(startingTime, "HH:mm A").format('hh:mm A');
+    // var date2 = moment(endTime, "HH:mm A").format('hh:mm A');  
+    // console.log(this.convertMinsToHrsMins("85"));
+    // console.log(moment(startingTime, "HH:mm A").add(85,"minutes").format('hh:mm A'));
+    // var x = moment(startingTime, "HH:mm A").isBefore(moment(endTime, "HH:mm A"));
+    // console.log(x);
+
     this.dataService.getWorkbenchData()
       .subscribe(
         (res) => {
@@ -136,6 +147,8 @@ export class WorkbenchComponent implements OnInit {
     console.log("Target");
     console.log("Target Id: " + target.id);
     console.log(target);
+    console.log(el);
+    console.log(el.getAttribute("GameName"));
 
     this.jsonVar.allSlots.forEach(
       slot => {
@@ -151,24 +164,28 @@ export class WorkbenchComponent implements OnInit {
                 allBox.BoxColor = "#2980b9";
                 allBox.BoxHeight = element.Height;
                 allBox.BoxTop = "0px";
-                allBox.BoxValue = el.innerHTML;
+                allBox.BoxValue = el.getAttribute("GameName");
                 allBox.Division = "4";
-                allBox.Duration = 0;
+                allBox.Duration = target.getAttribute("duration");
                 allBox.EndTime = "06:55 PM";
                 allBox.StartTime = "06:00 PM";
                 allBox.TimeGroup = "10";
 
-                this.jsonVar.FreeGames.forEach(freegame => {
-                  if (freegame.Name == el.innerHTML) {
+                console.log("Flag");              
+
+
+                this.jsonVar.FreeGames.forEach(freegame => {                 
+                  if (freegame.Name == el.getAttribute("GameName")) {
                     allBox.GameVolunteerList = freegame.GameVolunteerList;
                   }
                 });
             
                 let allGameBox = new AllGameBox();
                 allGameBox.AllBox = [];
-                allGameBox.AllBox[0] = allBox;
-                                                
+                allGameBox.AllBox[0] = allBox;                                                
                 element.AllGameBox[0] = allGameBox;
+
+                this.checkGameSlotPlacement(element);
               
               }
               
@@ -325,7 +342,7 @@ export class WorkbenchComponent implements OnInit {
                 allGameBox.AllBox = this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].AllGameBox[0].AllBox;
 
                 element.AllGameBox.push(allGameBox);
-
+                console.log("Flag");
                 this.checkGameSlotPlacement(element);
 
                 this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].AllGameBox = [];
@@ -371,26 +388,40 @@ export class WorkbenchComponent implements OnInit {
   }
 
   checkGameSlotPlacement(allSlotBox: AllSlotBox){
+    console.log("Checking Game Slot Placement");
     var gameSlotDetails = allSlotBox.AllGameBox[0].AllBox[0];
     var gameVolunteerList = gameSlotDetails.GameVolunteerList;
+    console.log(allSlotBox);
+    console.log(gameSlotDetails);
 
     for(var i=0; i<gameVolunteerList.length; ++i){
       this.jsonVar.allSlots.forEach(slot=>{
-        slot.AllSlotBox.forEach(slotBox=>{
-          slotBox.AllGameBox[0].AllBox[0].GameVolunteerList.forEach(volunteer=>{
-            if(gameVolunteerList[i].VolunteerSeasonalId == volunteer.VolunteerSeasonalId){
-              //So the same volunteer has another game scheduled on the same day
-              if(allSlotBox.Location==slotBox.Location){
-                //It means the volunteer is in the same location. So he can easily go to the next game
-                //Okay
+        slot.AllSlotBox.forEach(slotBox=>{         
+          if(slotBox.AllGameBox.length>0 && slotBox.IsGameBox){            
+            slotBox.AllGameBox[0].AllBox[0].GameVolunteerList.forEach(volunteer=>{
+              if(gameVolunteerList[i].VolunteerSeasonalId == volunteer.VolunteerSeasonalId){
+                
+                //So the same volunteer has another game scheduled on the same day
+                if(allSlotBox.Location==slotBox.Location && allSlotBox.StartTime!=slotBox.StartTime){
+                  //It means the volunteer is in the same location. So he can easily go to the next game
+                  //Okay                  
+                  console.log("Both games of Volunteer are in same location");
+                  console.log(slot);
+                  console.log(slotBox);
+                }
+                else if(allSlotBox.Location!=slotBox.Location) {
+                  //Calculate time to move between both locations
+                  console.log("Games are in different locations");
+                  console.log(slot);
+                  console.log(slotBox);
+                  this.gameElement.nativeElement.style.background="red";
+                  this.calculateTravelTime(allSlotBox, gameSlotDetails);
+                
+                }
               }
-              else{
-                //Calculate time to move between both locations
-                this.calculateTravelTime(allSlotBox, gameSlotDetails);
-              
-              }
-            }
-          })
+            })
+          }
+
         })
       })
     }
@@ -398,8 +429,34 @@ export class WorkbenchComponent implements OnInit {
   }
 
   calculateTravelTime(allSlotBox : AllSlotBox, gameSlotDetails: AllBox){
-    let gameSlotStartTime = Date.parse(gameSlotDetails.StartTime);
+    //Caldulating Travel Time
+    console.log("Calculating Travel Time");
+    let gameSlotStartTime = moment(gameSlotDetails.StartTime, "HH:mm A");
+    let gameSlotEndTime = moment(gameSlotDetails.EndTime, "HH:mm A");
+
+    let timeSlotStartTime = moment(allSlotBox.StartTime, "HH:mm A");
+    let timeslotEndTime = moment(allSlotBox.EndTime, "HH:mm A").add(allSlotBox.Duration,"minutes");
+
+    if(gameSlotStartTime.isAfter(timeSlotStartTime)){
+      var tsEndTime = parseInt(timeslotEndTime.format("ms"));
+      var timeBwSlots = gameSlotStartTime.subtract(tsEndTime,"ms").format("hh:mm");
+    }
+
+    else{
+      var gsEndTime = parseInt(gameSlotEndTime.format("ms"));
+      var timeBwSlots = timeSlotStartTime.subtract(gsEndTime,"ms").format("hh:mm");
+    }
+
     console.log(gameSlotStartTime);
+
   }
+
+  // convertMinsToHrsMins(minutes) {
+  //   var h = Math.floor(minutes / 60);
+  //   var m = minutes % 60;
+  //   var hh = h < 10 ? '0' + h : h;
+  //   var mm = m < 10 ? '0' + m : m;
+  //   return hh + ':' + mm;
+  // }
 
 }

@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { TestComponent } from './test/test.component';
 import { WorkbenchComponent } from './workbench/workbench.component';
 import { DataService } from './data.service';
+import { MomentModule } from 'ngx-moment';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { DataService } from './data.service';
   imports: [
     BrowserModule,
     DragulaModule,
-    HttpModule
+    HttpModule,
+    MomentModule
   ],
   providers: [DataService, DragulaService],
   bootstrap: [AppComponent]
