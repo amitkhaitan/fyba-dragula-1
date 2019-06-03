@@ -348,10 +348,8 @@ export class WorkbenchComponent implements OnInit {
                 this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].AllGameBox = [];
                 this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].IsBlankBox = false;
                 this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].IsGameBox = false;
-
               
-              }
-             
+              }             
             }
           )
         }
@@ -406,22 +404,27 @@ export class WorkbenchComponent implements OnInit {
                   //It means the volunteer is in the same location. So he can easily go to the next game
                   //Okay                  
                   console.log("Both games of Volunteer are in same location");
+                  console.log(allSlotBox);
                   console.log(slot);
                   console.log(slotBox);
+                  //this.gameElement.nativeElement.style.background="rgb(41, 128, 185)";
+                  // allSlotBox.SlotColor = "#2980b9";
+                  // slotBox.SlotColor = "#2980b9";
                 }
                 else if(allSlotBox.Location!=slotBox.Location) {
                   //Calculate time to move between both locations
                   console.log("Games are in different locations");
+                  console.log(allSlotBox);
                   console.log(slot);
                   console.log(slotBox);
-                  this.gameElement.nativeElement.style.background="red";
-                  this.calculateTravelTime(allSlotBox, gameSlotDetails);
-                
+                  //this.gameElement.nativeElement.style.background="red";
+                  // allSlotBox.SlotColor = "red";
+                  // slotBox.SlotColor = "red";
+                  this.calculateTravelTime(allSlotBox, gameSlotDetails);                
                 }
               }
             })
           }
-
         })
       })
     }
