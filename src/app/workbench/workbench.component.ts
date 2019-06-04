@@ -35,7 +35,7 @@ export class WorkbenchComponent implements OnInit {
       .subscribe(
         (res) => {
           this.responseData = res;
-          this.jsonVar = this.responseData.CurrentPeriodSlot;          
+          this.jsonVar = this.responseData.CurrentPeriodSlot;
           console.log(this.jsonVar);
         }
       )
@@ -73,20 +73,20 @@ export class WorkbenchComponent implements OnInit {
           //Game Slot will only be accepted if its duration is equal to TimeSlot Duration         
           let sourceDuration = parseInt(source.getAttribute("duration"));
           let targetDuration = parseInt(target.getAttribute("duration"));
-          if(sourceDuration==targetDuration){           
+          if (sourceDuration == targetDuration) {
             return true
-          }         
+          }
         }
 
         else if (source.id == 'blankSlot' && target.id == 'timeSlotDelete') {
           return true
         }
 
-        else if (source.id == 'timeSlots' && target.id == 'blankSlot') {             
+        else if (source.id == 'timeSlots' && target.id == 'blankSlot') {
           return false;
         }
 
-        else if(target==null){
+        else if (target == null) {
           return false;
         }
 
@@ -118,28 +118,28 @@ export class WorkbenchComponent implements OnInit {
         console.log(el.innerHTML);
 
         if (source.id == 'freeGame' && target.id == 'blankSlot') {
-         this.freeGametoBlankSlot(name, el, target, source, sibling);
+          this.freeGametoBlankSlot(name, el, target, source, sibling);
         }
 
-        else if (source.id == 'timeSlots' && target.id == 'nullSlot') {         
+        else if (source.id == 'timeSlots' && target.id == 'nullSlot') {
           this.timeSlottoNullSlot(name, el, target, source, sibling);
         }
 
 
-        else if (source.id == 'blankSlot' && target.id == 'nullSlot') {         
+        else if (source.id == 'blankSlot' && target.id == 'nullSlot') {
           this.blankSlottoNullSlot(name, el, target, source, sibling);
         }
 
-        else if (source.id == 'gameSlot' && target.id == 'freeGame') {        
-          this.gameSlottoFreeGames(name, el, target, source, sibling);         
+        else if (source.id == 'gameSlot' && target.id == 'freeGame') {
+          this.gameSlottoFreeGames(name, el, target, source, sibling);
         }
 
-        else if (source.id == 'gameSlot' && target.id == 'blankSlot') {      
-          this.gameSlottoBlankSlot(name, el, target, source, sibling);         
+        else if (source.id == 'gameSlot' && target.id == 'blankSlot') {
+          this.gameSlottoBlankSlot(name, el, target, source, sibling);
         }
 
-        else if (source.id == 'blankSlot' && target.id == 'timeSlotDelete') {         
-          this.deleteBlankSlot(name, el, target, source, sibling);         
+        else if (source.id == 'blankSlot' && target.id == 'timeSlotDelete') {
+          this.deleteBlankSlot(name, el, target, source, sibling);
         }
       })
     );
@@ -157,16 +157,16 @@ export class WorkbenchComponent implements OnInit {
 
     this.jsonVar.allSlots.forEach(
       slot => {
-       
+
         if (slot.Heading == target.attributes.getNamedItem('location').value) {
           slot.AllSlotBox.forEach(
             element => {
-              
+
               if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
 
                 element.IsGameBox = true;
                 element.SlotColor = "#16a085";
-               
+
                 var allBox = new AllBox();
                 allBox.BackgroundColor = "#2980b9"
                 allBox.BoxColor = "#2980b9";
@@ -179,27 +179,25 @@ export class WorkbenchComponent implements OnInit {
                 allBox.StartTime = "06:00 PM";
                 allBox.TimeGroup = "10";
 
-                console.log("Flag");              
+                console.log("Flag");
 
 
-                this.jsonVar.FreeGames.forEach(freegame => {                 
+                this.jsonVar.FreeGames.forEach(freegame => {
                   if (freegame.Name == el.getAttribute("GameName")) {
                     allBox.GameVolunteerList = freegame.GameVolunteerList;
                   }
                 });
-            
+
                 let allGameBox = new AllGameBox();
                 allGameBox.AllBox = [];
-                allGameBox.AllBox[0] = allBox;                                                
+                allGameBox.AllBox[0] = allBox;
                 element.AllGameBox[0] = allGameBox;
 
-              
+                this.checkGameSlotPlacement(element);
 
-               this.checkGameSlotPlacement(element);
-               
-              
+
               }
-              
+
             }
           )
         }
@@ -224,9 +222,9 @@ export class WorkbenchComponent implements OnInit {
                 element.Duration = parseInt(source.attributes.getNamedItem('tsDuration').value);
                 element.Height = source.attributes.getNamedItem('tsHeight').value;
                 element.IsBlankBox = false;
-                element.SlotColor = "#16a085";             
+                element.SlotColor = "#16a085";
               }
-           
+
             }
           )
         }
@@ -252,9 +250,9 @@ export class WorkbenchComponent implements OnInit {
                 element.IsBlankBox = false;
                 element.IsGameBox = false;
                 element.SlotColor = "#16a085";
-                
+
               }
-              
+
             }
           )
         }
@@ -276,9 +274,9 @@ export class WorkbenchComponent implements OnInit {
                 element.IsBlankBox = true;
                 element.IsGameBox = false;
                 element.SlotColor = "";
-                
+
               }
-            
+
             }
           )
         }
@@ -309,18 +307,18 @@ export class WorkbenchComponent implements OnInit {
                 });
 
                 element.AllGameBox.splice(0, 1);
-             
-                
+
+
               }
-             
+
             }
           )
         }
       }
     )
-    
+
     //Removing the un-necesary div created by dragula at the top
-    let domElement : HTMLElement = this.gameElement.nativeElement;
+    let domElement: HTMLElement = this.gameElement.nativeElement;
     domElement.parentNode.removeChild(domElement);
     console.log(this.jsonVar.FreeGames);
 
@@ -334,18 +332,18 @@ export class WorkbenchComponent implements OnInit {
     console.log("Target");
     console.log("Target Id: " + target.id);
     console.log(target);
-    
+
 
     this.jsonVar.allSlots.forEach(
-      slot => {       
+      slot => {
         if (slot.Heading == target.attributes.getNamedItem('location').value) {
           slot.AllSlotBox.forEach(
-            element => {             
+            element => {
               if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
                 console.log(element);
                 element.IsBlankBox = false;
                 element.IsGameBox = true;
-                element.Duration = parseInt(source.attributes.getNamedItem('duration').value);               
+                element.Duration = parseInt(source.attributes.getNamedItem('duration').value);
                 let allSlotsIndex = parseInt(source.getAttribute('allSlotsIndex'));
                 let slotBoxIndex = parseInt(source.getAttribute('slotBoxIndex'));
 
@@ -355,14 +353,14 @@ export class WorkbenchComponent implements OnInit {
 
                 element.AllGameBox.push(allGameBox);
                 console.log("Flag");
-             
-                this.checkGameSlotPlacement(element);                
+
+                this.checkGameSlotPlacement(element);
 
                 this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].AllGameBox = [];
                 this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].IsBlankBox = false;
                 this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].IsGameBox = false;
-              
-              }             
+
+              }
             }
           )
         }
@@ -392,52 +390,60 @@ export class WorkbenchComponent implements OnInit {
     this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].Duration = 0;
 
     //Removing the un-necesary div created by dragula at the top
-    let domElement : HTMLElement = this.timeElement.nativeElement;
+    let domElement: HTMLElement = this.timeElement.nativeElement;
     domElement.parentNode.removeChild(domElement);
     // this.draggableElement.nativeElement.style.display = "none";
 
   }
 
-  checkGameSlotPlacement(allSlotBox: AllSlotBox){
+  checkGameSlotPlacement(allSlotBox: AllSlotBox) {
     console.log("Checking Game Slot Placement");
 
 
     var gameSlotDetails = allSlotBox.AllGameBox[0].AllBox[0];
     var gameVolunteerList = gameSlotDetails.GameVolunteerList;
+    console.log("------------");
+    console.log(allSlotBox.Location);
     console.log(allSlotBox);
     console.log(gameSlotDetails);
+    
 
-    for(var i=0; i<gameVolunteerList.length; ++i){
-      this.jsonVar.allSlots.forEach(slot=>{
-        slot.AllSlotBox.forEach(slotBox=>{         
-          if(slotBox.AllGameBox.length>0 && slotBox.IsGameBox){            
-            slotBox.AllGameBox[0].AllBox[0].GameVolunteerList.forEach(volunteer=>{
-              if(gameVolunteerList[i].VolunteerSeasonalId == volunteer.VolunteerSeasonalId){
-                
+    for (var i = 0; i < gameVolunteerList.length; ++i) {
+      this.jsonVar.allSlots.forEach(slot => {
+        slot.AllSlotBox.forEach(slotBox => {
+          if (slotBox.AllGameBox.length > 0 && slotBox.IsGameBox) {
+            slotBox.AllGameBox[0].AllBox[0].GameVolunteerList.forEach(volunteer => {
+              if (gameVolunteerList[i].VolunteerSeasonalId == volunteer.VolunteerSeasonalId) {
+
                 //So the same volunteer has another game scheduled on the same day
-                if(allSlotBox.Location==slotBox.Location && allSlotBox.StartTime!=slotBox.StartTime){
+                if (allSlotBox.Location == slotBox.Location && allSlotBox.StartTime != slotBox.StartTime) {
                   //It means the volunteer is in the same location. So he can easily go to the next game
-                  //Okay                  
-                  console.log("Both games of Volunteer are in same location");                
+                  //Okay        
+                  console.log("*****************");
+                  console.log("Same location");
+                  console.log(slotBox.Location);
                   console.log(slotBox);
-                  
+
                   allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9";
-                  slotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9";    
-                 
-                  
-                 
+                  slotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9";
+
+
                 }
-                else if(allSlotBox.Location!=slotBox.Location) {
+                else if (allSlotBox.Location != slotBox.Location) {
                   //Calculate time to move between both locations
-                  console.log("Games are in different locations");                  
+                  console.log("*****************");
+                  console.log("Different locations");
+                  console.log(slotBox.Location);
                   console.log(slotBox);
                   //this.gameElement.nativeElement.style.background="red";
-                  allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";                                 
-                  slotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";                 
-                  
+                  allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
+                  slotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
+
                   this.calculateTravelTime(allSlotBox, gameSlotDetails);
-               
-                  
+
+
+
+
                 }
               }
             })
@@ -446,28 +452,55 @@ export class WorkbenchComponent implements OnInit {
       })
     }
 
+
+
   }
 
-  calculateTravelTime(allSlotBox : AllSlotBox, gameSlotDetails: AllBox){
-    //Caldulating Travel Time
+  calculateTravelTime(allSlotBox: AllSlotBox, gameSlotDetails: AllBox) {
+    //Caldulating Travel Time  
     console.log("Calculating Travel Time");
+    console.log(gameSlotDetails);
+    console.log(allSlotBox);
+    
     let gameSlotStartTime = moment(gameSlotDetails.StartTime, "HH:mm A");
     let gameSlotEndTime = moment(gameSlotDetails.EndTime, "HH:mm A");
+    console.log("GameSlot Start Time: "+gameSlotStartTime.format("hh:mm"));
+    console.log("GameSlot End Time:"+gameSlotEndTime.format("hh:mm"));
 
     let timeSlotStartTime = moment(allSlotBox.StartTime, "HH:mm A");
-    let timeslotEndTime = moment(allSlotBox.EndTime, "HH:mm A").add(allSlotBox.Duration,"minutes");
+    let timeslotEndTime = moment(allSlotBox.StartTime, "HH:mm A").add(allSlotBox.Duration, "minutes");
 
-    if(gameSlotStartTime.isAfter(timeSlotStartTime)){
-      var tsEndTime = parseInt(timeslotEndTime.format("ms"));
-      var timeBwSlots = gameSlotStartTime.subtract(tsEndTime,"ms").format("hh:mm");
+    console.log("TimeSlot Start Time: "+timeSlotStartTime.format("hh:mm"));
+    console.log("TimeSlot End Time:"+timeslotEndTime.format("hh:mm"));
+
+    var error: boolean;
+
+    if (timeSlotStartTime.isSame(gameSlotStartTime)) {
+      console.log("--Both Start Times are same.");
+      error = true;  
+      //var timeBwSlots = gameSlotEndTime.subtract(tsEndTime, "ms").format("hh:mm");    
     }
 
-    else{
-      var gsEndTime = parseInt(gameSlotEndTime.format("ms"));
-      var timeBwSlots = timeSlotStartTime.subtract(gsEndTime,"ms").format("hh:mm");
+    else if(timeSlotStartTime.isBefore(gameSlotStartTime)){
+      console.log("--Time Slot before Game.");
+      var tsEndTime = parseInt(timeslotEndTime.format("hh"))*60+ parseInt(timeslotEndTime.format("mm"));     
+      var gsStartTime = parseInt(gameSlotStartTime.format("hh"))*60+ parseInt(gameSlotStartTime.format("mm"));
+     
+      console.log(tsEndTime);
+      console.log(gsStartTime);
+     
+      //var timeBwSlots = gameSlotStartTime.subtract(tsEndTime, "ms").format("hh:mm");
+      var timeBwSlots = (gsStartTime - tsEndTime)/60;
     }
 
-    //console.log(gameSlotStartTime);
+    else if(timeSlotStartTime.isAfter(gameSlotStartTime)) {
+      console.log("--Time Slot after Game.");
+      var tsStartTime = parseInt(timeSlotStartTime.format("hh"))*60+parseInt(timeSlotStartTime.format("mm"));
+      var gsEndTime = parseInt(gameSlotEndTime.format("hh"))*60+parseInt(gameSlotEndTime.format("mm"));
+      var timeBwSlots = (tsStartTime - gsEndTime)/60;
+    }
+
+    console.log(timeBwSlots);
 
   }
 
@@ -479,10 +512,10 @@ export class WorkbenchComponent implements OnInit {
   //   return hh + ':' + mm;
   // }
 
-  changeColour(){
+  changeColour() {
 
-    this.jsonVar.allSlots[1].AllSlotBox[18].AllGameBox[0].AllBox[0].BackgroundColor='red';
-    this.jsonVar.allSlots[2].AllSlotBox[18].AllGameBox[0].AllBox[0].BackgroundColor='red';
+    this.jsonVar.allSlots[1].AllSlotBox[18].AllGameBox[0].AllBox[0].BackgroundColor = 'red';
+    this.jsonVar.allSlots[2].AllSlotBox[18].AllGameBox[0].AllBox[0].BackgroundColor = 'red';
   }
 
 }
