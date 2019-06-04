@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { DragulaService } from 'ng2-dragula';
 import { DataService } from './../data.service';
-import { WorkBench, AllGameBox, AllBox, FreeGames, AllSlotBox, allSlots } from './workbench.model';
+import { CurrentPeriodSlot, AllGameBox, AllBox, FreeGames, AllSlotBox, allSlots } from '../models/workbench.model';
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
+import { RootModel } from '../models/root.model';
 
 @Component({
   selector: 'app-workbench',
@@ -13,7 +14,8 @@ import * as moment from 'moment';
 export class WorkbenchComponent implements OnInit {
   @ViewChild('timeElement') private timeElement: ElementRef;
   @ViewChild('gameElement') private gameElement: ElementRef;
-  jsonVar: WorkBench = null;
+  responseData: RootModel = null;
+  jsonVar: CurrentPeriodSlot = null;
   subs = new Subscription();
   slots = "slots";
 
@@ -31,7 +33,8 @@ export class WorkbenchComponent implements OnInit {
     this.dataService.getWorkbenchData()
       .subscribe(
         (res) => {
-          this.jsonVar = res;
+          this.responseData = res;
+          this.jsonVar = this.responseData.CurrentPeriodSlot;
           console.log(this.jsonVar);
         }
       )

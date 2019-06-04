@@ -1,6 +1,8 @@
 
-export class WorkBench{
+export class CurrentPeriodSlot{
     Timing: Timing;
+    Period:number;
+    TimeInterval:number;
     allSlots: Array<allSlots>;
     FreeGames: Array<FreeGames>;
     ResourceLine: Array<ResourceLine>;
@@ -78,6 +80,7 @@ export class AllGameBox{
 }
 
 export class AllBox {
+    BackgroundColor:string;
     BoxTop: string;
     BoxHeight: string;
     BoxColor: string;
@@ -101,9 +104,7 @@ export class AllBox {
         this.EndTime = '';
         this.Duration = null;
         this.Division = '';
-
     }
-
 }
 
 export class GameVolunteerList{

@@ -1,9 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { DragulaModule, DragulaService} from 'ng2-dragula';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
-import { TestComponent } from './test/test.component';
 import { WorkbenchComponent } from './workbench/workbench.component';
 import { DataService } from './data.service';
 import { MomentModule } from 'ngx-moment';
@@ -11,14 +10,13 @@ import { MomentModule } from 'ngx-moment';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    TestComponent,  
+    AppComponent, 
     WorkbenchComponent
   ],
   imports: [
     BrowserModule,
     DragulaModule,
-    HttpModule,
+    HttpClientModule,
     MomentModule
   ],
   providers: [DataService, DragulaService],
