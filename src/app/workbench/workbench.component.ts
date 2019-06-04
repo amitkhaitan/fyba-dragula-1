@@ -5,6 +5,7 @@ import { CurrentPeriodSlot, AllGameBox, AllBox, FreeGames, AllSlotBox, allSlots 
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
 import { RootModel } from '../models/root.model';
+import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 
 @Component({
   selector: 'app-workbench',
@@ -34,7 +35,7 @@ export class WorkbenchComponent implements OnInit {
       .subscribe(
         (res) => {
           this.responseData = res;
-          this.jsonVar = this.responseData.CurrentPeriodSlot;
+          this.jsonVar = this.responseData.CurrentPeriodSlot;          
           console.log(this.jsonVar);
         }
       )
@@ -153,17 +154,21 @@ export class WorkbenchComponent implements OnInit {
     console.log(el);
     console.log(el.getAttribute("GameName"));
 
+
     this.jsonVar.allSlots.forEach(
       slot => {
+       
         if (slot.Heading == target.attributes.getNamedItem('location').value) {
           slot.AllSlotBox.forEach(
             element => {
+              
               if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
 
                 element.IsGameBox = true;
                 element.SlotColor = "#16a085";
                
                 var allBox = new AllBox();
+                allBox.BackgroundColor = "#2980b9"
                 allBox.BoxColor = "#2980b9";
                 allBox.BoxHeight = element.Height;
                 allBox.BoxTop = "0px";
@@ -188,7 +193,10 @@ export class WorkbenchComponent implements OnInit {
                 allGameBox.AllBox[0] = allBox;                                                
                 element.AllGameBox[0] = allGameBox;
 
-                this.checkGameSlotPlacement(element);
+              
+
+               this.checkGameSlotPlacement(element);
+               
               
               }
               
@@ -326,12 +334,13 @@ export class WorkbenchComponent implements OnInit {
     console.log("Target");
     console.log("Target Id: " + target.id);
     console.log(target);
+    
 
     this.jsonVar.allSlots.forEach(
-      slot => {
+      slot => {       
         if (slot.Heading == target.attributes.getNamedItem('location').value) {
           slot.AllSlotBox.forEach(
-            element => {
+            element => {             
               if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
                 console.log(element);
                 element.IsBlankBox = false;
@@ -346,7 +355,8 @@ export class WorkbenchComponent implements OnInit {
 
                 element.AllGameBox.push(allGameBox);
                 console.log("Flag");
-                this.checkGameSlotPlacement(element);
+             
+                this.checkGameSlotPlacement(element);                
 
                 this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].AllGameBox = [];
                 this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].IsBlankBox = false;
@@ -390,6 +400,8 @@ export class WorkbenchComponent implements OnInit {
 
   checkGameSlotPlacement(allSlotBox: AllSlotBox){
     console.log("Checking Game Slot Placement");
+
+
     var gameSlotDetails = allSlotBox.AllGameBox[0].AllBox[0];
     var gameVolunteerList = gameSlotDetails.GameVolunteerList;
     console.log(allSlotBox);
@@ -406,24 +418,26 @@ export class WorkbenchComponent implements OnInit {
                 if(allSlotBox.Location==slotBox.Location && allSlotBox.StartTime!=slotBox.StartTime){
                   //It means the volunteer is in the same location. So he can easily go to the next game
                   //Okay                  
-                  console.log("Both games of Volunteer are in same location");
-                  console.log(allSlotBox);
-                  console.log(slot);
+                  console.log("Both games of Volunteer are in same location");                
                   console.log(slotBox);
-                  //this.gameElement.nativeElement.style.background="rgb(41, 128, 185)";
-                  // allSlotBox.SlotColor = "#2980b9";
-                  // slotBox.SlotColor = "#2980b9";
+                  
+                  allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9";
+                  slotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9";    
+                 
+                  
+                 
                 }
                 else if(allSlotBox.Location!=slotBox.Location) {
                   //Calculate time to move between both locations
-                  console.log("Games are in different locations");
-                  console.log(allSlotBox);
-                  console.log(slot);
+                  console.log("Games are in different locations");                  
                   console.log(slotBox);
                   //this.gameElement.nativeElement.style.background="red";
-                  // allSlotBox.SlotColor = "red";
-                  // slotBox.SlotColor = "red";
-                  this.calculateTravelTime(allSlotBox, gameSlotDetails);                
+                  allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";                                 
+                  slotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";                 
+                  
+                  this.calculateTravelTime(allSlotBox, gameSlotDetails);
+               
+                  
                 }
               }
             })
@@ -453,7 +467,7 @@ export class WorkbenchComponent implements OnInit {
       var timeBwSlots = timeSlotStartTime.subtract(gsEndTime,"ms").format("hh:mm");
     }
 
-    console.log(gameSlotStartTime);
+    //console.log(gameSlotStartTime);
 
   }
 
@@ -464,5 +478,11 @@ export class WorkbenchComponent implements OnInit {
   //   var mm = m < 10 ? '0' + m : m;
   //   return hh + ':' + mm;
   // }
+
+  changeColour(){
+
+    this.jsonVar.allSlots[1].AllSlotBox[18].AllGameBox[0].AllBox[0].BackgroundColor='red';
+    this.jsonVar.allSlots[2].AllSlotBox[18].AllGameBox[0].AllBox[0].BackgroundColor='red';
+  }
 
 }

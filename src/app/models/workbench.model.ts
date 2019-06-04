@@ -47,6 +47,7 @@ export class AllSlotBox{
     Height:string;
     Top:string;
     AllGameBox: Array<AllGameBox>;
+    BackgroundColor:string;
     Slot_1: string;
     SlotId:string;
     StartTime:string;
