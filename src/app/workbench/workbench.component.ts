@@ -5,7 +5,6 @@ import { CurrentPeriodSlot, AllGameBox, AllBox, FreeGames, AllSlotBox, allSlots 
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
 import { RootModel } from '../models/root.model';
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 
 @Component({
   selector: 'app-workbench',
@@ -35,11 +34,12 @@ export class WorkbenchComponent implements OnInit {
       .subscribe(
         (res) => {
           this.responseData = res;
+          console.log(this.responseData);
+          //console.log(JSON.stringify(this.responseData));
           this.jsonVar = this.responseData.CurrentPeriodSlot;
           console.log(this.jsonVar);
         }
       )
-
   }
 
   constructor(public dataService: DataService
@@ -146,6 +146,10 @@ export class WorkbenchComponent implements OnInit {
 
   }
 
+  get miniDatabase(){
+    return this.responseData.MiniDatabase;
+  }
+
   freeGametoBlankSlot(name, el, target, source, sibling) {
     console.log("Free Game To Blank Slot");
     console.log("Target");
@@ -153,8 +157,7 @@ export class WorkbenchComponent implements OnInit {
     console.log(target);
     console.log(el);
     console.log(el.getAttribute("GameName"));
-
-
+    
     this.jsonVar.allSlots.forEach(
       slot => {
 
@@ -174,9 +177,9 @@ export class WorkbenchComponent implements OnInit {
                 allBox.BoxTop = "0px";
                 allBox.BoxValue = el.getAttribute("GameName");
                 allBox.Division = "4";
-                allBox.Duration = target.getAttribute("duration");
-                allBox.EndTime = "06:55 PM";
-                allBox.StartTime = "06:00 PM";
+                allBox.Duration = target.getAttribute("duration");                
+                allBox.StartTime = target.attributes.getNamedItem('starttime').value;                              
+                allBox.EndTime =  moment(allBox.StartTime,"hh:mm A").add(allBox.Duration,"minutes").format("hh:mm A");               
                 allBox.TimeGroup = "10";
 
                 console.log("Flag");
@@ -191,7 +194,7 @@ export class WorkbenchComponent implements OnInit {
                 let allGameBox = new AllGameBox();
                 allGameBox.AllBox = [];
                 allGameBox.AllBox[0] = allBox;
-                element.AllGameBox[0] = allGameBox;
+                element.AllGameBox[0] = allGameBox;                
 
                 this.checkGameSlotPlacement(element);
 
@@ -223,6 +226,9 @@ export class WorkbenchComponent implements OnInit {
                 element.Height = source.attributes.getNamedItem('tsHeight').value;
                 element.IsBlankBox = false;
                 element.SlotColor = "#16a085";
+
+
+
               }
 
             }
@@ -354,12 +360,16 @@ export class WorkbenchComponent implements OnInit {
                 element.AllGameBox.push(allGameBox);
                 console.log("Flag");
 
-                this.checkGameSlotPlacement(element);
+                console.log(this.jsonVar.allSlots);                
 
                 this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].AllGameBox = [];
                 this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].IsBlankBox = false;
                 this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].IsGameBox = false;
 
+
+                this.checkGameSlotPlacement(element);
+
+              
               }
             }
           )
@@ -399,13 +409,13 @@ export class WorkbenchComponent implements OnInit {
   checkGameSlotPlacement(allSlotBox: AllSlotBox) {
     console.log("Checking Game Slot Placement");
 
-
-    var gameSlotDetails = allSlotBox.AllGameBox[0].AllBox[0];
+    var gameSlotDetails = allSlotBox.AllGameBox[0].AllBox[0];   
     var gameVolunteerList = gameSlotDetails.GameVolunteerList;
     console.log("------------");
     console.log(allSlotBox.Location);
+    console.log(allSlotBox.LocationId);
     console.log(allSlotBox);
-    console.log(gameSlotDetails);
+   
     
 
     for (var i = 0; i < gameVolunteerList.length; ++i) {
@@ -421,6 +431,7 @@ export class WorkbenchComponent implements OnInit {
                   //Okay        
                   console.log("*****************");
                   console.log("Same location");
+                  console.log(allSlotBox.Location);
                   console.log(slotBox.Location);
                   console.log(slotBox);
 
@@ -429,20 +440,17 @@ export class WorkbenchComponent implements OnInit {
 
 
                 }
-                else if (allSlotBox.Location != slotBox.Location) {
+                else if ((allSlotBox.Location != slotBox.Location) && slotBox.AllGameBox.length>0) {
                   //Calculate time to move between both locations
                   console.log("*****************");
                   console.log("Different locations");
                   console.log(slotBox.Location);
                   console.log(slotBox);
-                  //this.gameElement.nativeElement.style.background="red";
-                  allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
-                  slotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
+                  console.log("Slotbox Length: "+slotBox.AllGameBox.length);
+                  console.log(slotBox.AllGameBox[0].AllBox[0]);
+                  //this.gameElement.nativeElement.style.background="red";                 
 
-                  this.calculateTravelTime(allSlotBox, gameSlotDetails);
-
-
-
+                  this.calculateTravelTime(allSlotBox, gameSlotDetails,slotBox);                
 
                 }
               }
@@ -456,14 +464,20 @@ export class WorkbenchComponent implements OnInit {
 
   }
 
-  calculateTravelTime(allSlotBox: AllSlotBox, gameSlotDetails: AllBox) {
+  calculateTravelTime(allSlotBox: AllSlotBox, gameSlotDetails: AllBox,slotBox: AllSlotBox) {
     //Caldulating Travel Time  
     console.log("Calculating Travel Time");
-    console.log(gameSlotDetails);
+
+    console.log("Time Slot Box:");
+    console.log(allSlotBox.LocationId);
     console.log(allSlotBox);
+    console.log("Game Slot Box:");
+    console.log(slotBox.LocationId);
+    console.log(slotBox);
+
     
-    let gameSlotStartTime = moment(gameSlotDetails.StartTime, "HH:mm A");
-    let gameSlotEndTime = moment(gameSlotDetails.EndTime, "HH:mm A");
+    let gameSlotStartTime = moment(slotBox.AllGameBox[0].AllBox[0].StartTime, "HH:mm A");
+    let gameSlotEndTime = moment(slotBox.AllGameBox[0].AllBox[0].EndTime, "HH:mm A");
     console.log("GameSlot Start Time: "+gameSlotStartTime.format("hh:mm"));
     console.log("GameSlot End Time:"+gameSlotEndTime.format("hh:mm"));
 
@@ -477,8 +491,8 @@ export class WorkbenchComponent implements OnInit {
 
     if (timeSlotStartTime.isSame(gameSlotStartTime)) {
       console.log("--Both Start Times are same.");
-      error = true;  
-      //var timeBwSlots = gameSlotEndTime.subtract(tsEndTime, "ms").format("hh:mm");    
+      allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
+      slotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
     }
 
     else if(timeSlotStartTime.isBefore(gameSlotStartTime)){
@@ -490,16 +504,55 @@ export class WorkbenchComponent implements OnInit {
       console.log(gsStartTime);
      
       //var timeBwSlots = gameSlotStartTime.subtract(tsEndTime, "ms").format("hh:mm");
-      var timeBwSlots = (gsStartTime - tsEndTime)/60;
+      var timeBwSlots = gsStartTime - tsEndTime;
+
+
+      for(var i=0;i<this.jsonVar.TravelMatrix.length;++i){
+        if(this.jsonVar.TravelMatrix[i].FromFacilityId==allSlotBox.LocationId && this.jsonVar.TravelMatrix[i].ToFacilityId==slotBox.LocationId){
+          if(this.jsonVar.TravelMatrix[i].Duration<timeBwSlots){
+            //No Error
+            console.log(this.jsonVar.TravelMatrix[i].Duration);
+            allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9";
+            slotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9";
+          }
+          else{
+            //Error
+            console.log(this.jsonVar.TravelMatrix[i].Duration);
+            allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
+            slotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
+          }
+        }
+      }
+  
+
     }
 
     else if(timeSlotStartTime.isAfter(gameSlotStartTime)) {
       console.log("--Time Slot after Game.");
       var tsStartTime = parseInt(timeSlotStartTime.format("hh"))*60+parseInt(timeSlotStartTime.format("mm"));
       var gsEndTime = parseInt(gameSlotEndTime.format("hh"))*60+parseInt(gameSlotEndTime.format("mm"));
-      var timeBwSlots = (tsStartTime - gsEndTime)/60;
+      var timeBwSlots = tsStartTime - gsEndTime;
+
+      for(var i=0;i<this.jsonVar.TravelMatrix.length;++i){
+        if(this.jsonVar.TravelMatrix[i].FromFacilityId==slotBox.LocationId && this.jsonVar.TravelMatrix[i].ToFacilityId==allSlotBox.LocationId){
+          if(this.jsonVar.TravelMatrix[i].Duration<timeBwSlots){
+            //No Error
+            console.log(this.jsonVar.TravelMatrix[i].Duration);
+            allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9";
+            slotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9";
+          }
+          else{
+            //Error
+            console.log(this.jsonVar.TravelMatrix[i].Duration);
+            allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
+            slotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
+          }
+        }
+      }
+
     }
 
+   
     console.log(timeBwSlots);
 
   }
@@ -512,10 +565,6 @@ export class WorkbenchComponent implements OnInit {
   //   return hh + ':' + mm;
   // }
 
-  changeColour() {
 
-    this.jsonVar.allSlots[1].AllSlotBox[18].AllGameBox[0].AllBox[0].BackgroundColor = 'red';
-    this.jsonVar.allSlots[2].AllSlotBox[18].AllGameBox[0].AllBox[0].BackgroundColor = 'red';
-  }
 
 }

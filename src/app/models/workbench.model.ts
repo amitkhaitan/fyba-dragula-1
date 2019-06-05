@@ -46,6 +46,7 @@ export class AllSlotBox{
     IsBlankBox:boolean;
     Height:string;
     Top:string;
+    LocationId:number;
     AllGameBox: Array<AllGameBox>;
     BackgroundColor:string;
     Slot_1: string;
