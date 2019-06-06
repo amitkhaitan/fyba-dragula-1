@@ -1,0 +1,12 @@
+.modal-header{
+    padding: 14px;
+    border-bottom: 1px solid #e5e5e5;
+    background: royalblue;
+    border-radius: 8px;
+    color: white;
+}
+
+
+.modal-body{
+    font-size: 15px;
+}

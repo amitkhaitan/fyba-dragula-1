@@ -283,3 +283,7 @@ button:hover {
     display: block;
   }
 }
+
+.modal-content{
+  border-radius: 10px;
+}

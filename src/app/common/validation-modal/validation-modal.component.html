@@ -1,0 +1,13 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">Add Time Slot</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  Do you want to add this time slot to entire season?
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" (click)="yes()">Yes</button>
+  <button type="button" class="btn btn-danger" (click)="no()">No</button>
+</div>

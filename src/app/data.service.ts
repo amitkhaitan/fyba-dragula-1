@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable()
 export class DataService {
   headerOptions;
   postRequestOptions;
+  timeSlotSubject = new Subject<boolean>();
 
   constructor(public http: HttpClient) {
     this.headerOptions = new HttpHeaders({ 'Content-Type': 'application/json' });
