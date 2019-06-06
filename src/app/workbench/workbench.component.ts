@@ -549,9 +549,7 @@ export class WorkbenchComponent implements OnInit {
           }
         }
       }
-
     }
-
    
     console.log(timeBwSlots);
 
@@ -564,7 +562,4 @@ export class WorkbenchComponent implements OnInit {
   //   var mm = m < 10 ? '0' + m : m;
   //   return hh + ':' + mm;
   // }
-
-
-
 }

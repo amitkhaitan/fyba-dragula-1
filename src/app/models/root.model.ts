@@ -1,15 +1,11 @@
-import { CurrentPeriodSlot } from './workbench.model';
+import { CurrentPeriodSlot, AllSlotBox } from './workbench.model';
+
 
 export interface RootModel{
     CurrentPeriodSlot: CurrentPeriodSlot;
-    DeletedTimeSlot: Array<DeletedTimeSlot>;
+    DeletedTimeSlot: Array<AllSlotBox>;
     FYBADataFromBackEnd:FYBADataFromBackEnd;
     MiniDatabase:Array<CurrentPeriodSlot>;
-}
-
-
-export interface DeletedTimeSlot{
-
 }
 
 export interface FYBADataFromBackEnd{
