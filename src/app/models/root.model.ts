@@ -1,7 +1,13 @@
 import { CurrentPeriodSlot, AllSlotBox, allSlots } from './workbench.model';
 
+export interface BlackOuts{
+    Date:string;
+    StartTime:string;
+    StopTime:string;
+}
 
 export interface RootModel{
+    BlackOuts: Array<BlackOuts>
     CurrentPeriodSlot: CurrentPeriodSlot;
     DeletedTimeSlot: Array<AllSlotBox>;
     FYBADataFromBackEnd:FYBADataFromBackEnd;

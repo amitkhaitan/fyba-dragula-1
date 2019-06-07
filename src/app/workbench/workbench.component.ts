@@ -220,33 +220,6 @@ export class WorkbenchComponent implements OnInit {
     console.log("Target Id: " + target.id);
     console.log(target);
 
-    this.modalRef = this.modalService.show(ValidationModalComponent);
-
-    this.dataService.timeSlotSubject.subscribe((data) => {
-      console.log(data);
-
-      if (data) {
-        //Apply to All 
-        this.applyTimeSlottoAll(name, el, target, source, sibling);
-        this.jsonVar.allSlots.forEach(
-          slot => {
-            if (slot.Heading == target.attributes.getNamedItem('location').value) {
-              slot.AllSlotBox.forEach(
-                element => {
-                  if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
-                    element.Duration = parseInt(source.attributes.getNamedItem('tsDuration').value);
-                    element.Height = source.attributes.getNamedItem('tsHeight').value;
-                    element.IsBlankBox = false;
-                    element.SlotColor = "#16a085";
-                  }
-                }
-              )
-            }
-          }
-        )
-
-      }
-      else if (!data) {
         //Don't Apply to All
         this.jsonVar.allSlots.forEach(
           slot => {
@@ -264,9 +237,35 @@ export class WorkbenchComponent implements OnInit {
             }
           }
         )
-    
-      }
-    })
+
+   
+
+    // this.dataService.timeSlotSubject.subscribe((data) => {
+    //   console.log(data);
+
+      // if (data) {
+      //   //Apply to All 
+      //   this.applyTimeSlottoAll(name, el, target, source, sibling);
+      //   this.jsonVar.allSlots.forEach(
+      //     slot => {
+      //       if (slot.Heading == target.attributes.getNamedItem('location').value) {
+      //         slot.AllSlotBox.forEach(
+      //           element => {
+      //             if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
+      //               element.Duration = parseInt(source.attributes.getNamedItem('tsDuration').value);
+      //               element.Height = source.attributes.getNamedItem('tsHeight').value;
+      //               element.IsBlankBox = false;
+      //               element.SlotColor = "#16a085";
+      //             }
+      //           }
+      //         )
+      //       }
+      //     }
+      //   )
+
+      // }
+     
+    //})
   }
   
 
@@ -329,6 +328,7 @@ export class WorkbenchComponent implements OnInit {
                 element.IsBlankBox = false;
                 element.IsGameBox = false;
                 element.SlotColor = "#16a085";
+                element.SeriesId = seriesid;
               }
             }
           )
@@ -351,12 +351,92 @@ export class WorkbenchComponent implements OnInit {
                 element.IsBlankBox = true;
                 element.IsGameBox = false;
                 element.SlotColor = "";
+                element.SeriesId = null;
               }
             }
           )
         }
       }
     )
+
+
+    var seriesid = source.getAttribute('seriesid')
+
+    if(source.getAttribute('seriesid')==null){
+      console.log("Series id is null");
+    }
+
+    else{
+      console.log("Series Id is not null");
+      this.modalRef = this.modalService.show(ValidationModalComponent);
+
+      this.dataService.timeSlotSubject.subscribe((data) =>{
+        console.log(data);
+        if(data){
+          //Apply to All
+          this.miniDatabase.forEach(
+            (db)=>{
+              db.Slots.forEach(
+                (slot)=>{                
+                  slot.allSlots.forEach((allSlot)=>{
+                    if(allSlot.Heading==target.attributes.getNamedItem('location').value){
+                      //console.log(allSlot);
+                      allSlot.AllSlotBox.forEach((slotBox)=>{
+                        // console.log(seriesid);
+                        // console.log(slotBox.SeriesId);
+                        if(slotBox.StartTime == source.attributes.getNamedItem('starttime').value){
+                          console.log(slotBox);
+                          console.log(allSlot);
+                          slotBox.Duration = parseInt(source.attributes.getNamedItem('duration').value);
+                          slotBox.Height = source.attributes.getNamedItem('boxheight').value;
+                          slotBox.IsBlankBox = false;
+                          slotBox.IsGameBox = false;
+                          slotBox.SlotColor = "#16a085";
+                          slotBox.SeriesId = seriesid;
+                        }
+                      })
+                    }              
+                  })
+                }
+              )
+            }
+          )
+        }     
+        
+        setTimeout(() => {
+          console.log(this.jsonVar.allSlots);
+        }, 500)
+    
+        this.miniDatabase.forEach(
+          (db)=>{
+            db.Slots.forEach(
+              (slot)=>{                
+                slot.allSlots.forEach((allSlot)=>{
+                  if(allSlot.Heading==source.attributes.getNamedItem('location').value){
+                    
+                    allSlot.AllSlotBox.forEach((slotBox)=>{
+                      if(slotBox.SeriesId == seriesid && slotBox.StartTime == source.attributes.getNamedItem('starttime').value){
+                        console.log(slotBox);
+                        console.log(allSlot);
+                        slotBox.Duration = 0;
+                        slotBox.Height = "20px";
+                        slotBox.IsBlankBox = true;
+                        slotBox.IsGameBox = false;
+                        slotBox.SlotColor = "";
+                        slotBox.SeriesId = null;
+                      }
+                    })
+                  }              
+                })
+              }
+            )
+          }
+        )
+        
+      });
+    }
+
+    
 
 
 

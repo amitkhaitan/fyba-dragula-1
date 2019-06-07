@@ -51,6 +51,7 @@ export class AllSlotBox{
     BackgroundColor:string;
     Slot_1: string;
     SlotId:string;
+    SeriesId:number;
     StartTime:string;
     EndTime:string;
     Location:string;
