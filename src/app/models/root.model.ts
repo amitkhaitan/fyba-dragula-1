@@ -4,6 +4,8 @@ export interface BlackOuts{
     Date:string;
     StartTime:string;
     StopTime:string;
+    FacilityId:number;
+    FacilityName:string;
 }
 
 export interface RootModel{

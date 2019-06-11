@@ -14,6 +14,7 @@ export class CurrentPeriodSlot{
 
 export class Timing{
     Heading:string;
+    FacilityCurrentPeriodDate:string;
     TimeValue: Array<TimeValue>;
 
     constructor(){
@@ -57,6 +58,8 @@ export class AllSlotBox{
     Location:string;
     Duration:number;
     SlotColor:string;
+    TimeSlotDate:string;
+    TimeSlotId:number;
 
     constructor(){
         this.IsGameBox = null;
@@ -70,6 +73,8 @@ export class AllSlotBox{
         this.Location = '';
         this.Duration = null;
         this.SlotColor = '';
+        this.TimeSlotDate = '';
+        this.TimeSlotId = null;
     }
 }
 

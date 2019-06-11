@@ -4,6 +4,7 @@ import { Observable, Subject } from 'rxjs';
 
 @Injectable()
 export class DataService {
+ 
   headerOptions;
   postRequestOptions;
   timeSlotSubject = new Subject<boolean>();
@@ -20,22 +21,12 @@ export class DataService {
 
 
   getWorkbenchData(): Observable<any> {
-  //   let headers = new HttpHeaders({
-  //     'Content-Type': 'application/json',
-  //     'responseType': 'json'
-  // });
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'responseType': 'json'
+  });
 
-//   let httpHeaders = new HttpHeaders();
-//   httpHeaders.set('Content-Type', 'application/json');    
-
-// let options = {headers:httpHeaders};
-
-
-// let headers={
-//   headers: new HttpHeaders({
-//       'Content-Type': 'application/json'
-//   })
-// }
+  let options = {headers:headers};
     
     var body = JSON.stringify({
       SeasonId: '17',
@@ -44,7 +35,18 @@ export class DataService {
       LoginUserId: '7113'
     });
     console.log(body);
-    return this.http.get('http://38.109.219.208:2019/api/GameWorkbench');
+    return this.http.post('http://38.109.219.208:2019/api/GameWorkbench',body,this.postRequestOptions);
+  }
+
+  togglePeriod(timePeriodNumber):Observable<any> {
+    var body = JSON.stringify({
+      SeasonId: '17',
+      Period: timePeriodNumber,
+      GameScheduleId: '1',
+      LoginUserId: '7113'
+    });
+    console.log(body);
+    return this.http.post('http://38.109.219.208:2019/api/GameWorkbench',body,this.postRequestOptions);
   }
 
 

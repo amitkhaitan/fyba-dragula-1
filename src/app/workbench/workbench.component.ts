@@ -21,8 +21,10 @@ export class WorkbenchComponent implements OnInit {
   subs = new Subscription();
   slots = "slots";
   modalRef: BsModalRef;
+  fetchingData:boolean;
 
   ngOnInit() {
+    this.fetchingData=true;
 
     // var startingTime = "8:30 PM";
     // var endTime = "9:30 AM";
@@ -41,6 +43,7 @@ export class WorkbenchComponent implements OnInit {
           //console.log(JSON.stringify(this.responseData));
           this.jsonVar = this.responseData.CurrentPeriodSlot;
           console.log(this.jsonVar);
+          this.fetchingData=false;
         }
       )
   }
@@ -150,8 +153,14 @@ export class WorkbenchComponent implements OnInit {
 
   }
 
+  
   get miniDatabase() {
     return this.responseData.MiniDatabase;
+    //this.miniDatabase[0].Slots.length
+  }
+
+  get blackouts(){
+    return this.responseData.BlackOuts;
   }
 
   freeGametoBlankSlot(name, el, target, source, sibling) {
@@ -374,25 +383,47 @@ export class WorkbenchComponent implements OnInit {
         console.log(data);
         if(data){
           //Apply to All
+          //Changing the location and start-time all the time slots in the series 
           this.miniDatabase.forEach(
             (db)=>{
               db.Slots.forEach(
                 (slot)=>{                
                   slot.allSlots.forEach((allSlot)=>{
-                    if(allSlot.Heading==target.attributes.getNamedItem('location').value){
-                      //console.log(allSlot);
+                    if(allSlot.Heading==target.attributes.getNamedItem('location').value){                      
                       allSlot.AllSlotBox.forEach((slotBox)=>{
-                        // console.log(seriesid);
-                        // console.log(slotBox.SeriesId);
+
+                        for(let i=0; i<this.blackouts.length;++i){
+                          if(allSlot.FacilityCurrentPeriodDate == this.blackouts[i].Date){
+                            console.log('Blackout DateMatches');
+                            if(target.attributes.getNamedItem('location').value==this.blackouts[i].FacilityName){
+                              console.log('Location Matches');
+                              let slotStartTime = moment(slotBox.StartTime, "HH:mm A");
+                              let blackoutStartTime =  moment(this.blackouts[i].StartTime, "HH:mm A");
+                              let blackoutEndTime = moment(this.blackouts[i].StopTime, "HH:mm A");
+                              if(slotStartTime.isSameOrAfter(blackoutStartTime) && slotStartTime.isBefore(blackoutEndTime)){
+                                console.log("It is a blackout");
+                                
+                              }
+                            }
+                          }
+
+                        }
+
                         if(slotBox.StartTime == source.attributes.getNamedItem('starttime').value){
-                          console.log(slotBox);
-                          console.log(allSlot);
+                          // console.log(slotBox);
+                          // console.log(allSlot);
                           slotBox.Duration = parseInt(source.attributes.getNamedItem('duration').value);
                           slotBox.Height = source.attributes.getNamedItem('boxheight').value;
                           slotBox.IsBlankBox = false;
                           slotBox.IsGameBox = false;
                           slotBox.SlotColor = "#16a085";
                           slotBox.SeriesId = seriesid;
+
+
+                          
+                          
+
+
                         }
                       })
                     }              
@@ -407,7 +438,8 @@ export class WorkbenchComponent implements OnInit {
           console.log(this.jsonVar.allSlots);
         }, 500)
     
-        this.miniDatabase.forEach(
+        //Changing all the timeslots which match with the timeslot being dragged and setting it to null-slot
+        this.miniDatabase.forEach(    
           (db)=>{
             db.Slots.forEach(
               (slot)=>{                
@@ -424,6 +456,9 @@ export class WorkbenchComponent implements OnInit {
                         slotBox.IsGameBox = false;
                         slotBox.SlotColor = "";
                         slotBox.SeriesId = null;
+
+
+                       
                       }
                     })
                   }              
@@ -435,11 +470,6 @@ export class WorkbenchComponent implements OnInit {
         
       });
     }
-
-    
-
-
-
   }
 
   gameSlottoFreeGames(name, el, target, source, sibling) {
@@ -699,6 +729,20 @@ export class WorkbenchComponent implements OnInit {
 
     console.log(timeBwSlots);
 
+  }
+
+  togglePeriod(timePeriodNumber){
+    this.fetchingData=true;
+    this.dataService.togglePeriod(timePeriodNumber).subscribe(
+      (res) => {
+        this.responseData = res;
+        console.log(this.responseData);
+        //console.log(JSON.stringify(this.responseData));
+        this.jsonVar = this.responseData.CurrentPeriodSlot;
+        console.log(this.jsonVar);
+        this.fetchingData=false;
+      }
+    );
   }
 
   // convertMinsToHrsMins(minutes) {

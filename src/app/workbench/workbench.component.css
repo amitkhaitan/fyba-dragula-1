@@ -198,3 +198,16 @@ body {
 		opacity:1;
 
 	}
+
+	.btn-group{
+		left: 50%;
+		margin: auto;
+	}
+
+	.Class100 {
+		height:100%;
+	}
+
+	.clearfix{
+		clear:both;
+		}
