@@ -6,10 +6,12 @@
     </button>
     <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu"
         role="menu" aria-labelledby="button-basic">
-      <li *ngFor="let dummy of ' '.repeat(10).split(''), let x = index" 
-          role="menuitem" (click)="togglePeriod(x+1)">
-        <a class="dropdown-item">{{x+1}}</a></li>
-      <li class="divider dropdown-divider"></li>
+      <li *ngFor="let dummy of ' '.repeat(10).split(''), let x = index"           
+          role="menuitem" >
+        <a *ngIf="FYBADataFromBackEnd.Period!= x+1" (click)="togglePeriod(x+1)" class="dropdown-item">{{x+1}}</a>
+        <a *ngIf="FYBADataFromBackEnd.Period== x+1" class="dropdown-item active">{{x+1}}</a>
+      </li>
+      <!-- <li class="divider dropdown-divider"></li> -->
    
     </ul>
     <div style="clear:both;"></div>

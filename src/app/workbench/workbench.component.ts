@@ -163,6 +163,10 @@ export class WorkbenchComponent implements OnInit {
     return this.responseData.BlackOuts;
   }
 
+  get FYBADataFromBackEnd(){
+    return this.responseData.FYBADataFromBackEnd;
+  }
+
   freeGametoBlankSlot(name, el, target, source, sibling) {
     console.log("Free Game To Blank Slot");
     console.log("Target");
@@ -642,24 +646,7 @@ export class WorkbenchComponent implements OnInit {
                 (slot)=>{                
                   slot.allSlots.forEach((allSlot)=>{
                     if(allSlot.Heading==target.attributes.getNamedItem('location').value){                      
-                      allSlot.AllSlotBox.forEach((slotBox)=>{
-
-                        for(let i=0; i<this.blackouts.length;++i){
-                          if(allSlot.FacilityCurrentPeriodDate == this.blackouts[i].Date){
-                            console.log('Blackout DateMatches');
-                            if(target.attributes.getNamedItem('location').value==this.blackouts[i].FacilityName){
-                              console.log('Location Matches');
-                              let slotStartTime = moment(slotBox.StartTime, "HH:mm A");
-                              let blackoutStartTime =  moment(this.blackouts[i].StartTime, "HH:mm A");
-                              let blackoutEndTime = moment(this.blackouts[i].EndTime, "HH:mm A");
-                              if(slotStartTime.isSameOrAfter(blackoutStartTime) && slotStartTime.isBefore(blackoutEndTime)){
-                                console.log("It is a blackout");
-                                
-                              }
-                            }
-                          }
-
-                        }
+                      allSlot.AllSlotBox.forEach((slotBox)=>{                     
 
                         if(slotBox.StartTime == source.attributes.getNamedItem('starttime').value){
                           // console.log(slotBox);
@@ -697,6 +684,7 @@ export class WorkbenchComponent implements OnInit {
                     
                     allSlot.AllSlotBox.forEach((slotBox)=>{
                       if(slotBox.SeriesId == seriesid && slotBox.StartTime == source.attributes.getNamedItem('starttime').value){
+                        console.log(seriesid);
                         console.log(slotBox);
                         console.log(allSlot);
                         slotBox.Duration = 0;
@@ -732,6 +720,7 @@ export class WorkbenchComponent implements OnInit {
           slot.AllSlotBox.forEach(
             element => {
               if (element.StartTime == source.attributes.getNamedItem('starttime').value) {
+                console.log(element);
 
                 this.jsonVar.FreeGames.push({
                   Division: element.AllGameBox[0].AllBox[0].Division,
@@ -741,6 +730,7 @@ export class WorkbenchComponent implements OnInit {
                 });
 
                 element.AllGameBox.splice(0, 1);
+                element.IsGameBox=false;
 
 
               }
@@ -760,7 +750,7 @@ export class WorkbenchComponent implements OnInit {
   }
 
   gameSlottoBlankSlot(name, el, target, source, sibling) {
-    this.fetchingData=true;
+    //this.fetchingData=true;
     console.log("Game Slot to Blank Slot");
     console.log("Source");
     console.log(source);
@@ -785,6 +775,11 @@ export class WorkbenchComponent implements OnInit {
                 let allGameBox = new AllGameBox();
                 allGameBox.TimeGroup = this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].AllGameBox[0].TimeGroup;
                 allGameBox.AllBox = this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].AllGameBox[0].AllBox;
+                allGameBox.AllBox[0].StartTime = element.StartTime;
+
+                allGameBox.AllBox[0].EndTime = moment(element.StartTime, "HH:mm A").add(element.Duration, "minutes").format("hh:mm A");
+                
+                console.log(allGameBox);
 
                 element.AllGameBox.push(allGameBox);
                 console.log("Flag");
@@ -808,7 +803,7 @@ export class WorkbenchComponent implements OnInit {
 
     setTimeout(() => {
       console.log(this.jsonVar.allSlots);
-      this.fetchingData=false;
+      //this.fetchingData=false;
     }, 500)
 
   }
@@ -904,7 +899,7 @@ export class WorkbenchComponent implements OnInit {
 
     let gameSlotStartTime = moment(slotBox.AllGameBox[0].AllBox[0].StartTime, "HH:mm A");
     let gameSlotEndTime = moment(slotBox.AllGameBox[0].AllBox[0].EndTime, "HH:mm A");
-    console.log("GameSlot Start Time: " + gameSlotStartTime.format("HH:mm"));
+    console.log("GameSlot Start Time: " + gameSlotStartTime.format("HH:mm "));
     console.log("GameSlot End Time:" + gameSlotEndTime.format("HH:mm"));
 
     let timeSlotStartTime = moment(allSlotBox.StartTime, "HH:mm A");
