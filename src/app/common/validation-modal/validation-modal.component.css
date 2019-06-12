@@ -1,9 +1,16 @@
 .modal-header{
     padding: 8px;
-    border-bottom: 1px solid #e5e5e5;
-    background: royalblue;
+    border-bottom: 1px solid #e5e5e5;   
     border-radius: 8px;
     color: white;
+}
+
+.bgBlue{
+    background: royalblue;
+}
+
+.bgRed{
+    background: red;
 }
 
 

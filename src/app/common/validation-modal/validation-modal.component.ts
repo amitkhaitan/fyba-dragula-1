@@ -8,6 +8,9 @@ import { DataService } from './../../data.service';
   styleUrls: ['./validation-modal.component.css']
 })
 export class ValidationModalComponent implements OnInit {
+  title:string;
+  message:string;
+  bgClass: string;
 
   constructor(public bsModalRef: BsModalRef, public dataService: DataService) {}
 

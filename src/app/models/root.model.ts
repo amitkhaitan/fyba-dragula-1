@@ -3,7 +3,7 @@ import { CurrentPeriodSlot, AllSlotBox, allSlots } from './workbench.model';
 export interface BlackOuts{
     Date:string;
     StartTime:string;
-    StopTime:string;
+    EndTime:string;
     FacilityId:number;
     FacilityName:string;
 }

@@ -1,12 +1,12 @@
 
 <div *ngIf="responseData" class="btn-group" dropdown>
-    <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
+    <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle dropdownClass"
             aria-controls="dropdown-basic">
-      Select Period<span class="caret"></span>
+      Select Period <span class="caret"></span>
     </button>
     <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu"
         role="menu" aria-labelledby="button-basic">
-      <li *ngFor="let dummy of ' '.repeat(5).split(''), let x = index" 
+      <li *ngFor="let dummy of ' '.repeat(10).split(''), let x = index" 
           role="menuitem" (click)="togglePeriod(x+1)">
         <a class="dropdown-item">{{x+1}}</a></li>
       <li class="divider dropdown-divider"></li>
@@ -86,7 +86,7 @@
                                 attr.slotBoxIndex = {{slotBoxIndex}}>
 
                                 <div #gameElement
-                                  style="position:absolute;  right:0; color:#FFF; max-width: 200px; height:100%; padding:5px; font-size:12px;"
+                                  style="position:absolute;  right:0; color:#FFF; max-width: 100%; height:100%; padding:5px; font-size:12px;"
                                   title="{{gameBox.BoxValue}}" attrGameBox="1" class="{{gameBox.BoxValue}} dragBox"
                                   id="{{gameBox.GameDivId}}" attr.ResourceGroup="{{gameBox.ResourceGroup}}"
                                 

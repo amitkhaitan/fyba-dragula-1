@@ -175,6 +175,13 @@ body {
 	overflow:auto;
 }
 
+.dropdownClass{
+	width: 150px;
+    height: 30px;
+    margin-top: 10px;
+
+}
+
 	.relativeDiv{text-align: center;position: relative;height: 20px;text-align: center; border-top:1px solid #e1edff; border-right:1px solid #e1edff; background:#fff;}
 .borderGreen{border: 1px solid #16a085;height: 100%; z-index: 1; position:absolute; width: 100%;}
 .borderRed{position:absolute;left:0;top:0;border:0px solid #880000;height:0px;width:100%;z-index:2;}
