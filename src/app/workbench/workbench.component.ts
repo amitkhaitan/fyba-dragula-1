@@ -653,6 +653,7 @@ export class WorkbenchComponent implements OnInit {
   }
 
   gameSlottoBlankSlot(name, el, target, source, sibling) {
+    this.fetchingData=true;
     console.log("Game Slot to Blank Slot");
     console.log("Source");
     console.log(source);
@@ -700,6 +701,7 @@ export class WorkbenchComponent implements OnInit {
 
     setTimeout(() => {
       console.log(this.jsonVar.allSlots);
+      this.fetchingData=false;
     }, 500)
 
   }
@@ -825,7 +827,10 @@ export class WorkbenchComponent implements OnInit {
       var timeBwSlots = gsStartTime - tsEndTime;
 
       for (var i = 0; i < this.jsonVar.TravelMatrix.length; ++i) {
-        if (this.jsonVar.TravelMatrix[i].FromFacilityId == allSlotBox.LocationId && this.jsonVar.TravelMatrix[i].ToFacilityId == slotBox.LocationId) {
+        if ((this.jsonVar.TravelMatrix[i].FromFacilityId == allSlotBox.LocationId && this.jsonVar.TravelMatrix[i].ToFacilityId == slotBox.LocationId) 
+        ||
+        (this.jsonVar.TravelMatrix[i].ToFacilityId == allSlotBox.LocationId && this.jsonVar.TravelMatrix[i].FromFacilityId == slotBox.LocationId)
+        ){
           console.log(slotBox.LocationId+', '+this.jsonVar.TravelMatrix[i].FromFacilityId);
           console.log(this.jsonVar.TravelMatrix[i].ToFacilityId+', '+ allSlotBox.LocationId);
           console.log(timeBwSlots);
@@ -860,7 +865,10 @@ export class WorkbenchComponent implements OnInit {
       console.log(timeBwSlots);
       for (var i = 0; i < this.jsonVar.TravelMatrix.length; ++i) {     
         console.log(this.jsonVar.TravelMatrix[i]);
-        if (this.jsonVar.TravelMatrix[i].FromFacilityId == allSlotBox.LocationId && this.jsonVar.TravelMatrix[i].ToFacilityId == slotBox.LocationId) {          
+        if ((this.jsonVar.TravelMatrix[i].FromFacilityId == allSlotBox.LocationId && this.jsonVar.TravelMatrix[i].ToFacilityId == slotBox.LocationId)
+        ||
+        (this.jsonVar.TravelMatrix[i].ToFacilityId == allSlotBox.LocationId && this.jsonVar.TravelMatrix[i].FromFacilityId == slotBox.LocationId)
+        ) {          
           console.log(this.jsonVar.TravelMatrix[i]);       
           console.log(slotBox.LocationId+', '+this.jsonVar.TravelMatrix[i].FromFacilityId);
           console.log(this.jsonVar.TravelMatrix[i].ToFacilityId+', '+ allSlotBox.LocationId);
@@ -883,6 +891,7 @@ export class WorkbenchComponent implements OnInit {
     }
 
     console.log(timeBwSlots);
+    //this.fetchingData=false;
 
   }
 
