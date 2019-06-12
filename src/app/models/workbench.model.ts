@@ -14,7 +14,7 @@ export class CurrentPeriodSlot{
 
 export class Timing{
     Heading:string;
-    FacilityCurrentPeriodDate:string;
+    
     TimeValue: Array<TimeValue>;
 
     constructor(){
@@ -34,6 +34,7 @@ export class TimeValue{
 
 export class allSlots{
     Heading: string;
+    FacilityCurrentPeriodDate:string;
     AllSlotBox: Array<AllSlotBox>;
 
     constructor(){

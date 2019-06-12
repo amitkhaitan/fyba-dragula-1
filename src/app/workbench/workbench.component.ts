@@ -21,10 +21,10 @@ export class WorkbenchComponent implements OnInit {
   subs = new Subscription();
   slots = "slots";
   modalRef: BsModalRef;
-  fetchingData:boolean;
+  fetchingData: boolean;
 
   ngOnInit() {
-    this.fetchingData=true;
+    this.fetchingData = true;
 
     // var startingTime = "8:30 PM";
     // var endTime = "9:30 AM";
@@ -43,7 +43,7 @@ export class WorkbenchComponent implements OnInit {
           //console.log(JSON.stringify(this.responseData));
           this.jsonVar = this.responseData.CurrentPeriodSlot;
           console.log(this.jsonVar);
-          this.fetchingData=false;
+          this.fetchingData = false;
         }
       )
   }
@@ -153,13 +153,13 @@ export class WorkbenchComponent implements OnInit {
 
   }
 
-  
+
   get miniDatabase() {
     return this.responseData.MiniDatabase;
     //this.miniDatabase[0].Slots.length
   }
 
-  get blackouts(){
+  get blackouts() {
     return this.responseData.BlackOuts;
   }
 
@@ -229,54 +229,54 @@ export class WorkbenchComponent implements OnInit {
     console.log("Target Id: " + target.id);
     console.log(target);
 
-        //Don't Apply to All
-        this.jsonVar.allSlots.forEach(
-          slot => {
-            if (slot.Heading == target.attributes.getNamedItem('location').value) {
-              slot.AllSlotBox.forEach(
-                element => {
-                  if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
-                    element.Duration = parseInt(source.attributes.getNamedItem('tsDuration').value);
-                    element.Height = source.attributes.getNamedItem('tsHeight').value;
-                    element.IsBlankBox = false;
-                    element.SlotColor = "#16a085";
-                  }
-                }
-              )
+    //Don't Apply to All
+    this.jsonVar.allSlots.forEach(
+      slot => {
+        if (slot.Heading == target.attributes.getNamedItem('location').value) {
+          slot.AllSlotBox.forEach(
+            element => {
+              if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
+                element.Duration = parseInt(source.attributes.getNamedItem('tsDuration').value);
+                element.Height = source.attributes.getNamedItem('tsHeight').value;
+                element.IsBlankBox = false;
+                element.SlotColor = "#16a085";
+              }
             }
-          }
-        )
+          )
+        }
+      }
+    )
 
-   
+
 
     // this.dataService.timeSlotSubject.subscribe((data) => {
     //   console.log(data);
 
-      // if (data) {
-      //   //Apply to All 
-      //   this.applyTimeSlottoAll(name, el, target, source, sibling);
-      //   this.jsonVar.allSlots.forEach(
-      //     slot => {
-      //       if (slot.Heading == target.attributes.getNamedItem('location').value) {
-      //         slot.AllSlotBox.forEach(
-      //           element => {
-      //             if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
-      //               element.Duration = parseInt(source.attributes.getNamedItem('tsDuration').value);
-      //               element.Height = source.attributes.getNamedItem('tsHeight').value;
-      //               element.IsBlankBox = false;
-      //               element.SlotColor = "#16a085";
-      //             }
-      //           }
-      //         )
-      //       }
-      //     }
-      //   )
+    // if (data) {
+    //   //Apply to All 
+    //   this.applyTimeSlottoAll(name, el, target, source, sibling);
+    //   this.jsonVar.allSlots.forEach(
+    //     slot => {
+    //       if (slot.Heading == target.attributes.getNamedItem('location').value) {
+    //         slot.AllSlotBox.forEach(
+    //           element => {
+    //             if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
+    //               element.Duration = parseInt(source.attributes.getNamedItem('tsDuration').value);
+    //               element.Height = source.attributes.getNamedItem('tsHeight').value;
+    //               element.IsBlankBox = false;
+    //               element.SlotColor = "#16a085";
+    //             }
+    //           }
+    //         )
+    //       }
+    //     }
+    //   )
 
-      // }
-     
+    // }
+
     //})
   }
-  
+
 
   applyTimeSlottoAll(name, el, target, source, sibling) {
     console.log(this.miniDatabase[0]);
@@ -292,18 +292,18 @@ export class WorkbenchComponent implements OnInit {
               slot.AllSlotBox.forEach(
                 element => {
                   if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
-                   
-                    if(element.IsBlankBox==true){                      
+
+                    if (element.IsBlankBox == true) {
                       element.Duration = parseInt(source.attributes.getNamedItem('tsDuration').value);
                       element.Height = source.attributes.getNamedItem('tsHeight').value;
                       element.IsBlankBox = false;
                       element.SlotColor = "#16a085";
                     }
-                    else{
+                    else {
                       console.log(element);
                       console.log("There is overlap");
                     }
-                    
+
                   }
                 }
               )
@@ -326,6 +326,10 @@ export class WorkbenchComponent implements OnInit {
     console.log("Target Id: " + target.id);
     console.log(target);
 
+    /*
+    TIME SLOT ADDED TO TARGET LOCATION
+    Here the time-slot is added in the target location, where the time-slot has been dragged to
+    */
     this.jsonVar.allSlots.forEach(
       slot => {
         if (slot.Heading == target.attributes.getNamedItem('location').value) {
@@ -347,8 +351,15 @@ export class WorkbenchComponent implements OnInit {
 
     setTimeout(() => {
       console.log(this.jsonVar.allSlots);
-    }, 500)
+    }, 500);
 
+
+
+    /*
+    TIME SLOT REMOVED FROM SOURCE LOCATION
+    Here the source time-slot is changed and its properties are changed to reflect that it's not a 
+    time-slot any more.
+     */
     this.jsonVar.allSlots.forEach(
       slot => {
         if (slot.Heading == source.attributes.getNamedItem('location').value) {
@@ -369,49 +380,62 @@ export class WorkbenchComponent implements OnInit {
     )
 
 
-    var seriesid = source.getAttribute('seriesid')
+    var seriesid = source.getAttribute('seriesid');
 
-    if(source.getAttribute('seriesid')==null){
+    if (source.getAttribute('seriesid') == null) {
+      /*
+      This condition means that the timeslot that has been moved is not a part of any series,
+      so, no changes would need to be made to the mini-database
+      */
       console.log("Series id is null");
     }
 
-    else{
+    else {
+      /*      
+      This means that the time-slot that has been moves is part of a series, so appropriate changes
+      would need to be made to the other time-slots in the mini-database as well.
+      */
       console.log("Series Id is not null");
       this.modalRef = this.modalService.show(ValidationModalComponent);
 
-      this.dataService.timeSlotSubject.subscribe((data) =>{
+      this.dataService.timeSlotSubject.subscribe((data) => {
         console.log(data);
-        if(data){
+        if (data) {
           //Apply to All
           //Changing the location and start-time all the time slots in the series 
           this.miniDatabase.forEach(
-            (db)=>{
+            (db) => {
               db.Slots.forEach(
-                (slot)=>{                
-                  slot.allSlots.forEach((allSlot)=>{
-                    if(allSlot.Heading==target.attributes.getNamedItem('location').value){                      
-                      allSlot.AllSlotBox.forEach((slotBox)=>{
+                (slot) => {
+                  slot.allSlots.forEach((allSlot) => {
+                    if (allSlot.Heading == target.attributes.getNamedItem('location').value) {
+                      allSlot.AllSlotBox.forEach((slotBox) => {
 
-                        for(let i=0; i<this.blackouts.length;++i){
-                          if(allSlot.FacilityCurrentPeriodDate == this.blackouts[i].Date){
-                            console.log('Blackout DateMatches');
-                            if(target.attributes.getNamedItem('location').value==this.blackouts[i].FacilityName){
-                              console.log('Location Matches');
-                              let slotStartTime = moment(slotBox.StartTime, "HH:mm A");
-                              let blackoutStartTime =  moment(this.blackouts[i].StartTime, "HH:mm A");
-                              let blackoutEndTime = moment(this.blackouts[i].StopTime, "HH:mm A");
-                              if(slotStartTime.isSameOrAfter(blackoutStartTime) && slotStartTime.isBefore(blackoutEndTime)){
-                                console.log("It is a blackout");
-                                
+
+                        if (slotBox.StartTime == source.attributes.getNamedItem('starttime').value) {
+
+                        /* BLACKOUTS
+                           Here we are checking for blackouts, so that if there is a blackout,
+                           we can still make a time-slot but notify the user that the timeslot has
+                           been generated on a blackout day.
+                         */
+
+                          for (let i = 0; i < this.blackouts.length; ++i) {
+                            if (allSlot.FacilityCurrentPeriodDate == this.blackouts[i].Date) {
+                              console.log('Blackout DateMatches');
+                              if (target.attributes.getNamedItem('location').value == this.blackouts[i].FacilityName) {
+                                console.log('Location Matches');
+                                let slotStartTime = moment(slotBox.StartTime, "HH:mm A");
+                                let blackoutStartTime = moment(this.blackouts[i].StartTime, "HH:mm A");
+                                let blackoutEndTime = moment(this.blackouts[i].StopTime, "HH:mm A");
+
+                                if (slotStartTime.isSameOrAfter(blackoutStartTime) && slotStartTime.isBefore(blackoutEndTime)) {
+                                  console.log("It is a blackout");
+                                }
                               }
                             }
+
                           }
-
-                        }
-
-                        if(slotBox.StartTime == source.attributes.getNamedItem('starttime').value){
-                          // console.log(slotBox);
-                          // console.log(allSlot);
                           slotBox.Duration = parseInt(source.attributes.getNamedItem('duration').value);
                           slotBox.Height = source.attributes.getNamedItem('boxheight').value;
                           slotBox.IsBlankBox = false;
@@ -419,35 +443,30 @@ export class WorkbenchComponent implements OnInit {
                           slotBox.SlotColor = "#16a085";
                           slotBox.SeriesId = seriesid;
 
-
-                          
-                          
-
-
                         }
                       })
-                    }              
+                    }
                   })
                 }
               )
             }
           )
-        }     
-        
+        }
+
         setTimeout(() => {
           console.log(this.jsonVar.allSlots);
         }, 500)
-    
+
         //Changing all the timeslots which match with the timeslot being dragged and setting it to null-slot
-        this.miniDatabase.forEach(    
-          (db)=>{
+        this.miniDatabase.forEach(
+          (db) => {
             db.Slots.forEach(
-              (slot)=>{                
-                slot.allSlots.forEach((allSlot)=>{
-                  if(allSlot.Heading==source.attributes.getNamedItem('location').value){
-                    
-                    allSlot.AllSlotBox.forEach((slotBox)=>{
-                      if(slotBox.SeriesId == seriesid && slotBox.StartTime == source.attributes.getNamedItem('starttime').value){
+              (slot) => {
+                slot.allSlots.forEach((allSlot) => {
+                  if (allSlot.Heading == source.attributes.getNamedItem('location').value) {
+
+                    allSlot.AllSlotBox.forEach((slotBox) => {
+                      if (slotBox.SeriesId == seriesid && slotBox.StartTime == source.attributes.getNamedItem('starttime').value) {
                         console.log(slotBox);
                         console.log(allSlot);
                         slotBox.Duration = 0;
@@ -458,16 +477,16 @@ export class WorkbenchComponent implements OnInit {
                         slotBox.SeriesId = null;
 
 
-                       
+
                       }
                     })
-                  }              
+                  }
                 })
               }
             )
           }
         )
-        
+
       });
     }
   }
@@ -731,8 +750,8 @@ export class WorkbenchComponent implements OnInit {
 
   }
 
-  togglePeriod(timePeriodNumber){
-    this.fetchingData=true;
+  togglePeriod(timePeriodNumber) {
+    this.fetchingData = true;
     this.dataService.togglePeriod(timePeriodNumber).subscribe(
       (res) => {
         this.responseData = res;
@@ -740,7 +759,7 @@ export class WorkbenchComponent implements OnInit {
         //console.log(JSON.stringify(this.responseData));
         this.jsonVar = this.responseData.CurrentPeriodSlot;
         console.log(this.jsonVar);
-        this.fetchingData=false;
+        this.fetchingData = false;
       }
     );
   }
