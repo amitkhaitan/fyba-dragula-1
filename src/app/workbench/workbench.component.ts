@@ -564,6 +564,7 @@ export class WorkbenchComponent implements OnInit {
   dbBlackout: boolean;
   addCurrentTimeSlot: boolean;
   addMiniDbTimeSlot: boolean;
+  testCount: number = 0;
 
   blankSlottoNullSlot(name, el, target, source, sibling) {
     console.log(this.jsonVar.allSlots);
@@ -652,6 +653,11 @@ export class WorkbenchComponent implements OnInit {
 
   /* Check Blackout in current Period */
   checkCurrentPeriodBlackout(source,target,seriesid){
+    console.log(source);
+    console.log(target);
+    console.log(this.testCount++);
+    console.log(target.attributes.getNamedItem('location').value);
+    console.log(seriesid);
    this.jsonVar.allSlots.forEach(
      slot => {
        if (slot.Heading == target.attributes.getNamedItem('location').value) {
@@ -666,7 +672,9 @@ export class WorkbenchComponent implements OnInit {
 
                for (let i = 0; i < this.blackouts.length; ++i) {
                  if (slot.FacilityCurrentPeriodDate == this.blackouts[i].Date) {
-
+                   console.log(this.blackouts[i].Date);
+                   console.log(slot.Heading);
+                   console.log(target.attributes.getNamedItem('location').value);
                    console.log('Blackout DateMatches');
                    if (target.attributes.getNamedItem('location').value == this.blackouts[i].FacilityName) {
                      console.log('Location Matches');
@@ -676,8 +684,10 @@ export class WorkbenchComponent implements OnInit {
 
                      if (slotStartTime.isSameOrAfter(blackoutStartTime) && slotStartTime.isBefore(blackoutEndTime)) {
                        console.log("It is a blackout");
+                       console.log(slot);
+                       console.log(element);
                        console.log(element.StartTime);
-                       console.log(element.TimeSlotDate);
+                       console.log(slot.FacilityCurrentPeriodDate);
 
                        const initialState = {
                          title: 'Blackout Encountered',
