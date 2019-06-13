@@ -594,6 +594,7 @@ export class WorkbenchComponent implements OnInit {
       }
     )
 
+    
     setTimeout(() => {
       console.log(this.jsonVar.allSlots);
     }, 500)
