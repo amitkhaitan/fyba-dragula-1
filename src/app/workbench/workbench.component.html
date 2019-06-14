@@ -64,13 +64,12 @@
               </div>
             </td>
             <td *ngFor="let slot of jsonVar.allSlots; let allSlotsIndex = index">
-              <div class="mainDiv" id="11">
+              <div class="mainDiv">
                 <div class="topBlueBar">
                   <span>{{slot.Heading}}</span>
                 </div>
-                <div class="stripeBoxWhite" *ngFor="let slotBox of slot.AllSlotBox; let slotBoxIndex = index;">
-                  <!-- {{slotCountForUI}} -->
-                  <ng-container *ngIf="slotBox.IsBlankBox==false;else yesBlank">
+                <div class="stripeBoxWhite" *ngFor="let slotBox of slot.AllSlotBox; let slotBoxIndex = index;" [ngClass]="(slotBox.IsBlackout && slotBox.IsBlankBox)? 'bgGrey' : 'bgWhite'" >                 
+                  <ng-container *ngIf="slotBox.IsBlankBox==false;else nullSlot">
                     <ng-container *ngIf="slotBox.IsGameBox==true;else noGame">
                       <div [dragula]="'slots'" attr.Location={{slotBox.Location}} attr.StartTime={{slotBox.StartTime}}
                         attr.EndTime={{slotBox.EndTime}} attr.boxHeight={{slotBox.Height}}>
@@ -124,12 +123,19 @@
                       </div>
                     </ng-template>
                   </ng-container>
-                  <ng-template #yesBlank>
-                    <div id="nullSlot" class="relativeDiv" [dragula]="'slots'" attr.Location={{slotBox.Location}}
+                  <!---In-case there's a blackout, this template will be shown---->
+                  <ng-template #nullSlot>
+                    <div *ngIf="slotBox.IsBlankBox==true && slotBox.IsBlackout==false" id="nullSlot" class="relativeDiv" [dragula]="'slots'" attr.Location={{slotBox.Location}}
                       attr.StartTime={{slotBox.StartTime}} attr.EndTime={{slotBox.EndTime}}
                       attr.boxHeight={{slotBox.Height}}>
                     </div>
+
+                    <div *ngIf="slotBox.IsBlankBox==true && slotBox.IsBlackout==true" id="blackoutSlot" class="blackoutDiv" attr.Location={{slotBox.Location}}
+                    attr.StartTime={{slotBox.StartTime}} attr.EndTime={{slotBox.EndTime}}></div>                 
+
                   </ng-template>
+
+              
                 </div>
               </div>
             </td>

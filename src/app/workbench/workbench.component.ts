@@ -125,6 +125,7 @@ export class WorkbenchComponent implements OnInit {
 
 
         else if (source.id == 'blankSlot' && target.id == 'nullSlot') {
+          this.blackoutCount=0;
           this.blankSlottoNullSlot(name, el, target, source, sibling);
         }
 
@@ -239,32 +240,7 @@ export class WorkbenchComponent implements OnInit {
       }
     )
 
-    // this.dataService.timeSlotSubject.subscribe((data) => {
-    //   console.log(data);
 
-    // if (data) {      
-    //   //Apply to All 
-    //   this.applyTimeSlottoAll(name, el, target, source, sibling);
-
-    //   this.jsonVar.allSlots.forEach(
-    //     slot => {
-    //       if (slot.Heading == target.attributes.getNamedItem('location').value) {
-    //         slot.AllSlotBox.forEach(
-    //           element => {
-    //             if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
-    //               element.Duration = parseInt(source.attributes.getNamedItem('tsDuration').value);
-    //               element.Height = source.attributes.getNamedItem('tsHeight').value;
-    //               element.IsBlankBox = false;
-    //               element.SlotColor = "#16a085";
-    //             }
-    //           }
-    //         )
-    //       }
-    //     }
-    //   )
-
-    // }
-    // })
   }
 
 
@@ -304,6 +280,8 @@ export class WorkbenchComponent implements OnInit {
   //   )
   // }
 
+  blackoutCount:number = 0;
+
   checkBlackoutinCurrentPeriod(source, target, seriesid) {
     /*
      TIME SLOT ADDED TO TARGET LOCATION
@@ -337,7 +315,7 @@ export class WorkbenchComponent implements OnInit {
                       if (slotStartTime.isSameOrAfter(blackoutStartTime) && slotStartTime.isBefore(blackoutEndTime)) {
                         console.log("It is a blackout");
                         //currentBlackout=true;
-
+                 
                         const initialState = {
                           title: 'Blackout Encountered',
                           message: 'Are You sure you want to proceed with the change, because the time-slot lies in a blackout.',
@@ -564,7 +542,7 @@ export class WorkbenchComponent implements OnInit {
   dbBlackout: boolean;
   addCurrentTimeSlot: boolean;
   addMiniDbTimeSlot: boolean;
-  testCount: number = 0;
+  //testCount: number = 0;
 
   blankSlottoNullSlot(name, el, target, source, sibling) {
     console.log(this.jsonVar.allSlots);
@@ -653,9 +631,11 @@ export class WorkbenchComponent implements OnInit {
 
   /* Check Blackout in current Period */
   checkCurrentPeriodBlackout(source,target,seriesid){
+    console.log("Source: ");
     console.log(source);
+    console.log("Target: ");
     console.log(target);
-    console.log(this.testCount++);
+    
     console.log(target.attributes.getNamedItem('location').value);
     console.log(seriesid);
    this.jsonVar.allSlots.forEach(
@@ -664,6 +644,10 @@ export class WorkbenchComponent implements OnInit {
          slot.AllSlotBox.forEach(
            element => {
              if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
+               console.log(target.attributes.getNamedItem('starttime').value);
+               console.log(target.attributes.getNamedItem('endtime').value);
+               console.log("Element:");
+               console.log(element);
                /* BLACKOUTS
                   Here we are checking for blackouts, so that if there is a blackout,
                   we can still make a time-slot but notify the user that the timeslot has
@@ -683,7 +667,9 @@ export class WorkbenchComponent implements OnInit {
                      let blackoutEndTime = moment(this.blackouts[i].EndTime, "HH:mm A");                    
 
                      if (slotStartTime.isSameOrAfter(blackoutStartTime) && slotStartTime.isBefore(blackoutEndTime)) {
-                       console.log("It is a blackout");
+                       console.log("It is a blackout");                       
+                       console.log("Blackout Count: "+ this.blackoutCount);
+
                        console.log(slot);
                        console.log(element);
                        console.log(element.StartTime);
@@ -697,7 +683,11 @@ export class WorkbenchComponent implements OnInit {
                          
                        }
 
-                       this.modalRef = this.modalService.show(ValidationModalComponent, { initialState });
+                       this.blackoutCount++;
+
+                       if(this.blackoutCount==0){
+                        this.modalRef = this.modalService.show(ValidationModalComponent, { initialState });
+                       }                       
 
                        this.dataService.blackoutSubject.subscribe((data) => {
                          if (data) {
@@ -721,12 +711,20 @@ export class WorkbenchComponent implements OnInit {
   }
 
   removeCurrentTimeSlot(source,target,seriesid){    
+    console.log("Remove Current Time-slot");
+    console.log("Source: ");
+    console.log(source);
+    console.log("Target: ");
+    console.log(target);
+    console.log("Changing Target");
     this.jsonVar.allSlots.forEach(
       slot => {
         if (slot.Heading == target.attributes.getNamedItem('location').value) {
           slot.AllSlotBox.forEach(
-            element => {
+            element => {              
               if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
+                console.log("Target Element");
+                console.log(element);
                 element.Duration =  parseInt(source.attributes.getNamedItem('duration').value);;
                 element.Height = "20px";
                 element.IsBlankBox = true;
@@ -744,12 +742,15 @@ export class WorkbenchComponent implements OnInit {
       console.log(this.jsonVar.allSlots);
     }, 500)
 
+    console.log("Changing Source");
     this.jsonVar.allSlots.forEach(
       slot => {
         if (slot.Heading == source.attributes.getNamedItem('location').value) {
           slot.AllSlotBox.forEach(
             element => {
               if (element.StartTime == source.attributes.getNamedItem('starttime').value) {
+                console.log("Source Element");
+                console.log(element);
                 element.Duration = source.attributes.getNamedItem('duration').value;;
                 element.Height = source.attributes.getNamedItem('boxheight').value;;
                 element.IsBlankBox = false;
