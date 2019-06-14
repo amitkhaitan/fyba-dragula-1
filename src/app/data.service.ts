@@ -41,7 +41,7 @@ export class DataService {
 
   togglePeriod(timePeriodNumber):Observable<any> {
     var body = JSON.stringify({
-      SeasonId: '17',
+      SeasonId: '23',
       Period: timePeriodNumber,
       GameScheduleId: '1',
       LoginUserId: '7113'

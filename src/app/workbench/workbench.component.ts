@@ -50,7 +50,7 @@ export class WorkbenchComponent implements OnInit {
         return source.id === 'timeSlots';
       },
 
-      accepts: function (el, target, source, sibling) {
+      accepts: function (el, target, source, sibling) { 
         if (source.id == 'freeGame' && target.id == 'blankSlot') {
           return true
         }
@@ -58,6 +58,7 @@ export class WorkbenchComponent implements OnInit {
         else if (source.id == 'timeSlots' && target.id == 'nullSlot') {
           return true
         }
+        
 
         else if (source.id == 'blankSlot' && target.id == 'nullSlot') {
           return true
@@ -68,12 +69,13 @@ export class WorkbenchComponent implements OnInit {
         }
 
         else if (source.id == 'gameSlot' && target.id == 'blankSlot') {
+          return true
           //Game Slot will only be accepted if its duration is equal to TimeSlot Duration         
-          let sourceDuration = parseInt(source.getAttribute("duration"));
-          let targetDuration = parseInt(target.getAttribute("duration"));
-          if (sourceDuration == targetDuration) {
-            return true
-          }
+          // let sourceDuration = parseInt(source.getAttribute("duration"));
+          // let targetDuration = parseInt(target.getAttribute("duration"));
+          // if (sourceDuration == targetDuration) {
+          //   return true
+          // }
         }
 
         else if (source.id == 'blankSlot' && target.id == 'timeSlotDelete') {
@@ -85,6 +87,7 @@ export class WorkbenchComponent implements OnInit {
         }
 
         else if (target == null) {
+          console.log("Target is null");
           return false;
         }
 
@@ -115,31 +118,33 @@ export class WorkbenchComponent implements OnInit {
         console.log("Element:");
         console.log(el.innerHTML);
 
-        if (source.id == 'freeGame' && target.id == 'blankSlot') {
-          this.freeGametoBlankSlot(name, el, target, source, sibling);
+        if(target!=null){
+          if (source.id == 'freeGame' && target.id == 'blankSlot') {
+            this.freeGametoBlankSlot(name, el, target, source, sibling);
+          }
+  
+          else if (source.id == 'timeSlots' && target.id == 'nullSlot') {
+            this.timeSlottoNullSlot(name, el, target, source, sibling);
+          }  
+  
+          else if (source.id == 'blankSlot' && target.id == 'nullSlot') {
+            this.blackoutCount=0;
+            this.blankSlottoNullSlot(name, el, target, source, sibling);
+          }
+  
+          else if (source.id == 'gameSlot' && target.id == 'freeGame') {
+            this.gameSlottoFreeGames(name, el, target, source, sibling);
+          }
+  
+          else if (source.id == 'gameSlot' && target.id == 'blankSlot') {
+            this.gameSlottoBlankSlot(name, el, target, source, sibling);
+          }
+  
+          else if (source.id == 'blankSlot' && target.id == 'timeSlotDelete') {
+            this.deleteBlankSlot(name, el, target, source, sibling);
+          }
         }
-
-        else if (source.id == 'timeSlots' && target.id == 'nullSlot') {
-          this.timeSlottoNullSlot(name, el, target, source, sibling);
-        }
-
-
-        else if (source.id == 'blankSlot' && target.id == 'nullSlot') {
-          this.blackoutCount=0;
-          this.blankSlottoNullSlot(name, el, target, source, sibling);
-        }
-
-        else if (source.id == 'gameSlot' && target.id == 'freeGame') {
-          this.gameSlottoFreeGames(name, el, target, source, sibling);
-        }
-
-        else if (source.id == 'gameSlot' && target.id == 'blankSlot') {
-          this.gameSlottoBlankSlot(name, el, target, source, sibling);
-        }
-
-        else if (source.id == 'blankSlot' && target.id == 'timeSlotDelete') {
-          this.deleteBlankSlot(name, el, target, source, sibling);
-        }
+      
       })
     );
 
@@ -595,8 +600,9 @@ export class WorkbenchComponent implements OnInit {
 
 
     var seriesid = source.getAttribute('seriesid')
+    console.log(seriesid);
 
-    if(source.getAttribute('seriesid')==null){
+    if(source.getAttribute('seriesid')==null || source.getAttribute('seriesid').length<=1){
       console.log("Series id is null");
       this.checkCurrentPeriodBlackout(source,target,seriesid);
       
@@ -644,6 +650,7 @@ export class WorkbenchComponent implements OnInit {
          slot.AllSlotBox.forEach(
            element => {
              if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
+               
                console.log(target.attributes.getNamedItem('starttime').value);
                console.log(target.attributes.getNamedItem('endtime').value);
                console.log("Element:");
@@ -888,9 +895,12 @@ export class WorkbenchComponent implements OnInit {
             element => {
               if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
                 console.log(element);
+                console.log(target.attributes.getNamedItem('boxheight'));
                 element.IsBlankBox = false;
                 element.IsGameBox = true;
-                element.Duration = parseInt(source.attributes.getNamedItem('duration').value);                
+                //element.Duration = parseInt(target.attributes.getNamedItem('duration').value);                               
+                //element.Height =  target.attributes.getNamedItem('boxheight');     
+                
                 let allSlotsIndex = parseInt(source.getAttribute('allSlotsIndex'));
                 let slotBoxIndex = parseInt(source.getAttribute('slotBoxIndex'));
 
@@ -900,6 +910,8 @@ export class WorkbenchComponent implements OnInit {
                 allGameBox.AllBox[0].StartTime = element.StartTime;
 
                 allGameBox.AllBox[0].EndTime = moment(element.StartTime, "HH:mm A").add(element.Duration, "minutes").format("hh:mm A");
+                console.log(target.attributes.getNamedItem('boxheight'))
+                allGameBox.AllBox[0].BoxHeight = target.attributes.getNamedItem('boxheight').value;
                 
                 console.log(allGameBox);
 
