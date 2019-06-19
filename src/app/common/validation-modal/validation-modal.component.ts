@@ -11,6 +11,7 @@ export class ValidationModalComponent implements OnInit {
   title:string;
   message:string;
   bgClass: string;
+  isBlackout:boolean;
 
   constructor(public bsModalRef: BsModalRef, public dataService: DataService) {}
 
@@ -19,12 +20,24 @@ export class ValidationModalComponent implements OnInit {
   }
 
   yes(){
-    this.dataService.timeSlotSubject.next(true);
+    if(this.isBlackout){
+      this.dataService.blackoutSubject.next(true);
+    }
+    else{
+      this.dataService.timeSlotSubject.next(true);
+    }
+  
     this.bsModalRef.hide();
   }
 
   no(){
-    this.dataService.timeSlotSubject.next(false);
+    if(this.isBlackout){
+      this.dataService.blackoutSubject.next(false);
+    }
+    else{
+      this.dataService.timeSlotSubject.next(false);
+    }
+  
     this.bsModalRef.hide();
   }
 

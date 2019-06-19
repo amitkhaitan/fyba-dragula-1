@@ -8,6 +8,7 @@ export class DataService {
   headerOptions;
   postRequestOptions;
   timeSlotSubject = new Subject<boolean>();
+  blackoutSubject = new Subject<boolean>();
 
   constructor(public http: HttpClient) {
     this.headerOptions = new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -29,7 +30,7 @@ export class DataService {
   let options = {headers:headers};
     
     var body = JSON.stringify({
-      SeasonId: '17',
+      SeasonId: '23',
       Period: '3',
       GameScheduleId: '1',
       LoginUserId: '7113'
@@ -40,7 +41,7 @@ export class DataService {
 
   togglePeriod(timePeriodNumber):Observable<any> {
     var body = JSON.stringify({
-      SeasonId: '17',
+      SeasonId: '23',
       Period: timePeriodNumber,
       GameScheduleId: '1',
       LoginUserId: '7113'

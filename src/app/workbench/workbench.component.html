@@ -64,13 +64,12 @@
               </div>
             </td>
             <td *ngFor="let slot of jsonVar.allSlots; let allSlotsIndex = index">
-              <div class="mainDiv" id="11">
+              <div class="mainDiv">
                 <div class="topBlueBar">
                   <span>{{slot.Heading}}</span>
                 </div>
-                <div class="stripeBoxWhite" *ngFor="let slotBox of slot.AllSlotBox; let slotBoxIndex = index;">
-                  <!-- {{slotCountForUI}} -->
-                  <ng-container *ngIf="slotBox.IsBlankBox==false;else yesBlank">
+                <div class="stripeBoxWhite" *ngFor="let slotBox of slot.AllSlotBox; let slotBoxIndex = index;" [ngClass]="(slotBox.IsBlackout && slotBox.IsBlankBox)? 'bgGrey' : 'bgWhite'" >                 
+                  <ng-container *ngIf="slotBox.IsBlankBox==false;else nullSlot">
                     <ng-container *ngIf="slotBox.IsGameBox==true;else noGame">
                       <div [dragula]="'slots'" attr.Location={{slotBox.Location}} attr.StartTime={{slotBox.StartTime}}
                         attr.EndTime={{slotBox.EndTime}} attr.boxHeight={{slotBox.Height}}>
@@ -81,15 +80,18 @@
                               <div id="gameSlot" style="position:absolute; border:1px solid; z-index:2;width:100%;"
                                 [dragula]="'slots'"
                                 [ngStyle]="{'top': gameBox.BoxTop, 'height': gameBox.BoxHeight, 'border-color': slotBox.SlotColor}"
-                                attr.SlotId="{{slotBox.SlotId}}" attr.Location={{slotBox.Location}}
-                                attr.StartTime={{slotBox.StartTime}} attr.EndTime={{slotBox.EndTime}}
-                                attr.SlotHeight="{{slotBox.Height}}"  attr.Duration={{slotBox.Duration}}
+                                attr.SlotId="{{slotBox.SlotId}}" 
+                                attr.Location={{slotBox.Location}}
+                                attr.StartTime={{slotBox.StartTime}} 
+                                attr.EndTime={{slotBox.EndTime}}
+                                attr.SlotHeight="{{slotBox.Height}}"  
+                                attr.Duration={{slotBox.Duration}}
                                 attr.allSlotsIndex = {{allSlotsIndex}} 
                                 attr.slotBoxIndex = {{slotBoxIndex}}>
 
                                 <div #gameElement
-                                  style="position:absolute;  right:0; color:#FFF; max-width: 100%; height:100%; padding:5px; font-size:12px;"
-                                  title="{{gameBox.BoxValue}}" attrGameBox="1" class="{{gameBox.BoxValue}} dragBox"
+                                  style="position:relative;  right:0; color:#FFF; max-width: 300px; max-height:150px; padding:5px; font-size:12px;"
+                                  title="{{gameBox.BoxValue}}" attrGameBox="1" class="{{gameBox.BoxValue}} dragBox bgBlueNone"
                                   id="{{gameBox.GameDivId}}" attr.ResourceGroup="{{gameBox.ResourceGroup}}"
                                 
                                   attr.SlotColour="{{gameBox.BoxColor}}"
@@ -105,31 +107,49 @@
                       </div>
                     </ng-container>
                     <ng-template #noGame>
-                      <div id="blankSlot" [dragula]="'slots'" attr.SlotId="{{slotBox.SlotId}}"
-                        attr.Location={{slotBox.Location}} attr.StartTime={{slotBox.StartTime}}
+                      <div id="blankSlot" [dragula]="'slots'" 
+                        attr.SlotId="{{slotBox.SlotId}}"
+                        attr.Type="blankSlot"
+                        attr.Location={{slotBox.Location}} 
+                        attr.StartTime={{slotBox.StartTime}}
                         attr.EndTime={{slotBox.EndTime}} attr.boxHeight={{slotBox.Height}}
                         attr.Duration={{slotBox.Duration}} 
                         attr.SeriesId={{slotBox.SeriesId}}
                         attr.allSlotsIndex = {{allSlotsIndex}}
                         attr.slotBoxIndex = {{slotBoxIndex}}>
                         
-                        <!--Drop here to Delete Time Slot-->
+                        
                         <div #timeElement style="position:absolute; left:0; top:0; border:1px solid;  width:100%; z-index:1;"
-                          attr.SlotId="{{slotBox.SlotId}}" attrFreeSlot="1" attr.Location={{slotBox.Location}}
-                          attr.StartTime={{slotBox.StartTime}} attr.EndTime={{slotBox.EndTime}}
-                          attr.boxHeight={{slotBox.Height}} attr.Duration={{slotBox.Duration}}
+                          attr.SlotId="{{slotBox.SlotId}}" 
+                          attr.Type="blankSlot"
+                          attrFreeSlot="1" 
+                          attr.Location={{slotBox.Location}}
+                          attr.StartTime={{slotBox.StartTime}} 
+                          attr.EndTime={{slotBox.EndTime}}
+                          attr.boxHeight={{slotBox.Height}} 
+                          attr.Duration={{slotBox.Duration}}
                           [ngStyle]="{'top': slotBox.Top, 'height': slotBox.Height, 'border-color': slotBox.SlotColor}"
                           class="borderGreen">
                         </div>
                       </div>
                     </ng-template>
                   </ng-container>
-                  <ng-template #yesBlank>
-                    <div id="nullSlot" class="relativeDiv" [dragula]="'slots'" attr.Location={{slotBox.Location}}
-                      attr.StartTime={{slotBox.StartTime}} attr.EndTime={{slotBox.EndTime}}
-                      attr.boxHeight={{slotBox.Height}}>
+                  <!---In-case there's a blackout, this template will be shown---->
+                  <ng-template #nullSlot>
+                    <div *ngIf="slotBox.IsBlankBox==true && slotBox.IsBlackout==false" 
+                    id="nullSlot" class="relativeDiv" [dragula]="'slots'" 
+                    attr.Location={{slotBox.Location}}
+                    attr.StartTime={{slotBox.StartTime}} 
+                    attr.EndTime={{slotBox.EndTime}}
+                    attr.boxHeight={{slotBox.Height}}>
                     </div>
+
+                    <div *ngIf="slotBox.IsBlankBox==true && slotBox.IsBlackout==true" id="blackoutSlot" class="blackoutDiv" attr.Location={{slotBox.Location}}
+                    attr.StartTime={{slotBox.StartTime}} attr.EndTime={{slotBox.EndTime}}></div>                 
+
                   </ng-template>
+
+              
                 </div>
               </div>
             </td>
