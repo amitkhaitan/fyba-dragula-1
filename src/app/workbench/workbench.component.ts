@@ -904,10 +904,14 @@ export class WorkbenchComponent implements OnInit {
     this.jsonVar.allSlots.forEach(
       slot => {
         if (slot.Heading == source.attributes.getNamedItem('location').value) {
+          console.log(slot);
           slot.AllSlotBox.forEach(
+            
             element => {
+             
               if (element.StartTime == source.attributes.getNamedItem('starttime').value) {
                 console.log(element);
+                //debugger;
 
                 this.jsonVar.FreeGames.push({
                   Division: element.AllGameBox[0].AllBox[0].Division,
@@ -915,10 +919,12 @@ export class WorkbenchComponent implements OnInit {
                   GameVolunteerList: element.AllGameBox[0].AllBox[0].GameVolunteerList,
                   Name: element.AllGameBox[0].AllBox[0].BoxValue
                 });
+                //debugger;
 
-                element.AllGameBox.splice(0, 1);
-                element.IsGameBox = false;
-
+                element.AllGameBox[0].AllBox.splice(0,1);
+                element.AllGameBox.splice(0,1);
+                element.IsGameBox = false;   
+                element.IsBlankBox = false;  
 
               }
 
@@ -930,7 +936,7 @@ export class WorkbenchComponent implements OnInit {
 
     //Removing the un-necesary div created by dragula at the top
     let domElement: HTMLElement = this.gameElement.nativeElement;
-    domElement.parentNode.removeChild(domElement);
+    //domElement.parentNode.removeChild(domElement);
     console.log(this.jsonVar.FreeGames);
 
 

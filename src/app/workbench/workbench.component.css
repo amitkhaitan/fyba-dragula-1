@@ -167,9 +167,16 @@ body {
 	width:calc(100% - 300px);
 }
 .greenBoxScroll {
+	position: relative;
 	max-height:535px;
 	overflow:auto;
 }
+
+.greenBoxScroll .bgBlueNone{
+	display:none !important;
+}
+
+
 .blueBoxScroll {
 	max-height:500px;
 	overflow:auto;
