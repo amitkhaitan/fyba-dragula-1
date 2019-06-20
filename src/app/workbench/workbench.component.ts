@@ -1,13 +1,14 @@
 import { Component, OnInit, ViewChild, ElementRef, Inject } from '@angular/core';
 import { DragulaService } from 'ng2-dragula';
 import { DataService } from './../data.service';
-import { CurrentPeriodSlot, AllGameBox, AllBox, FreeGames, AllSlotBox, allSlots } from '../models/workbench.model';
+import { CurrentPeriodSlot, AllGameBox, AllBox, FreeGames, AllSlotBox, allSlots, TravelMatrix } from '../models/workbench.model';
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
 import { RootModel } from '../models/root.model';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { ValidationModalComponent } from '../common/validation-modal/validation-modal.component';
 import { DOCUMENT } from '@angular/platform-browser';
+import { TravelIndex } from './../models/travel-index.model';
 
 @Component({
   selector: 'app-workbench',
@@ -110,27 +111,27 @@ export class WorkbenchComponent implements OnInit {
 
     this.subs.add(this.dragulaService.drag('slots')
       .subscribe(({ name, el, source }) => {
-        console.log("DRAG:");
-        console.log("Source Id: " + source.id);
-        console.log("Source");
-        console.log(source);
-        console.log("Element:");
-        console.log(el.innerHTML);
+        // console.log("DRAG:");
+        // console.log("Source Id: " + source.id);
+        // console.log("Source");
+        // console.log(source);
+        // console.log("Element:");
+        // console.log(el.innerHTML);
 
       })
     );
 
     this.subs.add(this.dragulaService.drop('slots')
       .subscribe(({ name, el, target, source, sibling }) => {
-        console.log("DROP: ");
-        console.log("Source");
-        console.log(source);
-        //console.log("Target ID: " + target.id);
-        console.log("Target");
-        console.log(target);
+        // console.log("DROP: ");
+        // console.log("Source");
+        // console.log(source);
+        // //console.log("Target ID: " + target.id);
+        // console.log("Target");
+        // console.log(target);
 
-        console.log("Element:");
-        console.log(el.innerHTML);
+        // console.log("Element:");
+        // console.log(el.innerHTML);
 
         if (target != null) {
           if (source.id == 'freeGame' && target.id == 'blankSlot') {
@@ -951,8 +952,7 @@ export class WorkbenchComponent implements OnInit {
     console.log("Game Slot to Blank Slot");
     console.log("Source");
     console.log(source);
-    console.log("Target");
-    console.log("Target Id: " + target.id);
+    console.log("Target");    
     console.log(target);
 
 
@@ -962,8 +962,8 @@ export class WorkbenchComponent implements OnInit {
           slot.AllSlotBox.forEach(
             element => {
               if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
-                console.log(element);
-                console.log(target.attributes.getNamedItem('boxheight'));
+                // console.log(element);
+                // console.log(target.attributes.getNamedItem('boxheight'));
                 element.IsBlankBox = false;
                 element.IsGameBox = true;
                 //element.Duration = parseInt(target.attributes.getNamedItem('duration').value);                               
@@ -978,7 +978,7 @@ export class WorkbenchComponent implements OnInit {
                 allGameBox.AllBox[0].StartTime = element.StartTime;
 
                 allGameBox.AllBox[0].EndTime = moment(element.StartTime, "HH:mm A").add(element.Duration, "minutes").format("hh:mm A");
-                console.log(target.attributes.getNamedItem('boxheight'))
+                
                 allGameBox.AllBox[0].BoxHeight = target.attributes.getNamedItem('boxheight').value;
 
                 console.log(allGameBox);
@@ -1010,9 +1010,7 @@ export class WorkbenchComponent implements OnInit {
 
   }
 
-  deleteBlankSlot(name, el, target, source, sibling) {
-    
-
+  deleteBlankSlot(name, el, target, source, sibling) {   
     console.log("Delete Blank Slot");
     console.log("Target");
     console.log("Target Id: " + target.id);
@@ -1047,24 +1045,41 @@ export class WorkbenchComponent implements OnInit {
     var gameVolunteerList = gameSlotDetails.GameVolunteerList;
     console.log("------------");
     console.log(allSlotBox.Location);
-    console.log(allSlotBox.LocationId);
+    //console.log(allSlotBox.LocationId);
     console.log(allSlotBox);
+    var index = 0;
+    let sameLocations: TravelIndex[] = [];
+    let differentLocations : TravelIndex[] = [];
+
+    var sameLocationFlag = null;
+    var differentLocationFlag = null;
+    // var sameLocationAllSlotIndex = [];
+    // var sameLocationSlotBoxIndex = [];
+    // var differentLocationAllSlotIndex = [];
+    // var differentLocationSlotBoxIndex = [];
 
 
 
     for (var i = 0; i < gameVolunteerList.length; ++i) {
-      this.jsonVar.allSlots.forEach(slot => {
-        slot.AllSlotBox.forEach(slotBox => {
+      this.jsonVar.allSlots.forEach((slot,allSlotIndex) => {        
+        slot.AllSlotBox.forEach((slotBox, slotBoxIndex) => {          
           if (slotBox.AllGameBox.length > 0 && slotBox.IsGameBox) {
             slotBox.AllGameBox[0].AllBox[0].GameVolunteerList.forEach(volunteer => {
               if (gameVolunteerList[i].VolunteerSeasonalId == volunteer.VolunteerSeasonalId) {
-
                 //So the same volunteer has another game scheduled on the same day
                 if (allSlotBox.Location == slotBox.Location && allSlotBox.StartTime != slotBox.StartTime) {
                   //It means the volunteer is in the same location. So he can easily go to the next game
                   //Okay        
+                  // sameLocationAllSlotIndex.push(allSlotIndex);
+                  // sameLocationSlotBoxIndex.push(slotBoxIndex);
+                  let newModel = new TravelIndex();
+                  newModel.allSlotIndex = allSlotIndex;
+                  newModel.slotBoxIndex = slotBoxIndex;
+                  sameLocations.push(newModel);
+                  sameLocationFlag=true;
                   console.log("*****************");
                   console.log("Same location");
+                  console.log(++index);
                   console.log(allSlotBox.Location);
                   console.log(slotBox.Location);
                   console.log(slotBox);
@@ -1077,9 +1092,17 @@ export class WorkbenchComponent implements OnInit {
                   //Calculate time to move between both locations
                   console.log("*****************");
                   console.log("Different locations");
+                  console.log(++index);
+                  differentLocationFlag=true;
+       
+
+                  let newModel = new TravelIndex();
+                  newModel.allSlotIndex = allSlotIndex;
+                  newModel.slotBoxIndex = slotBoxIndex;
+                  differentLocations.push(newModel);
+                 
                   console.log(slotBox.Location);
-                  console.log(slotBox);
-                  console.log("Slotbox Length: " + slotBox.AllGameBox.length);
+                  console.log(slotBox);                  
                   console.log(slotBox.AllGameBox[0].AllBox[0]);
                   //this.gameElement.nativeElement.style.background="red";                 
 
@@ -1092,6 +1115,9 @@ export class WorkbenchComponent implements OnInit {
         })
       })
     }
+    console.log(sameLocations);
+    console.log(differentLocations);
+
   }
 
   calculateTravelTime(allSlotBox: AllSlotBox, gameSlotDetails: AllBox, slotBox: AllSlotBox) {
@@ -1140,8 +1166,8 @@ export class WorkbenchComponent implements OnInit {
       for (var i = 0; i < this.jsonVar.TravelMatrix.length; ++i) {
         if ((this.jsonVar.TravelMatrix[i].FromFacilityId == allSlotBox.LocationId && this.jsonVar.TravelMatrix[i].ToFacilityId == slotBox.LocationId)
           || (this.jsonVar.TravelMatrix[i].ToFacilityId == allSlotBox.LocationId && this.jsonVar.TravelMatrix[i].FromFacilityId == slotBox.LocationId)) {
-          console.log(slotBox.LocationId + ', ' + this.jsonVar.TravelMatrix[i].FromFacilityId);
-          console.log(this.jsonVar.TravelMatrix[i].ToFacilityId + ', ' + allSlotBox.LocationId);
+          //console.log(slotBox.LocationId + ', ' + this.jsonVar.TravelMatrix[i].FromFacilityId);
+          //console.log(this.jsonVar.TravelMatrix[i].ToFacilityId + ', ' + allSlotBox.LocationId);
           console.log(timeBwSlots);
           console.log(this.jsonVar.TravelMatrix[i]);
           if (this.jsonVar.TravelMatrix[i].Duration < timeBwSlots) {
@@ -1179,8 +1205,8 @@ export class WorkbenchComponent implements OnInit {
           (this.jsonVar.TravelMatrix[i].ToFacilityId == allSlotBox.LocationId && this.jsonVar.TravelMatrix[i].FromFacilityId == slotBox.LocationId)
         ) {
           console.log(this.jsonVar.TravelMatrix[i]);
-          console.log(slotBox.LocationId + ', ' + this.jsonVar.TravelMatrix[i].FromFacilityId);
-          console.log(this.jsonVar.TravelMatrix[i].ToFacilityId + ', ' + allSlotBox.LocationId);
+          //console.log(slotBox.LocationId + ', ' + this.jsonVar.TravelMatrix[i].FromFacilityId);
+          //console.log(this.jsonVar.TravelMatrix[i].ToFacilityId + ', ' + allSlotBox.LocationId);
           console.log(timeBwSlots);
           console.log(this.jsonVar.TravelMatrix[i]);
           if (this.jsonVar.TravelMatrix[i].Duration < timeBwSlots) {
@@ -1233,16 +1259,16 @@ export class WorkbenchComponent implements OnInit {
           slot.AllSlotBox.forEach(
             (element, slotBoxIndex) => {
               if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
-                console.log("Element.....");
-                console.log(element);
+                // console.log("Element.....");
+                // console.log(element);
 
                 if (element.IsBlankBox == true) {
                   //let targetStartTime = moment(target.attributes.getNamedItem('starttime').value, "HH:mm A").add(30,'minutes').format('hh:mm A');
                   let targetStartTime = element.EndTime;
                   console.log(targetStartTime);
-                  console.log(allSlotIndex, slotBoxIndex);
-                  console.log(this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1]);
-                  console.log(this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1]);
+                  // console.log(allSlotIndex, slotBoxIndex);
+                  // console.log(this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1]);
+                  // console.log(this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1]);
 
                   if (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1].IsBlankBox == true
                     &&
