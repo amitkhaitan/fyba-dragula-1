@@ -55,6 +55,7 @@ body {
 	padding:10px;
 	text-align:center;
 	border-right:1px solid #cccccc;
+	max-width: 150px;
 }
 .topBlueBar span {
 	color:#fff;
@@ -166,6 +167,15 @@ body {
 	float:left;
 	width:calc(100% - 300px);
 }
+
+.parentTimeSlotDelete{
+	width: 150px;
+	max-width: 150px;
+	position: absolute;
+	max-height:535px;
+	overflow:auto;
+}
+
 .greenBoxScroll {
 	position: relative;
 	max-height:535px;
@@ -240,3 +250,10 @@ body {
 		.bgWhite{
 			background-color: white;
 		}
+.marginTop80 {
+	margin-top: 80px;
+}
+
+.marginTop80 .bgBlueNone{
+	display: none !important;
+}

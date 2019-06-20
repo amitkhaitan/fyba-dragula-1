@@ -53,6 +53,7 @@ export class AllSlotBox{
     BackgroundColor:string;
     Slot_1: string;
     SlotId:string;
+    SlotDivId:string;
     SeriesId:number;
     StartTime:string;
     EndTime:string;
@@ -76,6 +77,7 @@ export class AllSlotBox{
         this.SlotColor = '';
         this.TimeSlotDate = '';
         this.TimeSlotId = null;
+        this.SlotDivId = '';
     }
 }
 

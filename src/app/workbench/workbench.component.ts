@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Inject } from '@angular/core';
 import { DragulaService } from 'ng2-dragula';
 import { DataService } from './../data.service';
 import { CurrentPeriodSlot, AllGameBox, AllBox, FreeGames, AllSlotBox, allSlots } from '../models/workbench.model';
@@ -7,6 +7,7 @@ import * as moment from 'moment';
 import { RootModel } from '../models/root.model';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { ValidationModalComponent } from '../common/validation-modal/validation-modal.component';
+import { DOCUMENT } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-workbench',
@@ -16,6 +17,7 @@ import { ValidationModalComponent } from '../common/validation-modal/validation-
 export class WorkbenchComponent implements OnInit {
   @ViewChild('timeElement') private timeElement: ElementRef;
   @ViewChild('gameElement') private gameElement: ElementRef;
+  
   responseData: RootModel = null;
   jsonVar: CurrentPeriodSlot = null;
   subs = new Subscription();
@@ -41,7 +43,9 @@ export class WorkbenchComponent implements OnInit {
 
   constructor(public dataService: DataService,
     private modalService: BsModalService,
-    private dragulaService: DragulaService) {
+    private dragulaService: DragulaService,
+    private elementRef:ElementRef,
+    @Inject(DOCUMENT) private document: any) {
       var scope = this;
     dragulaService.createGroup("slots", {
       removeOnSpill: false,
@@ -1007,6 +1011,8 @@ export class WorkbenchComponent implements OnInit {
   }
 
   deleteBlankSlot(name, el, target, source, sibling) {
+    
+
     console.log("Delete Blank Slot");
     console.log("Target");
     console.log("Target Id: " + target.id);
@@ -1023,9 +1029,14 @@ export class WorkbenchComponent implements OnInit {
     this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].Duration = 0;
 
     //Removing the un-necesary div created by dragula at the top
-    let domElement: HTMLElement = this.timeElement.nativeElement;
-    domElement.parentNode.removeChild(domElement);
-    // this.draggableElement.nativeElement.style.display = "none";
+    //let domElement: HTMLElement = this.timeElement.nativeElement;
+
+    let slotDivId = source.getAttribute('SlotDivId');   
+    var el = this.elementRef.nativeElement.querySelector('.'+slotDivId);
+    el.remove();
+    //el.style.display = 'none';     
+    //domElement.parentNode.removeChild(domElement);
+  
 
   }
 
