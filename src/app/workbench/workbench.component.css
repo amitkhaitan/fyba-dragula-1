@@ -195,8 +195,9 @@ body {
 .dropdownClass{
 	width: 150px;
     height: 30px;
-    margin-top: 10px;
-
+	margin-top: 10px;
+	margin-left: 10px;
+	margin-right: 10px;
 }
 
 	.relativeDiv{text-align: center;position: relative;height: 20px;text-align: center; border-top:1px solid #e1edff; border-right:1px solid #e1edff; background:#fff;}
@@ -224,7 +225,8 @@ body {
 	}
 
 	.btn-group{
-		left: 50%;
+		left: 40%;
+		right: 40%;
 		margin: auto;
 	}
 
@@ -256,4 +258,8 @@ body {
 
 .marginTop80 .bgBlueNone{
 	display: none !important;
+}
+.btn-primary{
+display: inline-block;
+border-radius: 5px;
 }

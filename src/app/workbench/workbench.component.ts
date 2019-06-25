@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, Inject } from '@angular/core';
 import { DragulaService } from 'ng2-dragula';
 import { DataService } from './../data.service';
-import { CurrentPeriodSlot, AllGameBox, AllBox, FreeGames, AllSlotBox, allSlots, TravelMatrix } from '../models/workbench.model';
+import { CurrentPeriodSlot, AllGameBox, AllBox, FreeGames, AllSlotBox, allSlots, TravelMatrix, GameVolunteerList } from '../models/workbench.model';
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
 import { RootModel } from '../models/root.model';
@@ -1083,19 +1083,23 @@ export class WorkbenchComponent implements OnInit {
                   console.log("*****************");
                   console.log("Same location");
                   console.log("Index: "+ ++index);
-                  console.log(this.differentLocationError);
-          
+                  console.log(this.differentLocationError);                       
+            
+                  allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9";
+                  slotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9";
                   console.log(allSlotBox);
                   console.log(slotBox);
-            
 
-                  if(this.differentLocationError==true){
-                    allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";               
-                  }
-                  else{
-                    allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9";
+                  //this.checkOtherGameErrors(allSlotBox,slotBox);
+                  // if(this.differentLocationError==true){
+                  //   allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";   
+                  //   allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";            
+                  // }
+                  // else{
+                  //   allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9";
+                  //   allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9";
                  
-                  }                
+                  // }                
                 }
 
                 else if ((allSlotBox.Location != slotBox.Location) && slotBox.AllGameBox.length > 0) {
@@ -1123,47 +1127,22 @@ export class WorkbenchComponent implements OnInit {
     }  
 
     
-    if(this.differentLocationError==true){
-      allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
+    // if(this.differentLocationError==true){
+    //   allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
  
-    }
-    else{
-      allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9";
+    // }
+    // else{
+    //   allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9";
    
-    }  
-   
+    // }  
+  
+  
+    var uniq = {};
 
-    for(var i=0;i<this.differentLocations.length-1;++i){
-      if((this.differentLocations[i].allSlotIndex==this.differentLocations[i+1].allSlotIndex
-        && 
-        this.differentLocations[i].slotBoxIndex==this.differentLocations[i+1].slotBoxIndex)
-        ){
-          this.differentLocations.splice(i,1);
-        }
-        else if(i+2<=this.differentLocations.length-1){
-          if(this.differentLocations[i].allSlotIndex==this.differentLocations[i+2].allSlotIndex
-            && 
-            this.differentLocations[i].slotBoxIndex==this.differentLocations[i+2].slotBoxIndex){
-              this.differentLocations.splice(i,1);
-            }
-        }
-       
-    }
-
-    for(var i=0;i<this.sameLocations.length-1;++i){
-      if((this.sameLocations[i].allSlotIndex==this.sameLocations[i+1].allSlotIndex
-        && 
-        this.sameLocations[i].slotBoxIndex==this.sameLocations[i+1].slotBoxIndex)
-        ||
-        (this.sameLocations[i].allSlotIndex==this.sameLocations[i+2].allSlotIndex
-          && 
-          this.sameLocations[i].slotBoxIndex==this.sameLocations[i+2].slotBoxIndex)  ){
-          this.sameLocations.splice(i,1);
-        }
-    }
-    
-    console.log(this.sameLocations);
+    this.differentLocations = this.differentLocations.filter(obj => !uniq[obj.allSlotIndex] && (uniq[obj.allSlotIndex] = true));
+    this.sameLocations = this.sameLocations.filter(obj => !uniq[obj.allSlotIndex] && (uniq[obj.allSlotIndex] = true));
     console.log(this.differentLocations);
+    console.log(this.sameLocations);
 
   }
 
@@ -1210,6 +1189,7 @@ export class WorkbenchComponent implements OnInit {
             console.log("Duration: ");
             console.log(this.jsonVar.TravelMatrix[i].Duration);
             allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9";
+            slotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9";
             // if(this.differentLocationError==true){
               
             //   slotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";       
@@ -1221,7 +1201,8 @@ export class WorkbenchComponent implements OnInit {
             
           }
           else {
-            //Error       
+            //Error    
+            console.log(this.differentLocationError) ;
             this.differentLocationError=true;    
             allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
             slotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
@@ -1261,16 +1242,126 @@ export class WorkbenchComponent implements OnInit {
       }
     }
 
-    if(this.differentLocationError){
-      console.log(this.differentLocationError);
-      allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
-    }
-    else{
-      allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9";
-    }
+    // if(this.differentLocationError){
+    //   console.log(this.differentLocationError);
+    //   allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
+    // }
+    // else{
+    //   allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9";
+    // }
     console.log(timeBwSlots);
     //this.fetchingData=false;
 
+  }
+
+  checkOtherGameErrors(allSlotBox: AllSlotBox, comparedSlotBox: AllSlotBox) {
+    console.log("Checking Other Game Errors");
+    let gameVolunteerList = allSlotBox.AllGameBox[0].AllBox[0].GameVolunteerList;
+
+    for (var i = 0; i < gameVolunteerList.length; ++i) {
+      this.jsonVar.allSlots.forEach((slot, allSlotIndex) => {
+        slot.AllSlotBox.forEach((slotBox, slotBoxIndex) => {
+          if (slotBox.AllGameBox.length > 0 && slotBox.IsGameBox) {
+            if(slotBox.AllGameBox[0].AllBox[0].GameDivId!=comparedSlotBox.AllGameBox[0].AllBox[0].GameDivId){
+              slotBox.AllGameBox[0].AllBox[0].GameVolunteerList.forEach(volunteer => {
+                if (gameVolunteerList[i].VolunteerSeasonalId == volunteer.VolunteerSeasonalId) {
+                 this.checkTimeDifference(allSlotBox,slotBox);
+                }
+              })
+            }     
+          }
+        })
+      })
+    }
+     
+  }
+
+
+  checkTimeDifference(allSlotBox: AllSlotBox, slotBox: AllSlotBox){
+    //Checking Time Difference
+
+    let gameSlotStartTime = moment(slotBox.AllGameBox[0].AllBox[0].StartTime, "HH:mm A");
+    let gameSlotEndTime = moment(slotBox.AllGameBox[0].AllBox[0].EndTime, "HH:mm A");
+    // console.log("GameSlot Start Time: " + gameSlotStartTime.format("HH:mm "));
+    // console.log("GameSlot End Time:" + gameSlotEndTime.format("HH:mm"));
+
+    let timeSlotStartTime = moment(allSlotBox.StartTime, "HH:mm A");
+    let timeslotEndTime = moment(allSlotBox.StartTime, "HH:mm A").add(allSlotBox.Duration, "minutes");
+
+    // console.log("TimeSlot Start Time: " + timeSlotStartTime.format("HH:mm"));
+    // console.log("TimeSlot End Time:" + timeslotEndTime.format("HH:mm"));
+
+    if (timeSlotStartTime.isSame(gameSlotStartTime)) {
+      console.log("--Both Start Times are same.");
+      console.log(allSlotBox);
+      this.differentLocationError=true;
+
+      allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
+      slotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
+    
+    }
+
+    else if (timeSlotStartTime.isBefore(gameSlotStartTime)) {
+      console.log("--Time Slot before Game.");
+      var tsEndTime = parseInt(timeslotEndTime.format("HH")) * 60 + parseInt(timeslotEndTime.format("mm"));
+      var gsStartTime = parseInt(gameSlotStartTime.format("HH")) * 60 + parseInt(gameSlotStartTime.format("mm"));
+  
+      var timeBwSlots = gsStartTime - tsEndTime;
+
+      for (var i = 0; i < this.jsonVar.TravelMatrix.length; ++i) {
+        if ((this.jsonVar.TravelMatrix[i].FromFacilityId == allSlotBox.LocationId && this.jsonVar.TravelMatrix[i].ToFacilityId == slotBox.LocationId)
+          || (this.jsonVar.TravelMatrix[i].ToFacilityId == allSlotBox.LocationId && this.jsonVar.TravelMatrix[i].FromFacilityId == slotBox.LocationId)) {
+
+          if (this.jsonVar.TravelMatrix[i].Duration < timeBwSlots) {
+            //No Error
+
+            console.log("Duration: ");
+            console.log(this.jsonVar.TravelMatrix[i].Duration);
+            allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9";
+            slotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9";
+        
+          }
+          else {
+            //Error    
+            console.log(this.differentLocationError) ;
+            this.differentLocationError=true;    
+            allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
+            slotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
+          }
+        }
+      }
+
+
+    }
+
+    else if (timeSlotStartTime.isAfter(gameSlotStartTime)) {
+      console.log("--Time Slot after Game.");
+      var tsStartTime = parseInt(timeSlotStartTime.format("HH")) * 60 + parseInt(timeSlotStartTime.format("mm"));
+      var gsEndTime = parseInt(gameSlotEndTime.format("HH")) * 60 + parseInt(gameSlotEndTime.format("mm"));
+      var timeBwSlots = tsStartTime - gsEndTime;
+
+      for (var i = 0; i < this.jsonVar.TravelMatrix.length; ++i) {
+     
+        if ((this.jsonVar.TravelMatrix[i].FromFacilityId == allSlotBox.LocationId && this.jsonVar.TravelMatrix[i].ToFacilityId == slotBox.LocationId)
+          ||
+          (this.jsonVar.TravelMatrix[i].ToFacilityId == allSlotBox.LocationId && this.jsonVar.TravelMatrix[i].FromFacilityId == slotBox.LocationId)
+        ) {          
+     
+          if (this.jsonVar.TravelMatrix[i].Duration < timeBwSlots) {
+            //No Error           
+            console.log("No Error - Duration greater than time b/w slots");       
+
+          }
+          else {
+            //Error
+            console.log("Error - Duration Less than time b/w slots");           
+            this.differentLocationError=true;
+            allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
+            slotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
+          }
+        }
+      }
+    }
   }
 
   togglePeriod(timePeriodNumber) {
@@ -1393,6 +1484,23 @@ export class WorkbenchComponent implements OnInit {
       line.style.left = left + 'px';
       line.style.height = H + 'px';
     }
+  }
+
+  saveData(){
+    this.fetchingData=true;
+    console.log("Saving Data");
+    this.dataService.saveData(this.responseData).
+    subscribe(
+      (res)=>{
+        this.fetchingData=false;
+        this.responseData = res;
+        console.log(res);
+      },
+      (err)=>{
+        this.fetchingData=false;
+        console.log(err);
+      }
+    );
   }
 }
 

@@ -51,5 +51,11 @@ export class DataService {
     return this.http.post('http://38.109.219.208:2019/api/GameWorkbench',body,this.postRequestOptions);
   }
 
+  saveData(data):Observable<any>{
+    console.log(data);
+    return this.http.post("http://38.109.219.208:2019/api/SaveGameWorkbench", data, this.postRequestOptions);
+    
+  }
+
 
 }
