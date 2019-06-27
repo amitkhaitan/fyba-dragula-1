@@ -140,9 +140,12 @@ export class WorkbenchComponent implements OnInit {
 
 
   ngOnInit() {
-    this.fetchingData = true;
+    this.fetchInitialData();
+  }
 
-    this.dataService.getWorkbenchDataOld()
+  fetchInitialData(){
+    this.fetchingData = true;
+    this.dataService.getWorkbenchData()
       .subscribe(
         (res) => {
           this.responseData = res;
@@ -201,6 +204,10 @@ export class WorkbenchComponent implements OnInit {
         this.fetchingData = false;
       }
     );
+  }
+
+  reset(){
+    this.fetchInitialData();
   }
 
   freeGametoBlankSlot(name, el, target, source, sibling) {
@@ -325,7 +332,8 @@ export class WorkbenchComponent implements OnInit {
                           title: 'Blackout Encountered',
                           message: 'Are You sure you want to proceed with the change, because the time-slot lies in a blackout.',
                           bgClass: 'bgRed',
-                          isBlackout: true
+                          isBlackout: true,                       
+                          isServerError:false
 
                         }
 
@@ -355,6 +363,8 @@ export class WorkbenchComponent implements OnInit {
   }
 
   checkBlackoutinMiniDb(source, target, seriesid) {
+    console.log("Checking blackout in mini db");
+    this.addMiniDatabaseTimeSlot(source, target, seriesid);
     this.miniDatabase.forEach(
       (db) => {
         db.Slots.forEach(
@@ -371,7 +381,11 @@ export class WorkbenchComponent implements OnInit {
                        been generated on a blackout day.
                      */
 
+                     var blackoutEncountered = false;
+                     
+                    
                     for (let i = 0; i < this.blackouts.length; ++i) {
+                      //debugger;
                       //console.log(this.blackouts[i]);
                       //console.log(this.blackouts[i].Date);
                       //console.log(allSlot.FacilityCurrentPeriodDate);
@@ -386,6 +400,7 @@ export class WorkbenchComponent implements OnInit {
 
                           if (slotStartTime.isSameOrAfter(blackoutStartTime) && slotStartTime.isBefore(blackoutEndTime)) {
                             console.log("It is a blackout");
+                            var blackoutEncountered=true;
 
                             // this.modalRef.hide();
 
@@ -393,7 +408,8 @@ export class WorkbenchComponent implements OnInit {
                               title: 'Blackout Encountered',
                               message: 'Are You sure you want to proceed with the change, because the time-slot lies in a blackout.',
                               bgClass: 'bgRed',
-                              isBlackout: true
+                              isBlackout: true,                           
+                              isServerError:false
 
                             }
 
@@ -417,6 +433,11 @@ export class WorkbenchComponent implements OnInit {
                         }
                       }
 
+                    }
+                    console.log(blackoutEncountered);
+                    if(blackoutEncountered==false){
+                      //debugger;
+                      this.addMiniDatabaseTimeSlot(source, target, seriesid);
                     }
 
                   }
@@ -485,15 +506,16 @@ export class WorkbenchComponent implements OnInit {
 
   addMiniDatabaseTimeSlot(source, target, seriesid) {
     //Changing the location and start-time all the time slots in the series 
+    console.log("adding timeslot to all");
     this.miniDatabase.forEach(
       (db) => {
         db.Slots.forEach(
           (slot) => {
             slot.allSlots.forEach((allSlot) => {
               if (allSlot.Heading == target.attributes.getNamedItem('location').value) {
-                allSlot.AllSlotBox.forEach((slotBox) => {
-
-                  if (slotBox.StartTime == source.attributes.getNamedItem('starttime').value) {
+                allSlot.AllSlotBox.forEach((slotBox) => {                  
+                  if (slotBox.StartTime == target.attributes.getNamedItem('starttime').value) {
+                    console.log(slotBox);
                     slotBox.Duration = parseInt(source.attributes.getNamedItem('duration').value);
                     slotBox.Height = source.attributes.getNamedItem('boxheight').value;
                     slotBox.IsBlankBox = false;
@@ -512,7 +534,7 @@ export class WorkbenchComponent implements OnInit {
 
 
     setTimeout(() => {
-      console.log(this.jsonVar.allSlots);
+      console.log(this.miniDatabase);
     }, 500)
 
     //Changing all the timeslots which match with the timeslot being dragged and setting it to null-slot
@@ -526,7 +548,7 @@ export class WorkbenchComponent implements OnInit {
                 allSlot.AllSlotBox.forEach((slotBox) => {
                   if (slotBox.SeriesId == seriesid && slotBox.StartTime == source.attributes.getNamedItem('starttime').value) {
                     console.log(slotBox);
-                    console.log(allSlot);
+                    //console.log(allSlot);
                     slotBox.Duration = 0;
                     slotBox.Height = "20px";
                     slotBox.IsBlankBox = true;
@@ -600,7 +622,8 @@ export class WorkbenchComponent implements OnInit {
                       title: 'Time Slot Already Exists',
                       message: 'Time Slot Can Not be added as a Time Slot already exists in the target location.',
                       bgClass: 'bgRed',
-                      isBlackout: false 
+                      isBlackout: false,                    
+                      isServerError:false
                     };
 
                     this.modalRef = this.modalService.show(ValidationModalComponent,{initialState});
@@ -658,7 +681,8 @@ export class WorkbenchComponent implements OnInit {
           title: 'Change Time Slot',
           message: 'Do you want to apply the same changes to the entire season ?',
           bgClass: 'bgBlue',
-          isBlackout: false
+          isBlackout: false,
+          isServerError:false
         };
   
         this.modalRef = this.modalService.show(ValidationModalComponent, { initialState });
@@ -667,6 +691,7 @@ export class WorkbenchComponent implements OnInit {
           console.log(data);
           if (data) {
             //Apply to All 
+            console.log("Apply to all");
             this.checkCurrentPeriodBlackout(source, target, seriesid);
             this.checkBlackoutinMiniDb(source, target, seriesid);
           }
@@ -730,7 +755,8 @@ export class WorkbenchComponent implements OnInit {
                           title: 'Blackout Encountered',
                           message: 'Are You sure you want to proceed with the change, because the time-slot lies in a blackout.',
                           bgClass: 'bgRed',
-                          isBlackout: true
+                          isBlackout: true,                          
+                          isServerError:false
 
                         }
 
@@ -819,6 +845,7 @@ export class WorkbenchComponent implements OnInit {
   /* Apply the timeslot changes to all the time-slots in other periods with same series-id */
   applyTimeSlotToAll(source, target, seriesid) {
     //Changing the location and start-time all the time slots in the series 
+    console.log("Applying change to all");
     this.miniDatabase.forEach(
       (db) => {
         db.Slots.forEach(
@@ -828,7 +855,7 @@ export class WorkbenchComponent implements OnInit {
                 allSlot.AllSlotBox.forEach((slotBox) => {
 
                   if (slotBox.StartTime == source.attributes.getNamedItem('starttime').value) {
-                    // console.log(slotBox);
+                    console.log(slotBox);
                     // console.log(allSlot);
                     slotBox.Duration = parseInt(source.attributes.getNamedItem('duration').value);
                     slotBox.Height = source.attributes.getNamedItem('boxheight').value;
@@ -836,6 +863,7 @@ export class WorkbenchComponent implements OnInit {
                     slotBox.IsGameBox = false;
                     slotBox.SlotColor = "#16a085";
                     slotBox.SeriesId = seriesid;
+                    //debugger;
                   }
                 })
               }
@@ -845,6 +873,7 @@ export class WorkbenchComponent implements OnInit {
       }
     )
 
+    console.log(this.miniDatabase);
 
     setTimeout(() => {
       console.log(this.jsonVar.allSlots);
@@ -1373,7 +1402,7 @@ export class WorkbenchComponent implements OnInit {
          //No Error           
          console.log("2No Error - Duration greater than time b/w slots");   
          console.log(allSlotBox);
-         allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "blue"; 
+         allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9"; 
 
        }
        else {

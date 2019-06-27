@@ -225,9 +225,14 @@ body {
 	}
 
 	.btn-group{
-		left: 40%;
-		right: 40%;
+		left: 35%;
+		right: 35%;
 		margin: auto;
+	}
+
+	.btn-group button{
+		display: inline-block;
+	border-radius: 5px;
 	}
 
 	.Class100 {
@@ -258,8 +263,4 @@ body {
 
 .marginTop80 .bgBlueNone{
 	display: none !important;
-}
-.btn-primary{
-display: inline-block;
-border-radius: 5px;
 }
