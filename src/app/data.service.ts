@@ -16,7 +16,7 @@ export class DataService {
   }
 
   getWorkbenchDataOld(): Observable<any> {
-    return this.http.get('http://38.109.219.208:2019/api/GameWorkbench')
+    return this.http.get('assets/data.json')
       .map((res) => res);
   }
 

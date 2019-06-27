@@ -12,11 +12,12 @@ export class ValidationModalComponent implements OnInit {
   message:string;
   bgClass: string;
   isBlackout:boolean;
+  isServerError:boolean;
 
   constructor(public bsModalRef: BsModalRef, public dataService: DataService) {}
 
   ngOnInit(){
-    
+    console.log(this.isServerError);
   }
 
   yes(){
