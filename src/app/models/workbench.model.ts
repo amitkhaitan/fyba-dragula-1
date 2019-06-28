@@ -119,7 +119,7 @@ export class AllBox {
 }
 
 export class GameVolunteerList{
-    VolunteerSeasonalId:number;
+    VolunteerSeasonalId:string;
     constructor(){
         this.VolunteerSeasonalId = null;
     }
