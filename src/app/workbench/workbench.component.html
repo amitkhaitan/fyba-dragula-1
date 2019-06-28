@@ -2,8 +2,9 @@
 <div *ngIf="responseData" class="btn-group" dropdown>
   <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle dropdownClass"
     aria-controls="dropdown-basic">
-    Select Period <span class="caret"></span>
+    Period No: {{FYBADataFromBackEnd.Period}} <span class="caret"></span>
   </button>
+
   <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
     <li *ngFor="let dummy of ' '.repeat(10).split(''), let x = index" role="menuitem">
       <a *ngIf="FYBADataFromBackEnd.Period!= x+1" (click)="togglePeriod(x+1)" class="dropdown-item">{{x+1}}</a>
