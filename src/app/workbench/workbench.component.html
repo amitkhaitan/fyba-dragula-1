@@ -164,6 +164,7 @@
       <!-- class="greenBoxScroll" -->
       <div id="freeGame"  [dragula]="'slots'">
         <div class="secondBlueBox" *ngFor="let freeGame of jsonVar.FreeGames" attr.GameName="{{freeGame.Name}}"
+          attr.gameMatchupId={{freeGame.GameMatchupId}}
           id="{{freeGame.GameDivId}}" attr.ResourceGroup="{{freeGame.ResourceGroup}}" attrFreeGame="1" id="freeGame"
           attr.Division="{{freeGame.Division}}">
           <div>

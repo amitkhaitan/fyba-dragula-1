@@ -5,7 +5,7 @@ import { DataService } from './../data.service';
 import { CurrentPeriodSlot, AllGameBox, AllBox, FreeGames, AllSlotBox, allSlots, TravelMatrix, GameVolunteerList } from '../models/workbench.model';
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
-import { RootModel } from '../models/root.model';
+import { RootModel, FYBADataFromBackEnd } from '../models/root.model';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { ValidationModalComponent } from '../common/validation-modal/validation-modal.component';
 import { DOCUMENT } from '@angular/platform-browser';
@@ -22,6 +22,12 @@ export class WorkbenchComponent implements OnInit {
   @ViewChild('timeElement') private timeElement: ElementRef;
   @ViewChild('gameElement') private gameElement: ElementRef;
 
+  urlParams:FYBADataFromBackEnd = {
+    GameScheduleId: null,
+    LoginUserId: null,
+    Period: null,
+    SeasonId: null
+  };
   responseData: RootModel = null;
   jsonVar: CurrentPeriodSlot = null;
   subs = new Subscription();
@@ -145,32 +151,20 @@ export class WorkbenchComponent implements OnInit {
 
 
   ngOnInit() {
-    console.log(this.router.url);
-    console.log(this.activatedRoute.snapshot);
-    console.log(this.activatedRoute.snapshot.params);
+
+    let model = this.activatedRoute.snapshot.queryParams;
     console.log(this.activatedRoute.snapshot.queryParams);
-    // this.activatedRoute.snapshot.queryParams.subscribe(
-    //   params => {
-    //     console.log(params);
-    //   }
-    // );
+    this.urlParams.GameScheduleId = model.GameScheduleId;
+    this.urlParams.LoginUserId = model.LoginUserId;
+    this.urlParams.Period = model.Period;
+    this.urlParams.SeasonId = model.SeasonId;
 
-      console.log(this.activatedRoute.snapshot.queryParamMap.has('SeasonId'));
-      console.log(this.activatedRoute.snapshot.queryParamMap.get('SeasonId'));
-      console.log(this.activatedRoute.snapshot.queryParamMap.keys);
-   
-
-    const allParams = this.activatedRoute.snapshot.params
-    console.log(allParams);
-    this.activatedRoute.paramMap.subscribe(params => {
-      console.log(params)
-})
-    this.fetchInitialData();
+    this.fetchInitialData(this.urlParams);
   }
 
-  fetchInitialData() {
+  fetchInitialData(model) {
     this.fetchingData = true;
-    this.dataService.getWorkbenchData()
+    this.dataService.getWorkbenchData(model)
       .subscribe(
         (res) => {
           this.responseData = res;
@@ -221,20 +215,47 @@ export class WorkbenchComponent implements OnInit {
     this.fetchingData = true;
 
     if(this.dataChanged){
+      this.fetchingData = false;
+      const initialState = {
+        title: 'Error',
+        message: 'Do you want to Save your changes before proceeding?',
+        bgClass: 'bgBlue',
+        isBlackout: null,
+        isServerError: false
+      }
 
+      this.modalRef = this.modalService.show(ValidationModalComponent, { initialState });
+
+      this.dataService.timeSlotSubject.subscribe((data) => {
+        console.log(data);
+        if (data) {
+          
+        }
+        else {
+          this.dataChanged=false;
+        }
+      });
     }
+    
     else{
-
+      this.postToggleData(timePeriodNumber);
     }
 
-    this.dataService.togglePeriod(timePeriodNumber).subscribe(
+   
+  }
+
+  postToggleData(timePeriodNumber){
+    this.dataService.togglePeriod(this.urlParams,timePeriodNumber).subscribe(
       (res) => {
         this.responseData = res;
         console.log(this.responseData);
         //console.log(JSON.stringify(this.responseData));
         this.jsonVar = this.responseData.CurrentPeriodSlot;
         console.log(this.jsonVar);
+        this.urlParams.Period = timePeriodNumber;
         this.fetchingData = false;
+        console.log("Url Params: ");
+        console.log(this.urlParams);
       },
         (err) => {
           console.log(err);
@@ -248,10 +269,12 @@ export class WorkbenchComponent implements OnInit {
           }
         }
     );
+  
   }
 
   reset() {
-    this.fetchInitialData();
+    
+    this.fetchInitialData(this.urlParams);
   }
 
   saveData(){
@@ -311,6 +334,7 @@ export class WorkbenchComponent implements OnInit {
                 allBox.EndTime = moment(allBox.StartTime, "hh:mm A").add(allBox.Duration, "minutes").format("hh:mm A");
                 allBox.TimeGroup = "10";
                 allBox.GameDivId = el.getAttribute("id");
+                allBox.GameMatchupId = el.getAttribute("gamematchupid");
 
                 console.log("Flag");
 
@@ -1001,7 +1025,8 @@ export class WorkbenchComponent implements OnInit {
                   Division: element.AllGameBox[0].AllBox[0].Division,
                   GameDivId: element.AllGameBox[0].AllBox[0].GameDivId,
                   GameVolunteerList: element.AllGameBox[0].AllBox[0].GameVolunteerList,
-                  Name: element.AllGameBox[0].AllBox[0].BoxValue
+                  Name: element.AllGameBox[0].AllBox[0].BoxValue,
+                  GameMatchupId: element.AllGameBox[0].AllBox[0].GameMatchupId
                 });
                 //debugger;
 
@@ -1020,6 +1045,13 @@ export class WorkbenchComponent implements OnInit {
 
     //Removing the un-necesary div created by dragula at the top
     let domElement: HTMLElement = this.gameElement.nativeElement;
+    console.log(domElement);
+    console.log(domElement.style);
+    console.log(domElement.parentNode);
+    //domElement.remove();
+    domElement.style.display = 'none';
+    domElement.id = null;
+    console.log(domElement.style);
     //domElement.parentNode.removeChild(domElement);
     console.log(this.jsonVar.FreeGames);
   }
@@ -1066,6 +1098,7 @@ export class WorkbenchComponent implements OnInit {
 
                 console.log(this.jsonVar.allSlots);
 
+                console.log(allSlotsIndex,slotBoxIndex);
                 this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].AllGameBox = [];
                 this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].IsBlankBox = false;
                 this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].IsGameBox = false;
@@ -1086,6 +1119,8 @@ export class WorkbenchComponent implements OnInit {
       //this.fetchingData=false;
     }, 500)
 
+
+    
   }
 
   deleteBlankSlot(name, el, target, source, sibling) {

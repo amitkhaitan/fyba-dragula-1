@@ -29,7 +29,19 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
     DragulaModule,
     HttpClientModule,
     MomentModule,
-    RouterModule.forRoot([]),
+    RouterModule.forRoot([
+      {
+         path: '',
+         component: WorkbenchComponent
+      }
+      //,
+
+    //   //SeasonId=23&Period=3&GameScheduleId=1&LoginUserId=5
+    //   {
+    //     path: 'workbench/:id',
+    //     component: WorkbenchComponent
+    //  }
+   ]),
     ModalModule.forRoot(),
     BsDropdownModule.forRoot()
   ],

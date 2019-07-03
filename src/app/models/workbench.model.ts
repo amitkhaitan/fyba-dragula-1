@@ -102,6 +102,7 @@ export class AllBox {
     EndTime: string;
     Duration: number;
     Division: string;
+    GameMatchupId:number;
     GameVolunteerList:Array<GameVolunteerList>;
 
     constructor(){
@@ -128,6 +129,7 @@ export class GameVolunteerList{
 export class FreeGames{
     Name:string;
     GameDivId:string;
+    GameMatchupId:number;
     GameVolunteerList:Array<GameVolunteerList>;
     Division:string;
 

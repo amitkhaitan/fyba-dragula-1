@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
+import { FYBADataFromBackEnd } from './models/root.model';
 
 @Injectable()
 export class DataService {
@@ -22,7 +23,7 @@ export class DataService {
 
 
 
-  getWorkbenchData(): Observable<any> {
+  getWorkbenchData(model): Observable<any> {
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'responseType': 'json'
@@ -30,22 +31,23 @@ export class DataService {
 
   let options = {headers:headers};
     
-    var body = JSON.stringify({
-      SeasonId: '23',
-      Period: '3',
-      GameScheduleId: '1',
-      LoginUserId: '7113'
-    });
+    // var body = JSON.stringify({
+    //   SeasonId: '23',
+    //   Period: '3',
+    //   GameScheduleId: '1',
+    //   LoginUserId: '7113'
+    // });
+    var body = JSON.stringify(model);
     console.log(body);
     return this.http.post('http://38.109.219.208:2019/api/GameWorkbench',body,this.postRequestOptions);
   }
 
-  togglePeriod(timePeriodNumber):Observable<any> {
+  togglePeriod(model:FYBADataFromBackEnd,timePeriodNumber):Observable<any> {
     var body = JSON.stringify({
-      SeasonId: '23',
+      SeasonId: model.SeasonId,
       Period: timePeriodNumber,
-      GameScheduleId: '1',
-      LoginUserId: '7113'
+      GameScheduleId: model.GameScheduleId,
+      LoginUserId: model.LoginUserId
     });
     console.log(body);
     return this.http.post('http://38.109.219.208:2019/api/GameWorkbench',body,this.postRequestOptions);
