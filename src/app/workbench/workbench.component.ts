@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, Inject } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DragulaService } from 'ng2-dragula';
 import { DataService } from './../data.service';
 import { CurrentPeriodSlot, AllGameBox, AllBox, FreeGames, AllSlotBox, allSlots, TravelMatrix, GameVolunteerList } from '../models/workbench.model';
@@ -34,11 +35,14 @@ export class WorkbenchComponent implements OnInit {
   sameLocations: TravelIndex[] = [];
   differentLocations: TravelIndex[] = [];
   differentLocationError: boolean;
+  dataChanged:boolean = false;
 
   constructor(public dataService: DataService,
     private modalService: BsModalService,
     private dragulaService: DragulaService,
     private elementRef: ElementRef,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
     @Inject(DOCUMENT) private document: any) {
     var scope = this;
     dragulaService.createGroup("slots", {
@@ -96,6 +100,7 @@ export class WorkbenchComponent implements OnInit {
 
     this.subs.add(this.dragulaService.drag('slots')
       .subscribe(({ name, el, source }) => {
+        this.dataChanged = true;
         console.log("Source");
         console.log(source);
         console.log("Element");
@@ -140,6 +145,26 @@ export class WorkbenchComponent implements OnInit {
 
 
   ngOnInit() {
+    console.log(this.router.url);
+    console.log(this.activatedRoute.snapshot);
+    console.log(this.activatedRoute.snapshot.params);
+    console.log(this.activatedRoute.snapshot.queryParams);
+    // this.activatedRoute.snapshot.queryParams.subscribe(
+    //   params => {
+    //     console.log(params);
+    //   }
+    // );
+
+      console.log(this.activatedRoute.snapshot.queryParamMap.has('SeasonId'));
+      console.log(this.activatedRoute.snapshot.queryParamMap.get('SeasonId'));
+      console.log(this.activatedRoute.snapshot.queryParamMap.keys);
+   
+
+    const allParams = this.activatedRoute.snapshot.params
+    console.log(allParams);
+    this.activatedRoute.paramMap.subscribe(params => {
+      console.log(params)
+})
     this.fetchInitialData();
   }
 
@@ -194,6 +219,14 @@ export class WorkbenchComponent implements OnInit {
 
   togglePeriod(timePeriodNumber) {
     this.fetchingData = true;
+
+    if(this.dataChanged){
+
+    }
+    else{
+
+    }
+
     this.dataService.togglePeriod(timePeriodNumber).subscribe(
       (res) => {
         this.responseData = res;
@@ -202,12 +235,48 @@ export class WorkbenchComponent implements OnInit {
         this.jsonVar = this.responseData.CurrentPeriodSlot;
         console.log(this.jsonVar);
         this.fetchingData = false;
-      }
+      },
+        (err) => {
+          console.log(err);
+          this.fetchingData = false;
+          const initialState = {
+            title: 'Error',
+            message: err.message,
+            bgClass: 'bgRed',
+            isBlackout: null,
+            isServerError: true
+          }
+        }
     );
   }
 
   reset() {
     this.fetchInitialData();
+  }
+
+  saveData(){
+    this.fetchingData = true;
+    this.dataService.saveData(this.responseData).subscribe(
+      (res) => {
+        this.responseData = res;
+        console.log(this.responseData);
+        //console.log(JSON.stringify(this.responseData));
+        this.jsonVar = this.responseData.CurrentPeriodSlot;
+        console.log(this.jsonVar);
+        this.fetchingData = false;
+      },
+        (err) => {
+          console.log(err);
+          this.fetchingData = false;
+          const initialState = {
+            title: 'Error',
+            message: err.message,
+            bgClass: 'bgRed',
+            isBlackout: null,
+            isServerError: true
+          }
+        }
+    );
   }
 
   freeGametoBlankSlot(name, el, target, source, sibling) {

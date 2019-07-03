@@ -11,6 +11,8 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ValidationModalComponent } from './common/validation-modal/validation-modal.component';
 import { TestComponent } from './test/test.component';
 import { CssLoaderComponent } from './common/css-loader/css-loader.component';
+import { SaveValidationComponent } from './common/save-validation/save-validation.component';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 
 
 @NgModule({
@@ -19,13 +21,15 @@ import { CssLoaderComponent } from './common/css-loader/css-loader.component';
     WorkbenchComponent,
     ValidationModalComponent,
     TestComponent,
-    CssLoaderComponent
+    CssLoaderComponent,
+    SaveValidationComponent
   ],
   imports: [
     BrowserModule,
     DragulaModule,
     HttpClientModule,
     MomentModule,
+    RouterModule.forRoot([]),
     ModalModule.forRoot(),
     BsDropdownModule.forRoot()
   ],
