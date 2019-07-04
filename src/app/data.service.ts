@@ -42,7 +42,7 @@ export class DataService {
     return this.http.post('http://38.109.219.208:2019/api/GameWorkbench',body,this.postRequestOptions);
   }
 
-  togglePeriod(model:FYBADataFromBackEnd,timePeriodNumber):Observable<any> {
+  togglePeriod(model,timePeriodNumber):Observable<any> {
     var body = JSON.stringify({
       SeasonId: model.SeasonId,
       Period: timePeriodNumber,

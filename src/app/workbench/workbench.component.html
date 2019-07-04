@@ -6,7 +6,7 @@
   </button>
 
   <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
-    <li *ngFor="let dummy of ' '.repeat(10).split(''), let x = index" role="menuitem">
+    <li *ngFor="let dummy of ' '.repeat(FYBADataFromBackEnd.TotalPeriods).split(''), let x = index" role="menuitem">
       <a *ngIf="FYBADataFromBackEnd.Period!= x+1" (click)="togglePeriod(x+1)" class="dropdown-item">{{x+1}}</a>
       <a *ngIf="FYBADataFromBackEnd.Period== x+1" class="dropdown-item active">{{x+1}}</a>
     </li>
@@ -56,13 +56,15 @@
       </div>
     </div>
 
-    <div class="centerDiv">
-      <div class="mainContainer">
+  
 
-        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+    <div class="centerDiv">
+        <div class="zui-wrapper">
+            <div class="zui-scroller">
+        <table class="zui-table" cellpadding="0" cellspacing="0" border="0" width="100%">
           <tr>
             <td>
-              <div class="mainDiv">
+              <div class="mainDiv width100">
                 <div class="topBlueBar">
                   <span>{{jsonVar.Timing.Heading}}</span>
                 </div>
@@ -92,7 +94,7 @@
                               <div id="gameSlot" style="position:absolute; border:1px solid; z-index:2;width:100%;"
                                 [dragula]="'slots'"
                                 [ngStyle]="{'top': gameBox.BoxTop, 'height': gameBox.BoxHeight, 'border-color': slotBox.SlotColor}"
-                                attr.SlotId="{{slotBox.SlotId}}" attr.Location={{slotBox.Location}}
+                                attr.TimeSlotId="{{slotBox.TimeSlotId}}"  attr.Location={{slotBox.Location}}
                                 attr.StartTime={{slotBox.StartTime}} attr.EndTime={{slotBox.EndTime}}
                                 attr.SlotHeight="{{slotBox.Height}}" attr.Duration={{slotBox.Duration}}
                                 attr.allSlotsIndex={{allSlotsIndex}} attr.slotBoxIndex={{slotBoxIndex}}>
@@ -115,7 +117,7 @@
                     </ng-container>
                     <ng-template #noGame>
                       <div id="blankSlot" [dragula]="'slots'" attr.SlotDivid="{{slotBox.SlotDivId}}"
-                        attr.SlotId="{{slotBox.SlotId}}" attr.Type="blankSlot" attr.Location={{slotBox.Location}}
+                        attr.TimeSlotId="{{slotBox.TimeSlotId}}"  attr.Type="blankSlot" attr.Location={{slotBox.Location}}
                         attr.StartTime={{slotBox.StartTime}} attr.EndTime={{slotBox.EndTime}}
                         attr.boxHeight={{slotBox.Height}} attr.Duration={{slotBox.Duration}}
                         attr.SeriesId={{slotBox.SeriesId}} attr.allSlotsIndex={{allSlotsIndex}}
@@ -123,7 +125,7 @@
 
                         <div #timeElement
                           style="position:absolute; left:0; top:0; border:1px solid;  width:100%; z-index:1;"
-                          attr.SlotId="{{slotBox.SlotId}}" attr.Type="blankSlot" attrFreeSlot="1"
+                          attr.TimeSlotId="{{slotBox.TimeSlotId}}"  attr.Type="blankSlot" attrFreeSlot="1"
                           class="{{slotBox.SlotDivId}}" attr.Location={{slotBox.Location}}
                           attr.StartTime={{slotBox.StartTime}} attr.EndTime={{slotBox.EndTime}}
                           attr.boxHeight={{slotBox.Height}} attr.Duration={{slotBox.Duration}}
@@ -136,7 +138,7 @@
                   <!---In-case there's a blackout, this template will be shown---->
                   <ng-template #nullSlot>
                     <div *ngIf="slotBox.IsBlankBox==true && slotBox.IsBlackout==false" id="nullSlot" class="relativeDiv"
-                      [dragula]="'slots'" attr.Location={{slotBox.Location}} attr.StartTime={{slotBox.StartTime}}
+                      [dragula]="'slots'"  attr.Location={{slotBox.Location}} attr.StartTime={{slotBox.StartTime}}
                       attr.EndTime={{slotBox.EndTime}} attr.boxHeight={{slotBox.Height}}>
                     </div>
 
@@ -150,6 +152,7 @@
             </td>
           </tr>
         </table>
+            </div>
         <div style="clear:both;"></div>
       </div>
     </div>

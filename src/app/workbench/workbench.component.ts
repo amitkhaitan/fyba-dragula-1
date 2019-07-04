@@ -22,11 +22,11 @@ export class WorkbenchComponent implements OnInit {
   @ViewChild('timeElement') private timeElement: ElementRef;
   @ViewChild('gameElement') private gameElement: ElementRef;
 
-  urlParams:FYBADataFromBackEnd = {
+  urlParams = {
     GameScheduleId: null,
     LoginUserId: null,
     Period: null,
-    SeasonId: null
+    SeasonId: null,
   };
   responseData: RootModel = null;
   jsonVar: CurrentPeriodSlot = null;
@@ -65,7 +65,11 @@ export class WorkbenchComponent implements OnInit {
         }
 
         else if (source.id == 'timeSlots' && target.id == 'nullSlot') {
-          return true
+          //return true;
+          var validity = scope.checkTimeSlotDropValidity(source, target);
+
+          return validity;
+        
         }
 
 
@@ -219,7 +223,7 @@ export class WorkbenchComponent implements OnInit {
       const initialState = {
         title: 'Error',
         message: 'Do you want to Save your changes before proceeding?',
-        bgClass: 'bgBlue',
+        bgClass: 'bgRed',
         isBlackout: null,
         isServerError: false
       }
@@ -239,9 +243,7 @@ export class WorkbenchComponent implements OnInit {
     
     else{
       this.postToggleData(timePeriodNumber);
-    }
-
-   
+    }   
   }
 
   postToggleData(timePeriodNumber){
@@ -287,6 +289,7 @@ export class WorkbenchComponent implements OnInit {
         this.jsonVar = this.responseData.CurrentPeriodSlot;
         console.log(this.jsonVar);
         this.fetchingData = false;
+        this.dataChanged=false;
       },
         (err) => {
           console.log(err);
@@ -706,6 +709,8 @@ export class WorkbenchComponent implements OnInit {
                     element.IsGameBox = false;
                     element.SlotColor = "#16a085";
                     element.SeriesId = seriesid;
+                    element.TimeSlotId = source.attributes.getNamedItem('timeslotid').value;
+                    console.log(source.attributes.getNamedItem('timeslotid').value);
                   }
 
                   else {
@@ -748,6 +753,7 @@ export class WorkbenchComponent implements OnInit {
                   element.IsGameBox = false;
                   element.SlotColor = "";
                   element.SeriesId = null;
+                  element.TimeSlotId = null;
                 }
               }
             )
@@ -1030,10 +1036,14 @@ export class WorkbenchComponent implements OnInit {
                 });
                 //debugger;
 
+               
                 element.AllGameBox[0].AllBox.splice(0, 1);
                 element.AllGameBox.splice(0, 1);
                 element.IsGameBox = false;
                 element.IsBlankBox = false;
+                console.log("Changing Element");
+                console.log(element);
+
 
               }
 
@@ -1048,12 +1058,13 @@ export class WorkbenchComponent implements OnInit {
     console.log(domElement);
     console.log(domElement.style);
     console.log(domElement.parentNode);
-    //domElement.remove();
-    domElement.style.display = 'none';
+    domElement.remove();
+    //domElement.style.display = 'none';
     domElement.id = null;
     console.log(domElement.style);
     //domElement.parentNode.removeChild(domElement);
     console.log(this.jsonVar.FreeGames);
+    console.log(this.jsonVar.allSlots);
   }
 
   gameSlottoBlankSlot(name, el, target, source, sibling) {
@@ -1134,6 +1145,9 @@ export class WorkbenchComponent implements OnInit {
 
     console.log(allSlotsIndex);
 
+
+
+    let deletedBox = this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex];
     this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].IsBlankBox = true;
     this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].Height = "20px";
     this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].SlotColor = "";
@@ -1145,11 +1159,14 @@ export class WorkbenchComponent implements OnInit {
     let slotDivId = source.getAttribute('SlotDivId');
     var el = this.elementRef.nativeElement.querySelector('.' + slotDivId);
     el.remove();
+
+    this.jsonVar.DeletedTimeSlot.push(deletedBox)
+    console.log(this.jsonVar.DeletedTimeSlot);
     //el.style.display = 'none';     
     //domElement.parentNode.removeChild(domElement);
-
-
   }
+
+
 
 
   checkGameSlotPlacement(allSlotBox: AllSlotBox) {
@@ -1625,7 +1642,7 @@ export class WorkbenchComponent implements OnInit {
                 if (element.IsBlankBox == true) {
                   //let targetStartTime = moment(target.attributes.getNamedItem('starttime').value, "HH:mm A").add(30,'minutes').format('hh:mm A');
                   let targetStartTime = element.EndTime;
-                  console.log(targetStartTime);
+                  //console.log(targetStartTime);
                   // console.log(allSlotIndex, slotBoxIndex);
                   // console.log(this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1]);
                   // console.log(this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1]);
@@ -1633,7 +1650,7 @@ export class WorkbenchComponent implements OnInit {
                   if (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1].IsBlankBox == true
                     &&
                     this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1].IsBlankBox == true) {
-                    console.log("It is a null slot.");
+                    //console.log("It is a null slot.");
                     timeSlotExists = false;
                     //return true;
                   }
@@ -1654,6 +1671,7 @@ export class WorkbenchComponent implements OnInit {
     return !timeSlotExists;
   }
 
+
   makeLine(fromDivId, toDivId, lineDivId) {
     adjustLine(
       document.getElementById(fromDivId),
@@ -1662,7 +1680,8 @@ export class WorkbenchComponent implements OnInit {
     );
 
     function adjustLine(from, to, line) {
-
+     //console.log(to);
+     if (to){
       var fT = $(from).offset().top + $(from).height() / 2;
       var tT = $(to).offset().top + $(to).height() / 2;
       var fL = $(from).offset().left + $(from).width() / 2;
@@ -1695,6 +1714,8 @@ export class WorkbenchComponent implements OnInit {
       line.style.top = top + 'px';
       line.style.left = left + 'px';
       line.style.height = H + 'px';
+     }
+    
     }
   }
 }

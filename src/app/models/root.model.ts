@@ -11,7 +11,6 @@ export interface BlackOuts{
 export interface RootModel{
     BlackOuts: Array<BlackOuts>
     CurrentPeriodSlot: CurrentPeriodSlot;
-    DeletedTimeSlot: Array<AllSlotBox>;
     FYBADataFromBackEnd:FYBADataFromBackEnd;
     MiniDatabase:Array<MiniDatabase>;
     //MiniDatabase:Array<CurrentPeriodSlot>;
@@ -22,6 +21,7 @@ export interface FYBADataFromBackEnd{
     LoginUserId:number;
     Period:number;
     SeasonId:number;
+    TotalPeriods:number;
 }
 
 export interface MiniDatabase{

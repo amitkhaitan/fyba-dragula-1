@@ -8,8 +8,7 @@ export class CurrentPeriodSlot{
     ResourceLine: Array<ResourceLine>;
     TimeSlot: Array<TimeSlot>;
     TravelMatrix: Array<TravelMatrix>;
-
-    
+    DeletedTimeSlot: Array<AllSlotBox>;
 }
 
 export class Timing{
