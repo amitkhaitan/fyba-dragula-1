@@ -1015,6 +1015,7 @@ export class WorkbenchComponent implements OnInit {
     console.log("Target");
     console.log("Target Id: " + target.id);
     console.log(target);
+    var name;
     this.jsonVar.allSlots.forEach(
       slot => {
         if (slot.Heading == source.attributes.getNamedItem('location').value) {
@@ -1026,6 +1027,7 @@ export class WorkbenchComponent implements OnInit {
               if (element.StartTime == source.attributes.getNamedItem('starttime').value) {
                 console.log(element);
                 //debugger;
+                name = element.AllGameBox[0].AllBox[0].BoxValue;
 
                 this.jsonVar.FreeGames.push({
                   Division: element.AllGameBox[0].AllBox[0].Division,
@@ -1041,8 +1043,8 @@ export class WorkbenchComponent implements OnInit {
                 element.AllGameBox.splice(0, 1);
                 element.IsGameBox = false;
                 element.IsBlankBox = false;
-                console.log("Changing Element");
-                console.log(element);
+                // console.log("Changing Element");
+                // console.log(element);
 
 
               }
@@ -1054,20 +1056,21 @@ export class WorkbenchComponent implements OnInit {
     )
 
     //Removing the un-necesary div created by dragula at the top
-    let domElement: HTMLElement = this.gameElement.nativeElement;
-    console.log(domElement);  
-    console.log (domElement.childNodes);
-    console.log (domElement.children);
-    // console.log(domElement.parentNode);
-    // console.log(domElement.parentElement);
-    // console.log(domElement.parentNode.parentNode);
-    //console.log(domElement.style);
-    //domElement.remove();
-    //domElement.style.display = 'none';
-    domElement.id = null;
-    //domElement.parentNode.removeChild(domElement);
-    console.log(this.jsonVar.FreeGames);
-    console.log(this.jsonVar.allSlots);
+    // let domElement: HTMLElement = this.gameElement.nativeElement;
+    // console.log(domElement);
+    // console.log(name);
+    // console.log(domElement.attributes.getNamedItem('title').value);
+    // if(domElement.attributes.getNamedItem('title').value==name){
+    //   console.log(domElement);
+    //   console.log(domElement.children);
+    //   console.log(domElement.parentElement);
+    //   domElement.remove();
+    //   domElement.id = null;
+     
+    //   console.log(this.jsonVar.FreeGames);
+    //   console.log(this.jsonVar.allSlots);
+    // }
+
   }
 
   gameSlottoBlankSlot(name, el, target, source, sibling) {
@@ -1683,7 +1686,7 @@ export class WorkbenchComponent implements OnInit {
     );
 
     function adjustLine(from, to, line) {
-     console.log(to);
+     //console.log(to);
      if (to){
       var fT = $(from).offset().top + $(from).height() / 2;
       var tT = $(to).offset().top + $(to).height() / 2;
