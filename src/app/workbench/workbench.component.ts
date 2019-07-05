@@ -778,7 +778,7 @@ export class WorkbenchComponent implements OnInit {
         console.log(timeSlotExists);
         const initialState = {
           title: 'Change Time Slot',
-          message: 'Do you want to apply the same changes to the entire season ?',
+          message: 'Do you want to apply the same changes to the entire series ?',
           bgClass: 'bgBlue',
           isBlackout: false,
           isServerError: false
