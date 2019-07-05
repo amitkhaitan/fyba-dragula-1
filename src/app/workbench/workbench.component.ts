@@ -1055,13 +1055,16 @@ export class WorkbenchComponent implements OnInit {
 
     //Removing the un-necesary div created by dragula at the top
     let domElement: HTMLElement = this.gameElement.nativeElement;
-    console.log(domElement);
-    console.log(domElement.style);
-    console.log(domElement.parentNode);
-    domElement.remove();
+    console.log(domElement);  
+    console.log (domElement.childNodes);
+    console.log (domElement.children);
+    // console.log(domElement.parentNode);
+    // console.log(domElement.parentElement);
+    // console.log(domElement.parentNode.parentNode);
+    //console.log(domElement.style);
+    //domElement.remove();
     //domElement.style.display = 'none';
     domElement.id = null;
-    console.log(domElement.style);
     //domElement.parentNode.removeChild(domElement);
     console.log(this.jsonVar.FreeGames);
     console.log(this.jsonVar.allSlots);
@@ -1680,7 +1683,7 @@ export class WorkbenchComponent implements OnInit {
     );
 
     function adjustLine(from, to, line) {
-     //console.log(to);
+     console.log(to);
      if (to){
       var fT = $(from).offset().top + $(from).height() / 2;
       var tT = $(to).offset().top + $(to).height() / 2;
