@@ -1028,6 +1028,9 @@ export class WorkbenchComponent implements OnInit {
                 console.log(element);
                 //debugger;
                 name = element.AllGameBox[0].AllBox[0].BoxValue;
+                
+                $('#'+element.AllGameBox[0].AllBox[0].GameDivId).prop('id', null);
+                //console.log($('#' + element.AllGameBox[0].AllBox[0].GameMatchupId).attr('id'));
 
                 this.jsonVar.FreeGames.push({
                   Division: element.AllGameBox[0].AllBox[0].Division,

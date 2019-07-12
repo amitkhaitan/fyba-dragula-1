@@ -178,8 +178,8 @@ body {
 
 .greenBoxScroll {
 	position: relative;
-	max-height:535px;
-	overflow:auto;
+	/* max-height:535px;
+	overflow:auto; */
 }
 
 .greenBoxScroll .bgBlueNone{
@@ -257,6 +257,11 @@ body {
 
 		.bgWhite{
 			background-color: white;
+		}
+
+		.timeSlotDelete{
+			border: 3px lightgreen dotted; color:lightcoral; font-size: 12px;  height: 60px; width: 100%;
+			text-align: center;
 		}
 .marginTop80 {
 	margin-top: 80px;
