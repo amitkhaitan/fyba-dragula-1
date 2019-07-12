@@ -168,7 +168,8 @@ export class WorkbenchComponent implements OnInit {
 
   fetchInitialData(model) {
     this.fetchingData = true;
-    this.dataService.getWorkbenchData(model)
+    //this.dataService.getWorkbenchData(model)
+    this.dataService.getWorkbenchDataOld()
       .subscribe(
         (res) => {
           this.responseData = res;
@@ -709,7 +710,21 @@ export class WorkbenchComponent implements OnInit {
                   console.log(this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1]);
                   console.log(this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1]);
 
-                  if (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1].IsBlankBox == true
+                if(((this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1]) === slotBoxIndex[this.jsonVar.allSlots[allSlotIndex].AllSlotBox.length]) ||
+                (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1])=== slotBoxIndex[0] ){
+                  timeSlotExists = false;
+                  element.Duration = parseInt(source.attributes.getNamedItem('duration').value);
+                    element.Height = source.attributes.getNamedItem('boxheight').value;
+                    element.IsBlankBox = false;
+                    element.IsGameBox = false;
+                    element.SlotColor = "#16a085";
+                    element.SeriesId = seriesid;
+                    element.TimeSlotId = source.attributes.getNamedItem('timeslotid').value;
+                    console.log(source.attributes.getNamedItem('timeslotid').value);
+                }
+                else{
+
+                    if (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1].IsBlankBox == true
                     &&
                     this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1].IsBlankBox == true) {
                     console.log("It is a null slot.");
@@ -739,6 +754,7 @@ export class WorkbenchComponent implements OnInit {
                     this.modalRef = this.modalService.show(ValidationModalComponent, { initialState });
 
                   }
+                 }
                 }
               }
             }
@@ -1670,6 +1686,11 @@ export class WorkbenchComponent implements OnInit {
                   // console.log(this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1]);
                   // console.log(this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1]);
 
+                  if(((this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1]) === slotBoxIndex[this.jsonVar.allSlots[allSlotIndex].AllSlotBox.length]) ||
+                (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1])=== slotBoxIndex[0] ){
+                  timeSlotExists = false;
+                }
+                else{
                   if (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1].IsBlankBox == true
                     &&
                     this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1].IsBlankBox == true) {
@@ -1684,6 +1705,8 @@ export class WorkbenchComponent implements OnInit {
                     //return false;                  
 
                   }
+
+                }
                 }
               }
             }
