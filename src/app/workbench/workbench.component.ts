@@ -341,11 +341,11 @@ export class WorkbenchComponent implements OnInit {
 
                 console.log("Flag");
 
-
-                this.jsonVar.FreeGames.forEach(freegame => {
+                this.jsonVar.FreeGames.forEach((freegame,fgIndex) => {
                   if (freegame.Name == el.getAttribute("GameName")) {
                     allBox.GameVolunteerList = freegame.GameVolunteerList;
-                  }
+                    this.jsonVar.FreeGames.splice(fgIndex,1);
+                  };                  
                 });
 
                 let allGameBox = new AllGameBox();
@@ -354,6 +354,18 @@ export class WorkbenchComponent implements OnInit {
                 element.AllGameBox[0] = allGameBox;
 
                 this.checkGameSlotPlacement(element);
+
+                
+                // this.jsonVar.FreeGames.forEach((freegame,fgIndex) => {
+                //   if (freegame.Name == el.getAttribute("GameName")) {
+                //     //allBox.GameVolunteerList = freegame.GameVolunteerList;
+                    
+                //   };
+                 
+                // });
+
+
+                console.log(this.jsonVar.FreeGames);
               }
             }
           )
@@ -1039,6 +1051,8 @@ export class WorkbenchComponent implements OnInit {
                   Name: element.AllGameBox[0].AllBox[0].BoxValue,
                   GameMatchupId: element.AllGameBox[0].AllBox[0].GameMatchupId
                 });
+
+                console.log(this.jsonVar.FreeGames);
                 //debugger;
 
                
