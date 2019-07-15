@@ -17,7 +17,7 @@ export class DataService {
   }
 
   getWorkbenchDataOld(): Observable<any> {
-    return this.http.get('assets/data.json')
+    return this.http.get('assets/test.json')
       .map((res) => res);
   }
 

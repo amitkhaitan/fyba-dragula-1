@@ -6,7 +6,6 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { DragServiceService } from '../drag-service.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import '../../assets/jsonData.json';
 import { DragulaService } from 'ng2-dragula';
 import { findIndex } from 'rxjs/operator/findIndex';
 import { timeInterval } from 'rxjs/operator/timeInterval';

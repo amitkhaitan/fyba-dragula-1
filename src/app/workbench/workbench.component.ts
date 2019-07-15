@@ -168,7 +168,8 @@ export class WorkbenchComponent implements OnInit {
 
   fetchInitialData(model) {
     this.fetchingData = true;
-    this.dataService.getWorkbenchData(model)
+    //this.dataService.getWorkbenchData(model)  
+    this.dataService.getWorkbenchDataOld()      
       .subscribe(
         (res) => {
           this.responseData = res;
@@ -389,7 +390,7 @@ export class WorkbenchComponent implements OnInit {
           slot.AllSlotBox.forEach(
             element => {
               if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
-                element.Duration = parseInt(source.attributes.getNamedItem('tsDuration').value);
+                element.Duration = parseInt(source.attributes.getNamedItem('Duration').value);
                 element.Height = source.attributes.getNamedItem('tsHeight').value;
                 element.IsBlankBox = false;
                 element.SlotColor = "#16a085";
@@ -1649,6 +1650,9 @@ export class WorkbenchComponent implements OnInit {
 
     var seriesid = source.getAttribute('seriesid');
     var timeSlotExists = null;
+    let duration = source.attributes.getNamedItem('duration').value;
+    console.log(duration);
+
     // let targetStartTime = moment(target.attributes.getNamedItem('starttime').value, "HH:mm A");
     // let targetEndTime = moment(target.attributes.getNamedItem('endtime').value, "HH:mm A");
 
@@ -1659,23 +1663,67 @@ export class WorkbenchComponent implements OnInit {
           slot.AllSlotBox.forEach(
             (element, slotBoxIndex) => {
               if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
-                // console.log("Element.....");
-                // console.log(element);
-
+          
                 if (element.IsBlankBox == true) {
                   //let targetStartTime = moment(target.attributes.getNamedItem('starttime').value, "HH:mm A").add(30,'minutes').format('hh:mm A');
                   let targetStartTime = element.EndTime;
-                  //console.log(targetStartTime);
-                  // console.log(allSlotIndex, slotBoxIndex);
-                  // console.log(this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1]);
-                  // console.log(this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1]);
 
-                  if (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1].IsBlankBox == true
-                    &&
-                    this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1].IsBlankBox == true) {
-                    //console.log("It is a null slot.");
-                    timeSlotExists = false;
-                    //return true;
+                  if(duration=='85'){
+                    timeSlotExists = true;
+                    // console.log(slotBoxIndex);
+                    // console.log(slot.AllSlotBox.length);              
+
+
+                      if(slotBoxIndex==0){
+                        if (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1].IsBlankBox == true
+                          &&                                               
+                          this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 2].IsBlankBox == true) {
+                       
+                          timeSlotExists = false;
+                      }
+                    }
+
+                      else if(slotBoxIndex==slot.AllSlotBox.length-1 || slotBoxIndex==slot.AllSlotBox.length-2){
+                          timeSlotExists=true;
+                      }
+
+                      else{
+                        if (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1].IsBlankBox == true
+                          &&
+                          this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1].IsBlankBox == true
+                          &&                       
+                          this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 2].IsBlankBox == true) {
+                       
+                          timeSlotExists = false;
+                      }
+                  }
+                }
+
+                  else if(duration =='55'){
+                    timeSlotExists=true;
+
+                    if(slotBoxIndex==0){
+                      if (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1].IsBlankBox == true) 
+                        {          
+                          timeSlotExists = false;
+                        }    
+                    }
+                    else if(slotBoxIndex == slot.AllSlotBox.length-1){
+                      if (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1].IsBlankBox == true) 
+                        {          
+                          timeSlotExists = false;
+                        }    
+                    }
+                    else{
+                      if (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1].IsBlankBox == true
+                        &&
+                        this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1].IsBlankBox == true) 
+                        {          
+                          timeSlotExists = false;
+                        }    
+                    }
+
+                                
                   }
 
                   else {
@@ -1683,7 +1731,8 @@ export class WorkbenchComponent implements OnInit {
                     timeSlotExists = true;
                     //return false;                  
 
-                  }
+                  }              
+                 
                 }
               }
             }
