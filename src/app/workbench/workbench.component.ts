@@ -41,7 +41,7 @@ export class WorkbenchComponent implements OnInit {
   sameLocations: TravelIndex[] = [];
   differentLocations: TravelIndex[] = [];
   differentLocationError: boolean;
-  dataChanged:boolean = false;
+  dataChanged: boolean = false;
 
   constructor(public dataService: DataService,
     private modalService: BsModalService,
@@ -69,7 +69,7 @@ export class WorkbenchComponent implements OnInit {
           var validity = scope.checkTimeSlotDropValidity(source, target);
 
           return validity;
-        
+
         }
 
 
@@ -168,7 +168,7 @@ export class WorkbenchComponent implements OnInit {
 
   fetchInitialData(model) {
     this.fetchingData = true;
-    //this.dataService.getWorkbenchData(model)
+    //this.dataService.getWorkbenchData(model)  
     this.dataService.getWorkbenchDataOld()
       .subscribe(
         (res) => {
@@ -219,7 +219,7 @@ export class WorkbenchComponent implements OnInit {
   togglePeriod(timePeriodNumber) {
     this.fetchingData = true;
 
-    if(this.dataChanged){
+    if (this.dataChanged) {
       this.fetchingData = false;
       const initialState = {
         title: 'Error',
@@ -234,21 +234,21 @@ export class WorkbenchComponent implements OnInit {
       this.dataService.timeSlotSubject.subscribe((data) => {
         console.log(data);
         if (data) {
-          
+
         }
         else {
-          this.dataChanged=false;
+          this.dataChanged = false;
         }
       });
     }
-    
-    else{
+
+    else {
       this.postToggleData(timePeriodNumber);
-    }   
+    }
   }
 
-  postToggleData(timePeriodNumber){
-    this.dataService.togglePeriod(this.urlParams,timePeriodNumber).subscribe(
+  postToggleData(timePeriodNumber) {
+    this.dataService.togglePeriod(this.urlParams, timePeriodNumber).subscribe(
       (res) => {
         this.responseData = res;
         console.log(this.responseData);
@@ -260,27 +260,27 @@ export class WorkbenchComponent implements OnInit {
         console.log("Url Params: ");
         console.log(this.urlParams);
       },
-        (err) => {
-          console.log(err);
-          this.fetchingData = false;
-          const initialState = {
-            title: 'Error',
-            message: err.message,
-            bgClass: 'bgRed',
-            isBlackout: null,
-            isServerError: true
-          }
+      (err) => {
+        console.log(err);
+        this.fetchingData = false;
+        const initialState = {
+          title: 'Error',
+          message: err.message,
+          bgClass: 'bgRed',
+          isBlackout: null,
+          isServerError: true
         }
+      }
     );
-  
+
   }
 
   reset() {
-    
+
     this.fetchInitialData(this.urlParams);
   }
 
-  saveData(){
+  saveData() {
     this.fetchingData = true;
     this.dataService.saveData(this.responseData).subscribe(
       (res) => {
@@ -290,19 +290,19 @@ export class WorkbenchComponent implements OnInit {
         this.jsonVar = this.responseData.CurrentPeriodSlot;
         console.log(this.jsonVar);
         this.fetchingData = false;
-        this.dataChanged=false;
+        this.dataChanged = false;
       },
-        (err) => {
-          console.log(err);
-          this.fetchingData = false;
-          const initialState = {
-            title: 'Error',
-            message: err.message,
-            bgClass: 'bgRed',
-            isBlackout: null,
-            isServerError: true
-          }
+      (err) => {
+        console.log(err);
+        this.fetchingData = false;
+        const initialState = {
+          title: 'Error',
+          message: err.message,
+          bgClass: 'bgRed',
+          isBlackout: null,
+          isServerError: true
         }
+      }
     );
   }
 
@@ -342,11 +342,11 @@ export class WorkbenchComponent implements OnInit {
 
                 console.log("Flag");
 
-                this.jsonVar.FreeGames.forEach((freegame,fgIndex) => {
+                this.jsonVar.FreeGames.forEach((freegame, fgIndex) => {
                   if (freegame.Name == el.getAttribute("GameName")) {
                     allBox.GameVolunteerList = freegame.GameVolunteerList;
-                    this.jsonVar.FreeGames.splice(fgIndex,1);
-                  };                  
+                    this.jsonVar.FreeGames.splice(fgIndex, 1);
+                  };
                 });
 
                 let allGameBox = new AllGameBox();
@@ -356,13 +356,13 @@ export class WorkbenchComponent implements OnInit {
 
                 this.checkGameSlotPlacement(element);
 
-                
+
                 // this.jsonVar.FreeGames.forEach((freegame,fgIndex) => {
                 //   if (freegame.Name == el.getAttribute("GameName")) {
                 //     //allBox.GameVolunteerList = freegame.GameVolunteerList;
-                    
+
                 //   };
-                 
+
                 // });
 
 
@@ -390,7 +390,7 @@ export class WorkbenchComponent implements OnInit {
           slot.AllSlotBox.forEach(
             element => {
               if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
-                element.Duration = parseInt(source.attributes.getNamedItem('tsDuration').value);
+                element.Duration = parseInt(source.attributes.getNamedItem('Duration').value);
                 element.Height = source.attributes.getNamedItem('tsHeight').value;
                 element.IsBlankBox = false;
                 element.SlotColor = "#16a085";
@@ -707,38 +707,52 @@ export class WorkbenchComponent implements OnInit {
                   let targetStartTime = element.EndTime;
                   console.log(targetStartTime);
                   console.log(allSlotIndex, slotBoxIndex);
-                  console.log(this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1]);
-                  console.log(this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1]);
-
-                if(((this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1]) === slotBoxIndex[this.jsonVar.allSlots[allSlotIndex].AllSlotBox.length]) ||
-                (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1])=== slotBoxIndex[0] ){
-                  timeSlotExists = false;
-                  element.Duration = parseInt(source.attributes.getNamedItem('duration').value);
-                    element.Height = source.attributes.getNamedItem('boxheight').value;
-                    element.IsBlankBox = false;
-                    element.IsGameBox = false;
-                    element.SlotColor = "#16a085";
-                    element.SeriesId = seriesid;
-                    element.TimeSlotId = source.attributes.getNamedItem('timeslotid').value;
-                    console.log(source.attributes.getNamedItem('timeslotid').value);
-                }
-                else{
-
-                    if (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1].IsBlankBox == true
-                    &&
-                    this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1].IsBlankBox == true) {
+                 
                     console.log("It is a null slot.");
-                    timeSlotExists = false;
-                    //debugger;
-                    element.Duration = parseInt(source.attributes.getNamedItem('duration').value);
-                    element.Height = source.attributes.getNamedItem('boxheight').value;
-                    element.IsBlankBox = false;
-                    element.IsGameBox = false;
-                    element.SlotColor = "#16a085";
-                    element.SeriesId = seriesid;
-                    element.TimeSlotId = source.attributes.getNamedItem('timeslotid').value;
-                    console.log(source.attributes.getNamedItem('timeslotid').value);
-                  }
+
+                    if (slotBoxIndex == 0) {
+                      if (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1].IsBlankBox == true) {
+                        timeSlotExists = false;
+                        //debugger;                  
+                        element.Duration = parseInt(source.attributes.getNamedItem('duration').value);
+                        element.Height = source.attributes.getNamedItem('boxheight').value;
+                        element.IsBlankBox = false;
+                        element.IsGameBox = false;
+                        element.SlotColor = "#16a085";
+                        element.SeriesId = seriesid;
+                        element.TimeSlotId = source.attributes.getNamedItem('timeslotid').value;
+                        console.log(source.attributes.getNamedItem('timeslotid').value);
+                      }
+                    }
+                    else if (slotBoxIndex == slot.AllSlotBox.length - 1) {
+                      if (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1].IsBlankBox == true) {
+                        timeSlotExists = false;
+                        //debugger;                  
+                        element.Duration = parseInt(source.attributes.getNamedItem('duration').value);
+                        element.Height = source.attributes.getNamedItem('boxheight').value;
+                        element.IsBlankBox = false;
+                        element.IsGameBox = false;
+                        element.SlotColor = "#16a085";
+                        element.SeriesId = seriesid;
+                        element.TimeSlotId = source.attributes.getNamedItem('timeslotid').value;
+                        console.log(source.attributes.getNamedItem('timeslotid').value);
+                      }
+                    }
+                    else if (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1].IsBlankBox == true
+                        &&
+                        this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1].IsBlankBox == true) {
+                        timeSlotExists = false;
+                        //debugger;                  
+                        element.Duration = parseInt(source.attributes.getNamedItem('duration').value);
+                        element.Height = source.attributes.getNamedItem('boxheight').value;
+                        element.IsBlankBox = false;
+                        element.IsGameBox = false;
+                        element.SlotColor = "#16a085";
+                        element.SeriesId = seriesid;
+                        element.TimeSlotId = source.attributes.getNamedItem('timeslotid').value;
+                        console.log(source.attributes.getNamedItem('timeslotid').value);
+                      }   
+                  
 
                   else {
                     console.log("Time Slot Already Exists");
@@ -754,7 +768,6 @@ export class WorkbenchComponent implements OnInit {
                     this.modalRef = this.modalService.show(ValidationModalComponent, { initialState });
 
                   }
-                 }
                 }
               }
             }
@@ -1056,8 +1069,8 @@ export class WorkbenchComponent implements OnInit {
                 console.log(element);
                 //debugger;
                 name = element.AllGameBox[0].AllBox[0].BoxValue;
-                
-                $('#'+element.AllGameBox[0].AllBox[0].GameDivId).prop('id', null);
+
+                $('#' + element.AllGameBox[0].AllBox[0].GameDivId).prop('id', null);
                 //console.log($('#' + element.AllGameBox[0].AllBox[0].GameMatchupId).attr('id'));
 
                 this.jsonVar.FreeGames.push({
@@ -1071,7 +1084,7 @@ export class WorkbenchComponent implements OnInit {
                 console.log(this.jsonVar.FreeGames);
                 //debugger;
 
-               
+
                 element.AllGameBox[0].AllBox.splice(0, 1);
                 element.AllGameBox.splice(0, 1);
                 element.IsGameBox = false;
@@ -1099,7 +1112,7 @@ export class WorkbenchComponent implements OnInit {
     //   console.log(domElement.parentElement);
     //   domElement.remove();
     //   domElement.id = null;
-     
+
     //   console.log(this.jsonVar.FreeGames);
     //   console.log(this.jsonVar.allSlots);
     // }
@@ -1148,7 +1161,7 @@ export class WorkbenchComponent implements OnInit {
 
                 console.log(this.jsonVar.allSlots);
 
-                console.log(allSlotsIndex,slotBoxIndex);
+                console.log(allSlotsIndex, slotBoxIndex);
                 this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].AllGameBox = [];
                 this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].IsBlankBox = false;
                 this.jsonVar.allSlots[allSlotsIndex].AllSlotBox[slotBoxIndex].IsGameBox = false;
@@ -1170,7 +1183,7 @@ export class WorkbenchComponent implements OnInit {
     }, 500)
 
 
-    
+
   }
 
   deleteBlankSlot(name, el, target, source, sibling) {
@@ -1441,14 +1454,14 @@ export class WorkbenchComponent implements OnInit {
   }
 
 
-  
-  checkGamesWithSameVolunteers2(comparedSlotBox: AllSlotBox){
+
+  checkGamesWithSameVolunteers2(comparedSlotBox: AllSlotBox) {
     console.log("2Checking other games with same volunteers");
 
-    
+
     console.log(comparedSlotBox);
 
-   
+
     let gameVolunteerList = comparedSlotBox.AllGameBox[0].AllBox[0].GameVolunteerList;
     console.log("Game Volunteer List");
     console.log(gameVolunteerList);
@@ -1458,8 +1471,8 @@ export class WorkbenchComponent implements OnInit {
       //console.log(gameVolunteerList.length);
       this.jsonVar.allSlots.forEach((slot, allSlotIndex) => {
         slot.AllSlotBox.forEach((slotBox, slotBoxIndex) => {
-          if (slotBox.AllGameBox.length > 0 && slotBox.IsGameBox) {           
-            if(slotBox.Location!=comparedSlotBox.Location ){            
+          if (slotBox.AllGameBox.length > 0 && slotBox.IsGameBox) {
+            if (slotBox.Location != comparedSlotBox.Location) {
               slotBox.AllGameBox[0].AllBox[0].GameVolunteerList.forEach(volunteer => {
                 //console.log(volunteer);
                 if (parseInt(gameVolunteerList[i].VolunteerSeasonalId) === parseInt(volunteer.VolunteerSeasonalId)) {
@@ -1469,10 +1482,10 @@ export class WorkbenchComponent implements OnInit {
                   model.allSlotIndex = allSlotIndex;
                   model.slotBoxIndex = slotBoxIndex;
                   this.sameLocations2.push(model);
-                  this.checkTimeDifference(comparedSlotBox,slotBox);
-                }              
+                  this.checkTimeDifference(comparedSlotBox, slotBox);
+                }
               })
-            }     
+            }
           }
         })
       })
@@ -1482,7 +1495,7 @@ export class WorkbenchComponent implements OnInit {
 
 
 
-  checkGamesWithSameVolunteers(allSlotBox: AllSlotBox,comparedSlotBox: AllSlotBox){
+  checkGamesWithSameVolunteers(allSlotBox: AllSlotBox, comparedSlotBox: AllSlotBox) {
     console.log("2Checking other games with same volunteers");
 
     console.log(allSlotBox);
@@ -1499,8 +1512,8 @@ export class WorkbenchComponent implements OnInit {
       console.log(gameVolunteerList1.length);
       this.jsonVar.allSlots.forEach((slot, allSlotIndex) => {
         slot.AllSlotBox.forEach((slotBox, slotBoxIndex) => {
-          if (slotBox.AllGameBox.length > 0 && slotBox.IsGameBox) {           
-            if(slotBox.Location!=allSlotBox.Location && slotBox.Location!=comparedSlotBox.Location ){            
+          if (slotBox.AllGameBox.length > 0 && slotBox.IsGameBox) {
+            if (slotBox.Location != allSlotBox.Location && slotBox.Location != comparedSlotBox.Location) {
               slotBox.AllGameBox[0].AllBox[0].GameVolunteerList.forEach(volunteer => {
                 //console.log(volunteer);
                 if (parseInt(gameVolunteerList1[i].VolunteerSeasonalId) === parseInt(volunteer.VolunteerSeasonalId)) {
@@ -1510,7 +1523,7 @@ export class WorkbenchComponent implements OnInit {
                   model.allSlotIndex = allSlotIndex;
                   model.slotBoxIndex = slotBoxIndex;
                   this.sameLocations2.push(model);
-                  this.checkTimeDifference(allSlotBox,slotBox);
+                  this.checkTimeDifference(allSlotBox, slotBox);
                 }
                 else if (parseInt(gameVolunteerList2[i].VolunteerSeasonalId) === parseInt(volunteer.VolunteerSeasonalId)) {
                   console.log(slotBox);
@@ -1519,10 +1532,10 @@ export class WorkbenchComponent implements OnInit {
                   model.allSlotIndex = allSlotIndex;
                   model.slotBoxIndex = slotBoxIndex;
                   this.sameLocations2.push(model);
-                  this.checkTimeDifference(allSlotBox,slotBox);
+                  this.checkTimeDifference(allSlotBox, slotBox);
                 }
               })
-            }     
+            }
           }
         })
       })
@@ -1541,10 +1554,10 @@ export class WorkbenchComponent implements OnInit {
     let gameVolunteerList2 = slotBox.AllGameBox[0].AllBox[0].GameVolunteerList;
     var volunteerEqual = false;
 
-    for(var i=0;i<gameVolunteerList1.length; ++i){
-      if(gameVolunteerList1[i].VolunteerSeasonalId==gameVolunteerList2[i].VolunteerSeasonalId){
+    for (var i = 0; i < gameVolunteerList1.length; ++i) {
+      if (gameVolunteerList1[i].VolunteerSeasonalId == gameVolunteerList2[i].VolunteerSeasonalId) {
         console.log(gameVolunteerList1[i].VolunteerSeasonalId, gameVolunteerList2[i].VolunteerSeasonalId);
-        volunteerEqual=true;
+        volunteerEqual = true;
       }
     }
 
@@ -1552,41 +1565,41 @@ export class WorkbenchComponent implements OnInit {
 
     // }
 
-    if(volunteerEqual){
+    if (volunteerEqual) {
       let gameSlotStartTime = moment(slotBox.AllGameBox[0].AllBox[0].StartTime, "HH:mm A");
       let gameSlotEndTime = moment(slotBox.AllGameBox[0].AllBox[0].EndTime, "HH:mm A");
       // console.log("GameSlot Start Time: " + gameSlotStartTime.format("HH:mm "));
       // console.log("GameSlot End Time:" + gameSlotEndTime.format("HH:mm"));
-  
+
       let timeSlotStartTime = moment(allSlotBox.StartTime, "HH:mm A");
       let timeslotEndTime = moment(allSlotBox.StartTime, "HH:mm A").add(allSlotBox.Duration, "minutes");
-  
+
       // console.log("TimeSlot Start Time: " + timeSlotStartTime.format("HH:mm"));
       // console.log("TimeSlot End Time:" + timeslotEndTime.format("HH:mm"));
-  
-      if(allSlotBox.Location!=slotBox.Location){
+
+      if (allSlotBox.Location != slotBox.Location) {
         if (timeSlotStartTime.isSame(gameSlotStartTime)) {
           console.log("2--Both Start Times are same.");
           console.log(allSlotBox);
           console.log(slotBox);
           this.differentLocationError = true;
-    
+
           allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
           slotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
-    
+
         }
-    
+
         else if (timeSlotStartTime.isBefore(gameSlotStartTime)) {
           console.log("2--Time Slot before Game.");
           var tsEndTime = parseInt(timeslotEndTime.format("HH")) * 60 + parseInt(timeslotEndTime.format("mm"));
           var gsStartTime = parseInt(gameSlotStartTime.format("HH")) * 60 + parseInt(gameSlotStartTime.format("mm"));
-    
+
           var timeBwSlots = gsStartTime - tsEndTime;
-    
+
           for (var i = 0; i < this.jsonVar.TravelMatrix.length; ++i) {
             if ((this.jsonVar.TravelMatrix[i].FromFacilityId == allSlotBox.LocationId && this.jsonVar.TravelMatrix[i].ToFacilityId == slotBox.LocationId)
               || (this.jsonVar.TravelMatrix[i].ToFacilityId == allSlotBox.LocationId && this.jsonVar.TravelMatrix[i].FromFacilityId == slotBox.LocationId)) {
-    
+
               if (this.jsonVar.TravelMatrix[i].Duration < timeBwSlots) {
                 //No Error
                 if (slotBox.AllGameBox[0].AllBox[0].BackgroundColor == "red") {
@@ -1606,29 +1619,29 @@ export class WorkbenchComponent implements OnInit {
               }
             }
           }
-    
-    
+
+
         }
-    
+
         else if (timeSlotStartTime.isAfter(gameSlotStartTime)) {
           console.log("2--Time Slot after Game.");
           var tsStartTime = parseInt(timeSlotStartTime.format("HH")) * 60 + parseInt(timeSlotStartTime.format("mm"));
           var gsEndTime = parseInt(gameSlotEndTime.format("HH")) * 60 + parseInt(gameSlotEndTime.format("mm"));
           var timeBwSlots = tsStartTime - gsEndTime;
-    
+
           for (var i = 0; i < this.jsonVar.TravelMatrix.length; ++i) {
-    
+
             if ((this.jsonVar.TravelMatrix[i].FromFacilityId == allSlotBox.LocationId && this.jsonVar.TravelMatrix[i].ToFacilityId == slotBox.LocationId)
               ||
               (this.jsonVar.TravelMatrix[i].ToFacilityId == allSlotBox.LocationId && this.jsonVar.TravelMatrix[i].FromFacilityId == slotBox.LocationId)
             ) {
-    
+
               if (this.jsonVar.TravelMatrix[i].Duration < timeBwSlots) {
                 //No Error           
                 console.log("2No Error - Duration greater than time b/w slots");
                 console.log(allSlotBox);
                 allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "#2980b9";
-    
+
               }
               else {
                 //Error
@@ -1640,7 +1653,7 @@ export class WorkbenchComponent implements OnInit {
             }
           }
         }
-    
+
         // if(this.differentLocationError){
         //   console.log(this.differentLocationError);
         //   allSlotBox.AllGameBox[0].AllBox[0].BackgroundColor = "red";
@@ -1653,9 +1666,9 @@ export class WorkbenchComponent implements OnInit {
       }
     }
 
- 
 
-   
+
+
 
   }
 
@@ -1665,6 +1678,9 @@ export class WorkbenchComponent implements OnInit {
 
     var seriesid = source.getAttribute('seriesid');
     var timeSlotExists = null;
+    let duration = source.attributes.getNamedItem('duration').value;
+    console.log(duration);
+
     // let targetStartTime = moment(target.attributes.getNamedItem('starttime').value, "HH:mm A");
     // let targetEndTime = moment(target.attributes.getNamedItem('endtime').value, "HH:mm A");
 
@@ -1675,28 +1691,64 @@ export class WorkbenchComponent implements OnInit {
           slot.AllSlotBox.forEach(
             (element, slotBoxIndex) => {
               if (element.StartTime == target.attributes.getNamedItem('starttime').value) {
-                // console.log("Element.....");
-                // console.log(element);
 
                 if (element.IsBlankBox == true) {
                   //let targetStartTime = moment(target.attributes.getNamedItem('starttime').value, "HH:mm A").add(30,'minutes').format('hh:mm A');
                   let targetStartTime = element.EndTime;
-                  //console.log(targetStartTime);
-                  // console.log(allSlotIndex, slotBoxIndex);
-                  // console.log(this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1]);
-                  // console.log(this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1]);
 
-                  if(((this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1]) === slotBoxIndex[this.jsonVar.allSlots[allSlotIndex].AllSlotBox.length]) ||
-                (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1])=== slotBoxIndex[0] ){
-                  timeSlotExists = false;
-                }
-                else{
-                  if (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1].IsBlankBox == true
-                    &&
-                    this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1].IsBlankBox == true) {
-                    //console.log("It is a null slot.");
-                    timeSlotExists = false;
-                    //return true;
+                  if (duration == '85') {
+                    timeSlotExists = true;
+                    // console.log(slotBoxIndex);
+                    // console.log(slot.AllSlotBox.length);              
+
+
+                    if (slotBoxIndex == 0) {
+                      if (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1].IsBlankBox == true
+                        &&
+                        this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 2].IsBlankBox == true) {
+
+                        timeSlotExists = false;
+                      }
+                    }
+
+                    else if (slotBoxIndex == slot.AllSlotBox.length - 1 || slotBoxIndex == slot.AllSlotBox.length - 2) {
+                      timeSlotExists = true;
+                    }
+
+                    else {
+                      if (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1].IsBlankBox == true
+                        &&
+                        this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1].IsBlankBox == true
+                        &&
+                        this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 2].IsBlankBox == true) {
+
+                        timeSlotExists = false;
+                      }
+                    }
+                  }
+
+                  else if (duration == '55') {
+                    timeSlotExists = true;
+
+                    if (slotBoxIndex == 0) {
+                      if (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1].IsBlankBox == true) {
+                        timeSlotExists = false;
+                      }
+                    }
+                    else if (slotBoxIndex == slot.AllSlotBox.length - 1) {
+                      if (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1].IsBlankBox == true) {
+                        timeSlotExists = false;
+                      }
+                    }
+                    else {
+                      if (this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex + 1].IsBlankBox == true
+                        &&
+                        this.jsonVar.allSlots[allSlotIndex].AllSlotBox[slotBoxIndex - 1].IsBlankBox == true) {
+                        timeSlotExists = false;
+                      }
+                    }
+
+
                   }
 
                   else {
@@ -1706,7 +1758,6 @@ export class WorkbenchComponent implements OnInit {
 
                   }
 
-                }
                 }
               }
             }
@@ -1726,44 +1777,43 @@ export class WorkbenchComponent implements OnInit {
     );
 
     function adjustLine(from, to, line) {
-     //console.log(to);
-     if (to){
-      var fT = $(from).offset().top + $(from).height() / 2;
-      var tT = $(to).offset().top + $(to).height() / 2;
-      var fL = $(from).offset().left + $(from).width() / 2;
-      var tL = $(to).offset().left + $(to).width() / 2;
+      //console.log(to);
+      if (to) {
+        var fT = $(from).offset().top + $(from).height() / 2;
+        var tT = $(to).offset().top + $(to).height() / 2;
+        var fL = $(from).offset().left + $(from).width() / 2;
+        var tL = $(to).offset().left + $(to).width() / 2;
 
-      var CA = Math.abs(tT - fT);
-      var CO = Math.abs(tL - fL);
-      var H = Math.sqrt(CA * CA + CO * CO);
-      var ANG = 180 / Math.PI * Math.acos(CA / H);
-      if (tT > fT) {
-        var top = (tT - fT) / 2 + fT;
+        var CA = Math.abs(tT - fT);
+        var CO = Math.abs(tL - fL);
+        var H = Math.sqrt(CA * CA + CO * CO);
+        var ANG = 180 / Math.PI * Math.acos(CA / H);
+        if (tT > fT) {
+          var top = (tT - fT) / 2 + fT;
+        }
+        else {
+          var top = (fT - tT) / 2 + tT;
+        }
+        if (tL > fL) {
+          var left = (tL - fL) / 2 + fL;
+        } else {
+          var left = (fL - tL) / 2 + tL;
+        }
+        if ((fT < tT && fL < tL) || (tT < fT && tL < fL) || (fT > tT && fL > tL) || (tT > fT && tL > fL)) {
+          ANG *= -1;
+        }
+        top -= H / 2;
+        line.style["-webkit-transform"] = 'rotate(' + ANG + 'deg)';
+        line.style["-moz-transform"] = 'rotate(' + ANG + 'deg)';
+        line.style["-ms-transform"] = 'rotate(' + ANG + 'deg)';
+        line.style["-o-transform"] = 'rotate(' + ANG + 'deg)';
+        line.style["-transform"] = 'rotate(' + ANG + 'deg)';
+        line.style.top = top + 'px';
+        line.style.left = left + 'px';
+        line.style.height = H + 'px';
       }
-      else {
-        var top = (fT - tT) / 2 + tT;
-      }
-      if (tL > fL) {
-        var left = (tL - fL) / 2 + fL;
-      } else {
-        var left = (fL - tL) / 2 + tL;
-      }
-      if ((fT < tT && fL < tL) || (tT < fT && tL < fL) || (fT > tT && fL > tL) || (tT > fT && tL > fL)) {
-        ANG *= -1;
-      }
-      top -= H / 2;
-      line.style["-webkit-transform"] = 'rotate(' + ANG + 'deg)';
-      line.style["-moz-transform"] = 'rotate(' + ANG + 'deg)';
-      line.style["-ms-transform"] = 'rotate(' + ANG + 'deg)';
-      line.style["-o-transform"] = 'rotate(' + ANG + 'deg)';
-      line.style["-transform"] = 'rotate(' + ANG + 'deg)';
-      line.style.top = top + 'px';
-      line.style.left = left + 'px';
-      line.style.height = H + 'px';
-     }
-    
+
     }
   }
 }
-
 

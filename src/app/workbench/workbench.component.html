@@ -33,9 +33,9 @@
         <span>Time Slot</span>
       </div>
       <div class="parentTimeSlotDelete ">
-        <div *ngFor="let timeslot of jsonVar.TimeSlot" id="timeSlots" attr.tsDuration="{{timeslot.TimeValueInMinute}}"
+        <div *ngFor="let timeslot of jsonVar.TimeSlot" id="timeSlots" attr.Duration="{{timeslot.TimeValueInMinute}}"
           attr.tsHeight="{{timeslot.TimeBoxHeight}}" class="secondGreenBox bgBlueNone" [dragula]="'slots'">
-          <div id="timeSlot" attr.SlotColor="{{timeslot.SlotColor}}" attr.tsDuration="{{timeslot.TimeValueInMinute}}"
+          <div id="timeSlot" attr.SlotColor="{{timeslot.SlotColor}}" attr.Duration="{{timeslot.TimeValueInMinute}}"
             attr.tsHeight="{{timeslot.TimeBoxHeight}}" class="{{timeslot.TimeDivId}}">
             <div>{{timeslot.TimeText}}</div>
           </div>
